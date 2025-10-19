@@ -11,18 +11,13 @@ import {
     SidebarMenuItem,
 } from '@/components/ui/sidebar';
 import { dashboard } from '@/routes';
+import { ownerDashboard } from '@/routes/owner';
 import { type NavItem } from '@/types';
 import { Link } from '@inertiajs/react';
 import { BookOpen, Folder, LayoutGrid } from 'lucide-react';
 import AppLogo from './app-logo';
+import { usePage } from '@inertiajs/react';
 
-const mainNavItems: NavItem[] = [
-    {
-        title: 'Dashboard',
-        href: dashboard(),
-        icon: LayoutGrid,
-    },
-];
 
 const footerNavItems: NavItem[] = [
     // {
@@ -38,6 +33,17 @@ const footerNavItems: NavItem[] = [
 ];
 
 export function AppSidebar() {
+
+    const { auth } = usePage().props; 
+    const role = auth?.user?.role; 
+
+    const allNavItems: NavItem[] = [
+        { title: 'Dashboard', href: dashboard(), icon: LayoutGrid, roles: ['customer'] },
+        { title: 'Owner Dashboard', href: ownerDashboard(), icon: LayoutGrid, roles: ['owner'] },
+    ];
+
+    const mainNavItems: NavItem[] = allNavItems.filter(item => item.roles.includes(role));
+
     return (
         <Sidebar collapsible="icon" variant="inset">
             <SidebarHeader>

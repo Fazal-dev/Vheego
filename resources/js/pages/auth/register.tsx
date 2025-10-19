@@ -1,7 +1,7 @@
 import RegisteredUserController from '@/actions/App/Http/Controllers/Auth/RegisteredUserController';
 import { login } from '@/routes';
 import { Form, Head } from '@inertiajs/react';
-import { LoaderCircle } from 'lucide-react';
+import { Car, LoaderCircle, Truck } from 'lucide-react';
 
 import InputError from '@/components/input-error';
 import TextLink from '@/components/text-link';
@@ -89,6 +89,55 @@ export default function Register() {
                                     message={errors.password_confirmation}
                                 />
                             </div>
+
+                            <div className="grid grid-cols-2 gap-4">
+                                {/* Customer */}
+                                <label className="relative flex flex-col items-center justify-center border rounded-xl cursor-pointer transition-all duration-300
+                                                hover:shadow-md">
+                                <input
+                                type="radio"
+                                name="role"
+                                value="customer"
+                                className="peer hidden"
+                                defaultChecked
+                                />
+                                    {/* This div changes style based on peer-checked */}
+                                    <div className="flex p-2 flex-col items-center justify-center w-full h-full rounded-xl border border-gray-300
+                                                    peer-checked:border-blue-500
+                                                    peer-checked:bg-blue-100
+                                                    peer-checked:shadow-lg
+                                                    transition-all duration-300">
+                                    <Car className="w-10 h-10 text-blue-500 peer-checked:text-blue-700" />
+                                    <span className="mt-2 font-semibold text-sm">Customer</span>
+                                    <p className="text-xs text-muted-foreground text-center mt-1">
+                                        Rent vehicles from trusted owners
+                                    </p>
+                                    </div>
+                                </label>
+
+                                {/* Owner */}
+                                <label className="relative flex flex-col items-center justify-center border rounded-xl  cursor-pointer transition-all duration-300
+                                                    hover:shadow-md">
+                                    <input
+                                    type="radio"
+                                    name="role"
+                                    value="owner"
+                                    className="peer hidden"
+                                    />
+                                    <div className="flex p-2 flex-col items-center justify-center w-full h-full rounded-xl border border-gray-300
+                                                    peer-checked:border-green-500
+                                                    peer-checked:bg-green-100
+                                                    peer-checked:shadow-lg
+                                                    transition-all duration-300">
+                                    <Truck className="w-10 h-10 text-green-500 peer-checked:text-green-700" />
+                                    <span className="mt-2 font-semibold text-sm">Vehicle Owner</span>
+                                    <p className="text-xs text-muted-foreground text-center mt-1">
+                                        List your vehicles for rent
+                                    </p>
+                                    </div>
+                                </label>
+                            </div>
+
 
                             <Button
                                 type="submit"
