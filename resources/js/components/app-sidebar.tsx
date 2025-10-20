@@ -12,7 +12,7 @@ import {
 } from '@/components/ui/sidebar';
 import { dashboard } from '@/routes';
 import { ownerDashboard } from '@/routes/owner';
-import { type NavItem } from '@/types';
+import { Auth, type NavItem } from '@/types';
 import { Link } from '@inertiajs/react';
 import { BookOpen, Folder, LayoutGrid } from 'lucide-react';
 import AppLogo from './app-logo';
@@ -34,7 +34,7 @@ const footerNavItems: NavItem[] = [
 
 export function AppSidebar() {
 
-    const { auth } = usePage().props; 
+    const { auth } = usePage<{ auth: Auth }>().props;
     const role = auth?.user?.role; 
 
     const allNavItems: NavItem[] = [
