@@ -32,6 +32,7 @@ return new class extends Migration
             $table->integer('engine_capacity');
             $table->string('engine_number');
             $table->text('image_urls');
+            $table->string('current_status')->default('available');
             $table->timestamps();
         });
     }

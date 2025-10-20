@@ -43,3 +43,15 @@ export interface User {
     updated_at: string;
     [key: string]: unknown; // This allows for additional properties...
 }
+
+export type Vehicle = {
+  id: number;
+  model: string;
+  brand: string;
+  color: string;
+  transmission: string;
+  fuel_type: string;
+  license_plate: string;
+  daily_rental_price: number;
+  status?: string; 
+}

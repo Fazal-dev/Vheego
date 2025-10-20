@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Vehicle;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
 
 class VehicleController extends Controller
@@ -12,7 +14,11 @@ class VehicleController extends Controller
      */
     public function index()
     {
-        return Inertia::render('Vehicle/vehicleList');
+        $vehicles = Vehicle::where('owner_id', Auth::id())->get();
+
+        return Inertia::render('Vehicle/vehicleList', [
+            'vehicles' => $vehicles,
+        ]);
     }
 
     /**

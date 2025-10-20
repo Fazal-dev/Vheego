@@ -24,13 +24,6 @@ interface DataTableProps<TData, TValue> {
   data: TData[]
 }
 
- export type Payment = {
-  id: string
-  amount: number
-  status: "pending" | "processing" | "success" | "failed"
-  email: string
-}
-
 export function DataTable<TData, TValue>({
   columns,
   data,
@@ -50,7 +43,7 @@ export function DataTable<TData, TValue>({
             <TableRow key={headerGroup.id}>
               {headerGroup.headers.map((header) => {
                 return (
-                  <TableHead key={header.id}>
+                  <TableHead key={header.id}  className="bg-gray-700 text-white" >
                     {header.isPlaceholder
                       ? null
                       : flexRender(
@@ -68,10 +61,11 @@ export function DataTable<TData, TValue>({
             table.getRowModel().rows.map((row) => (
               <TableRow
                 key={row.id}
-                data-state={row.getIsSelected() && "selected"}
+                    data-state={row.getIsSelected() && "selected"}
+                    className="h-10" 
               >
                 {row.getVisibleCells().map((cell) => (
-                  <TableCell key={cell.id}>
+                  <TableCell key={cell.id}   className="py-1 px-2">
                     {flexRender(cell.column.columnDef.cell, cell.getContext())}
                   </TableCell>
                 ))}
