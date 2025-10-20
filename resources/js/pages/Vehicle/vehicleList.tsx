@@ -14,6 +14,7 @@ import {
     DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 
+import { Chip } from '@/components/chip';
 import { Vehicle } from '@/types';
 
 const breadcrumbs: BreadcrumbItem[] = [
@@ -50,17 +51,17 @@ const columns: ColumnDef<Vehicle>[] = [
         header: 'Fuel Type',
     },
     {
-        accessorKey: 'daily_rental_price',
-        header: () => <div className="text-right">Daily Price</div>,
+        accessorKey: 'status',
+        header: 'Status',
         cell: ({ row }) => {
-            const amount = parseFloat(row.getValue('daily_rental_price'));
-            const formatted = new Intl.NumberFormat('en-LK', {
-                style: 'currency',
-                currency: 'LKR',
-                maximumFractionDigits: 2,
-            }).format(amount);
+            const status = row.getValue('status') as string;
 
-            return <div className="text-right font-medium">{formatted}</div>;
+            let variant: 'default' | 'success' | 'destructive' = 'default';
+
+            if (status === 'Active') variant = 'success';
+            else if (status === 'Inactive') variant = 'destructive';
+
+            return <Chip variant={variant}>{status}</Chip>;
         },
     },
     {
