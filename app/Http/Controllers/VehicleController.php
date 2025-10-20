@@ -66,6 +66,16 @@ class VehicleController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+
+        $vehicle = Vehicle::findOrFail($id);
+
+        if (Auth::id() !== $vehicle->owner_id) {
+            return redirect()->back()->with('error', 'You are not authorized to delete this vehicle.');
+        }
+
+        $vehicle->delete();
+
+        return redirect()->route('owner.vehicles.index')
+            ->with('success', 'Vehicle deleted successfully.');
     }
 }
