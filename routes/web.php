@@ -20,7 +20,7 @@ Route::middleware(['auth', 'role:owner', 'verified'])->group(function () {
     })->name('dashboard');
 });
 
-Route::middleware(['auth', 'role:owner', 'verified'])->prefix('owner')
+Route::middleware(['auth', 'role:owner', 'verified', 'web'])->prefix('owner')
     ->name('owner.')->group(function () {
 
         Route::resource('vehicles', VehicleController::class);

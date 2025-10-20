@@ -1,6 +1,6 @@
 import AppLayout from '@/layouts/app-layout';
 import { index } from '@/routes/owner/vehicles';
-import { type BreadcrumbItem } from '@/types';
+import { Vehicle, type BreadcrumbItem } from '@/types';
 import { Head } from '@inertiajs/react';
 import { ColumnDef } from '@tanstack/react-table';
 import { Eye, MoreHorizontal, Pencil, Plus, Trash } from 'lucide-react';
@@ -16,7 +16,8 @@ import {
 
 import { Chip } from '@/components/chip';
 import vehicles from '@/routes/owner/vehicles';
-import { Inertia } from '@inertiajs/inertia';
+import { router } from '@inertiajs/react';
+
 const breadcrumbs: BreadcrumbItem[] = [
     {
         title: 'Vehicles',
@@ -49,6 +50,10 @@ const columns: ColumnDef<Vehicle>[] = [
     {
         accessorKey: 'fuel_type',
         header: 'Fuel Type',
+    },
+    {
+        accessorKey: 'transmission',
+        header: 'Transmission',
     },
     {
         accessorKey: 'status',
@@ -86,15 +91,7 @@ const columns: ColumnDef<Vehicle>[] = [
                         </DropdownMenuItem>
                         <DropdownMenuItem
                             onClick={() => {
-                                if (
-                                    confirm(
-                                        'Are you sure you want to delete this vehicle?',
-                                    )
-                                ) {
-                                    Inertia.delete(
-                                        vehicles.destroy(vehicle.id).url,
-                                    );
-                                }
+                                router.delete(vehicles.destroy(vehicle.id).url);
                             }}
                             className="text-red-600"
                         >
@@ -109,11 +106,6 @@ const columns: ColumnDef<Vehicle>[] = [
 
 export default function VehicleList({ vehicles }: { vehicles: Vehicle[] }) {
     const data = vehicles;
-    const handleDelete = (vehicleId) => {
-        if (confirm('Are you sure you want to delete this vehicle?')) {
-            Inertia.delete(vehicle.destroy(vehicleId).url); // ✅ typed URL
-        }
-    };
 
     return (
         <AppLayout breadcrumbs={breadcrumbs}>

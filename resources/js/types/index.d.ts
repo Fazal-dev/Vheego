@@ -28,6 +28,7 @@ export interface SharedData {
     quote: { message: string; author: string };
     auth: Auth;
     sidebarOpen: boolean;
+    flash:{suceess?:string};
     [key: string]: unknown;
 }
 
@@ -54,4 +55,14 @@ export type Vehicle = {
   license_plate: string;
   daily_rental_price: number;
   status?: string; 
+}
+import { PageProps as InertiaPageProps } from '@inertiajs/core';
+
+export interface FlashMessages {
+  success?: string;
+  error?: string;
+}
+
+export interface PageProps extends InertiaPageProps {
+  flash: FlashMessages;
 }

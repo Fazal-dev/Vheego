@@ -21,9 +21,10 @@ class VehicleFactory extends Factory
         $transmissions = ['Automatic', 'Manual'];
         $fuelTypes = ['Petrol', 'Diesel', 'Hybrid', 'Electric'];
         $vehicleTypes = ['Car', 'Van', 'SUV', 'Truck', 'Motorbike'];
+        $status = ['Active', 'Inactive'];
 
         return [
-            'owner_id' => User::factory(),
+            'owner_id' => 2,
             'model' => $this->faker->word(),
             'brand' => $this->faker->randomElement($brands),
             'transmission' => $this->faker->randomElement($transmissions),
@@ -33,6 +34,7 @@ class VehicleFactory extends Factory
             'doors' => $this->faker->numberBetween(2, 5),
             'seats' => $this->faker->numberBetween(2, 8),
             'vehicle_type' => $this->faker->randomElement($vehicleTypes),
+            'status' => $this->faker->randomElement($status),
             'year_of_manufacture' => $this->faker->year(),
             'registration_date' => $this->faker->dateTimeBetween('-5 years', 'now'),
             'registration_expiry_date' => $this->faker->dateTimeBetween('now', '+2 years'),

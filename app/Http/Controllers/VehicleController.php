@@ -64,7 +64,7 @@ class VehicleController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(Request $request, string $id)
     {
 
         $vehicle = Vehicle::findOrFail($id);
@@ -75,7 +75,6 @@ class VehicleController extends Controller
 
         $vehicle->delete();
 
-        return redirect()->route('owner.vehicles.index')
-            ->with('success', 'Vehicle deleted successfully.');
+        return to_route('owner.vehicles.index')->withSuccess('Vehicle deleted successfully.');
     }
 }
