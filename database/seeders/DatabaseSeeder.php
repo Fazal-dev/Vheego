@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use App\Models\User;
+use App\Models\Vehicle;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
@@ -27,10 +28,19 @@ class DatabaseSeeder extends Seeder
         );
 
         User::create([
+            'name' => 'Fazal',
+            'email' => 'fazal@gmail.com',
+            'password' => bcrypt('password'),
+            'role' => 'owner',
+        ]);
+
+        User::create([
             'name' => 'Platform Admin',
             'email' => 'admin@gmail.com',
             'password' => bcrypt('password'),
             'role' => 'admin',
         ]);
+
+        Vehicle::factory(20)->create();
     }
 }

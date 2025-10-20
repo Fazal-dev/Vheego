@@ -49,6 +49,12 @@ class AuthenticatedSessionController extends Controller
             return redirect()->intended(route('owner.ownerDashboard', absolute: false));
         }
 
+        $roles = ['admin', 'customer'];
+
+        if (!in_array(auth()->user()->role, $roles)) {
+            redirect()->route('login');
+        }
+
         return redirect()->intended(route('dashboard', absolute: false));
     }
 

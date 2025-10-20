@@ -12,9 +12,10 @@ import {
 } from '@/components/ui/sidebar';
 import { dashboard } from '@/routes';
 import { ownerDashboard } from '@/routes/owner';
+import { index } from '@/routes/owner/vehicles';
 import { Auth, type NavItem } from '@/types';
 import { Link } from '@inertiajs/react';
-import { BookOpen, Folder, LayoutGrid } from 'lucide-react';
+import {  Car,LayoutGrid } from 'lucide-react';
 import AppLogo from './app-logo';
 import { usePage } from '@inertiajs/react';
 
@@ -40,6 +41,7 @@ export function AppSidebar() {
     const allNavItems: NavItem[] = [
         { title: 'Dashboard', href: dashboard(), icon: LayoutGrid, roles: ['customer'] },
         { title: 'Owner Dashboard', href: ownerDashboard(), icon: LayoutGrid, roles: ['owner'] },
+        { title: 'Vehicles', href:index().url , icon: Car, roles: ['owner'] },
     ];
 
     const mainNavItems: NavItem[] = allNavItems.filter(item => item.roles.includes(role));

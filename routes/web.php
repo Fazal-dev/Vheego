@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\VehicleController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -22,7 +23,8 @@ Route::middleware(['auth', 'role:owner', 'verified'])->group(function () {
 Route::middleware(['auth', 'role:owner', 'verified'])->prefix('owner')
     ->name('owner.')->group(function () {
 
-        // Route::get('/vehicles', [VehicleController::class, 'index'])->name('vehicles');
+        Route::resource('vehicles', VehicleController::class);
+
         Route::get('dashboard', function () {
             return Inertia::render('Owner/ownerDashboard');
         })->name('ownerDashboard');
