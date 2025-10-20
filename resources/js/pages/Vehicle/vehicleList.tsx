@@ -3,7 +3,7 @@ import { index } from '@/routes/owner/vehicles';
 import { type BreadcrumbItem } from '@/types';
 import { Head } from '@inertiajs/react';
 import { ColumnDef } from '@tanstack/react-table';
-import { Eye, MoreHorizontal, Pencil } from 'lucide-react';
+import { Eye, MoreHorizontal, Pencil, Plus } from 'lucide-react';
 
 import { DataTable } from '@/components/data-table';
 import { Button } from '@/components/ui/button';
@@ -95,7 +95,14 @@ export default function VehicleList({ vehicles }: { vehicles: Vehicle[] }) {
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Vehicle List" />
-            <div className="dark:bg-dark-800 rounded-lg bg-white p-4 text-black dark:text-white">
+            <div className="dark:bg-dark-800 flex items-center justify-end rounded-lg bg-white p-4">
+                <Button className="flex items-center space-x-1">
+                    <Plus className="h-5 w-2" />
+                    <span>New Vehicle</span>
+                </Button>
+            </div>
+
+            <div className="dark:bg-dark-800 bg-whitepx-4 rounded-lg px-4 pt-0 pb-4 text-black dark:text-white">
                 <DataTable columns={columns} data={data} />
             </div>
         </AppLayout>
