@@ -1,0 +1,460 @@
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from '@/components/ui/select';
+
+import { store } from '@/routes/owner/vehicles';
+import { useForm } from '@inertiajs/react';
+import { LoaderCircle } from 'lucide-react';
+import { Label } from './ui/label';
+
+interface Vehicle {
+    id?: number;
+    name: string;
+    model: string;
+    brand: string;
+    transmision: string;
+    fuel_type: string;
+    seats: number;
+    doors: number;
+    color: string;
+    vehicle_type: string;
+    year_of_manufacture: number;
+    registration_date: number;
+    registration_expiry_date: number;
+    daily_rental_price: number;
+    weekly_rental_price: number;
+    monthly_rental_price: number;
+    engine_capacity: string;
+    engine_number: string;
+    image_urls: string[];
+    status: string;
+    license_plate: string;
+}
+
+interface VehicleFormProps {
+    vehicle?: Vehicle;
+}
+
+export default function VehicleForm({ vehicle }: VehicleFormProps) {
+    const isEdit = !!vehicle;
+
+    const { data, setData, post, put, processing, errors } = useForm({
+        name: vehicle?.name || '',
+        model: vehicle?.model || '',
+        brand: vehicle?.brand || '',
+        transmision: vehicle?.transmision || '',
+        fuel_type: vehicle?.fuel_type || '',
+        seats: vehicle?.seats || 4,
+        doors: vehicle?.doors || 4,
+        color: vehicle?.color || '',
+        vehicle_type: vehicle?.vehicle_type || '',
+        year_of_manufacture:
+            vehicle?.year_of_manufacture || new Date().getFullYear(),
+        registration_date: vehicle?.registration_date || '',
+        registration_expiry_date: vehicle?.registration_expiry_date || '',
+        daily_rental_price: vehicle?.daily_rental_price || 0,
+        weekly_rental_price: vehicle?.weekly_rental_price || 0,
+        monthly_rental_price: vehicle?.monthly_rental_price || 0,
+        engine_capacity: vehicle?.engine_capacity || '',
+        engine_number: vehicle?.engine_number || '',
+        status: vehicle?.status || 'available',
+        license_plate: vehicle?.license_plate || '',
+        image_urls: vehicle?.image_urls || [],
+    });
+
+    const handleSubmit = (e: React.FormEvent) => {
+        e.preventDefault();
+        if (isEdit) {
+            // put(route('vehicles.update', vehicle?.id));
+        } else {
+            post(store().url);
+        }
+    };
+
+    return (
+        <form className="mt-4" onSubmit={handleSubmit}>
+            <Card className="p-4">
+                <CardHeader>
+                    <CardTitle className="mt-2">
+                        {isEdit ? 'Edit Vehicle' : 'Add  New  Vehicle'}
+                    </CardTitle>
+                </CardHeader>
+
+                <CardContent>
+                    {/* 1st Row Start */}
+                    <div className="grid grid-cols-2 gap-4 sm:grid-cols-2 lg:grid-cols-6">
+                        {/* model */}
+                        <div className="mb-3">
+                            <Label>Model</Label>
+                            <Input
+                                className="mt-1"
+                                value={data.model}
+                                onChange={(e) =>
+                                    setData('model', e.target.value)
+                                }
+                                placeholder="Ex : M5"
+                            />
+                            {errors.model && (
+                                <div className="text-sm text-red-500">
+                                    {errors.model}
+                                </div>
+                            )}
+                        </div>
+                        {/* brand */}
+                        <div className="mb-3">
+                            <Label>Brand</Label>
+                            <Input
+                                className="mt-1"
+                                value={data.brand}
+                                onChange={(e) =>
+                                    setData('brand', e.target.value)
+                                }
+                                placeholder="BMW"
+                            />
+                            {errors.brand && (
+                                <div className="text-sm text-red-500">
+                                    {errors.brand}
+                                </div>
+                            )}
+                        </div>
+                        {/* Transmisson */}
+                        <div className="mb-3">
+                            <Label>Transmisson</Label>
+
+                            <Select
+                                onValueChange={(value) =>
+                                    setData('transmision', value)
+                                }
+                                value={data.transmision}
+                            >
+                                <SelectTrigger className="w-full">
+                                    <SelectValue placeholder="Select" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    <SelectItem value="automatic">
+                                        Automatic
+                                    </SelectItem>
+                                    <SelectItem value="manual">
+                                        Manual
+                                    </SelectItem>
+                                </SelectContent>
+                            </Select>
+                            {errors.transmision && (
+                                <div className="text-sm text-red-500">
+                                    {errors.transmision}
+                                </div>
+                            )}
+                        </div>
+                        {/* Fuel Type */}
+                        <div className="mb-3">
+                            <Label>Fuel Type</Label>
+
+                            <Select
+                                onValueChange={(value) =>
+                                    setData('fuel_type', value)
+                                }
+                                value={data.fuel_type}
+                            >
+                                <SelectTrigger className="w-full">
+                                    <SelectValue placeholder="Select" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    <SelectItem value="petrol">
+                                        Petrol
+                                    </SelectItem>
+                                    <SelectItem value="diesel">
+                                        Diesel
+                                    </SelectItem>
+                                    <SelectItem value="electric">
+                                        Electric
+                                    </SelectItem>
+                                    <SelectItem value="hybrid">
+                                        Hybrid
+                                    </SelectItem>
+                                </SelectContent>
+                            </Select>
+                            {errors.fuel_type && (
+                                <div className="text-sm text-red-500">
+                                    {errors.fuel_type}
+                                </div>
+                            )}
+                        </div>
+                        {/* License plate */}
+                        <div className="mb-3">
+                            <Label>License Plate</Label>
+                            <Input
+                                value={data.license_plate}
+                                className="mt-1"
+                                onChange={(e) =>
+                                    setData('license_plate', e.target.value)
+                                }
+                                placeholder="Ex : ABC-1234"
+                            />
+                            {errors.license_plate && (
+                                <div className="text-sm text-red-500">
+                                    {errors.license_plate}
+                                </div>
+                            )}
+                        </div>
+                        {/* vehicle Type */}
+                        <div className="mb-3">
+                            <Label className="mb-2">Vehicle Type</Label>
+                            <Select
+                                onValueChange={(value) =>
+                                    setData('vehicle_type', value)
+                                }
+                                value={data.vehicle_type}
+                            >
+                                <SelectTrigger className="w-full">
+                                    <SelectValue placeholder="Select" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    <SelectItem value="car">Car</SelectItem>
+                                    <SelectItem value="suv">SUV</SelectItem>
+                                    <SelectItem value="sedan">Sedan</SelectItem>
+                                    <SelectItem value="van">Van</SelectItem>
+                                    <SelectItem value="bike">
+                                        Motorbike
+                                    </SelectItem>
+                                    <SelectItem value="three_wheeler">
+                                        Three Wheeler
+                                    </SelectItem>
+                                </SelectContent>
+                            </Select>
+                            {errors.doors && (
+                                <div className="text-sm text-red-500">
+                                    {errors.doors}
+                                </div>
+                            )}
+                        </div>
+                    </div>
+                    {/* 1st Row End*/}
+
+                    {/* 2nd Row Start */}
+                    <div className="grid grid-cols-2 gap-4 sm:grid-cols-2 lg:grid-cols-6">
+                        {/* seats and doors */}
+                        <div className="mb-3 grid grid-cols-2 gap-4">
+                            {/* seats */}
+                            <div className="mb-3">
+                                <Label>Seats</Label>
+                                <Input
+                                    type="number"
+                                    className="mt-1"
+                                    value={data.seats}
+                                    onChange={(e) =>
+                                        setData(
+                                            'seats',
+                                            parseInt(e.target.value),
+                                        )
+                                    }
+                                    placeholder="Ex : 4"
+                                />
+                                {errors.seats && (
+                                    <div className="text-sm text-red-500">
+                                        {errors.seats}
+                                    </div>
+                                )}
+                            </div>
+                            {/* doors */}
+                            <div className="mb-3">
+                                <Label>Doors</Label>
+                                <Input
+                                    type="number"
+                                    className="mt-1"
+                                    value={data.doors}
+                                    onChange={(e) =>
+                                        setData(
+                                            'doors',
+                                            parseInt(e.target.value),
+                                        )
+                                    }
+                                    placeholder="Ex : 4"
+                                />
+                                {errors.doors && (
+                                    <div className="text-sm text-red-500">
+                                        {errors.doors}
+                                    </div>
+                                )}
+                            </div>
+                        </div>
+
+                        {/* year of manufacture */}
+                        <div className="mb-3">
+                            <Label>Year Of Manufacture</Label>
+                            <Input
+                                type="number"
+                                value={data.year_of_manufacture}
+                                className="mt-1"
+                                onChange={(e) =>
+                                    setData(
+                                        'year_of_manufacture',
+                                        parseInt(e.target.value),
+                                    )
+                                }
+                                placeholder="Ex : 4"
+                            />
+                            {errors.year_of_manufacture && (
+                                <div className="text-sm text-red-500">
+                                    {errors.year_of_manufacture}
+                                </div>
+                            )}
+                        </div>
+                        {/* registration_date */}
+                        <div className="mb-3">
+                            <Label>Registration Date</Label>
+                            <Input
+                                type="date"
+                                className="mt-1"
+                                value={data.registration_date}
+                                onChange={(e) =>
+                                    setData('registration_date', e.target.value)
+                                }
+                                placeholder="Ex : 4"
+                            />
+                            {errors.registration_date && (
+                                <div className="text-sm text-red-500">
+                                    {errors.registration_date}
+                                </div>
+                            )}
+                        </div>
+                        {/* registration_expiry_date */}
+                        <div className="mb-3">
+                            <Label>Registration Expiry date</Label>
+                            <Input
+                                type="date"
+                                className="mt-1"
+                                value={data.registration_expiry_date}
+                                onChange={(e) =>
+                                    setData(
+                                        'registration_expiry_date',
+                                        e.target.value,
+                                    )
+                                }
+                            />
+                            {errors.registration_expiry_date && (
+                                <div className="text-sm text-red-500">
+                                    {errors.registration_expiry_date}
+                                </div>
+                            )}
+                        </div>
+                        {/* engine_capacity */}
+                        <div className="mb-3">
+                            <Label>Engine Capacity</Label>
+                            <Input
+                                type="text"
+                                className="mt-1"
+                                value={data.engine_capacity}
+                                onChange={(e) =>
+                                    setData('engine_capacity', e.target.value)
+                                }
+                                placeholder="Ex : 400cc"
+                            />
+                            {errors.engine_capacity && (
+                                <div className="text-sm text-red-500">
+                                    {errors.engine_capacity}
+                                </div>
+                            )}
+                        </div>
+                        {/* engine_number */}
+                        <div className="mb-3">
+                            <Label>Engine Number</Label>
+                            <Input
+                                type="text"
+                                className="mt-1"
+                                value={data.engine_number}
+                                onChange={(e) =>
+                                    setData('engine_number', e.target.value)
+                                }
+                            />
+                            {errors.engine_number && (
+                                <div className="text-sm text-red-500">
+                                    {errors.engine_number}
+                                </div>
+                            )}
+                        </div>
+                    </div>
+
+                    {/* 3rd Row Start */}
+                    <div className="grid grid-cols-2 gap-4 sm:grid-cols-2 lg:grid-cols-6">
+                        {/* daily */}
+                        <div className="mb-3">
+                            <Label>Daily</Label>
+                            <Input
+                                type="number"
+                                className="mt-1"
+                                value={data.daily_rental_price}
+                                onChange={(e) =>
+                                    setData(
+                                        'daily_rental_price',
+                                        parseInt(e.target.value),
+                                    )
+                                }
+                            />
+                            {errors.daily_rental_price && (
+                                <div className="text-sm text-red-500">
+                                    {errors.daily_rental_price}
+                                </div>
+                            )}
+                        </div>
+                        {/* weekly */}
+                        <div className="mb-3">
+                            <Label>Weekly</Label>
+                            <Input
+                                type="number"
+                                className="mt-1"
+                                value={data.weekly_rental_price}
+                                onChange={(e) =>
+                                    setData(
+                                        'weekly_rental_price',
+                                        parseInt(e.target.value),
+                                    )
+                                }
+                            />
+                            {errors.weekly_rental_price && (
+                                <div className="text-sm text-red-500">
+                                    {errors.weekly_rental_price}
+                                </div>
+                            )}
+                        </div>
+                        {/*Monthly*/}
+                        <div className="mb-3">
+                            <Label>Monthly</Label>
+                            <Input
+                                type="number"
+                                value={data.monthly_rental_price}
+                                className="mt-1"
+                                onChange={(e) =>
+                                    setData(
+                                        'monthly_rental_price',
+                                        parseInt(e.target.value),
+                                    )
+                                }
+                            />
+                            {errors.monthly_rental_price && (
+                                <div className="text-sm text-red-500">
+                                    {errors.monthly_rental_price}
+                                </div>
+                            )}
+                        </div>
+                    </div>
+
+                    <div className="flex justify-end">
+                        <Button size={'sm'} type="submit" disabled={processing}>
+                            {processing && (
+                                <LoaderCircle className="h-4 w-4 animate-spin" />
+                            )}
+                            {isEdit ? 'Update Vehicle' : 'New Vehicle'}
+                        </Button>
+                    </div>
+                </CardContent>
+            </Card>
+        </form>
+    );
+}

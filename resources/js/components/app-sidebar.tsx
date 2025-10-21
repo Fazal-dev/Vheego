@@ -14,11 +14,9 @@ import { dashboard } from '@/routes';
 import { ownerDashboard } from '@/routes/owner';
 import { index } from '@/routes/owner/vehicles';
 import { Auth, type NavItem } from '@/types';
-import { Link } from '@inertiajs/react';
-import {  Car,LayoutGrid } from 'lucide-react';
+import { Link, usePage } from '@inertiajs/react';
+import { Car, LayoutGrid } from 'lucide-react';
 import AppLogo from './app-logo';
-import { usePage } from '@inertiajs/react';
-
 
 const footerNavItems: NavItem[] = [
     // {
@@ -34,17 +32,28 @@ const footerNavItems: NavItem[] = [
 ];
 
 export function AppSidebar() {
-
     const { auth } = usePage<{ auth: Auth }>().props;
-    const role = auth?.user?.role; 
+    const role = auth?.user?.role;
 
     const allNavItems: NavItem[] = [
-        { title: 'Dashboard', href: dashboard(), icon: LayoutGrid, roles: ['customer'] },
-        { title: 'Owner Dashboard', href: ownerDashboard(), icon: LayoutGrid, roles: ['owner'] },
-        { title: 'Vehicles', href:index().url , icon: Car, roles: ['owner'] },
+        {
+            title: 'Dashboard',
+            href: dashboard(),
+            icon: LayoutGrid,
+            roles: ['customer'],
+        },
+        {
+            title: 'Owner Dashboard',
+            href: ownerDashboard(),
+            icon: LayoutGrid,
+            roles: ['owner'],
+        },
+        { title: 'Vehicles', href: index().url, icon: Car, roles: ['owner'] },
     ];
 
-    const mainNavItems: NavItem[] = allNavItems.filter(item => item.roles.includes(role));
+    const mainNavItems: NavItem[] = allNavItems.filter((item) =>
+        item.roles.includes(role),
+    );
 
     return (
         <Sidebar collapsible="icon" variant="inset">
