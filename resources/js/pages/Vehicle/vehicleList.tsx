@@ -1,6 +1,6 @@
 import AppLayout from '@/layouts/app-layout';
-import { create, destroy, index } from '@/routes/owner/vehicles';
-import { Vehicle, type BreadcrumbItem } from '@/types';
+import { create, destroy, edit, index } from '@/routes/owner/vehicles';
+import { Vehicle_table, type BreadcrumbItem } from '@/types';
 import { Head } from '@inertiajs/react';
 import { ColumnDef } from '@tanstack/react-table';
 import { Eye, MoreHorizontal, Pencil, Plus, Trash } from 'lucide-react';
@@ -21,12 +21,16 @@ import Swal from 'sweetalert2';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
-        title: 'Vehicles',
+        title: 'Manage Vehicles',
         href: index().url,
     },
 ];
 
-export default function VehicleList({ vehicles }: { vehicles: Vehicle[] }) {
+export default function VehicleList({
+    vehicles,
+}: {
+    vehicles: Vehicle_table[];
+}) {
     const data = vehicles;
 
     const handleVehicleDelete = (vehicleId: number) => {
@@ -45,7 +49,7 @@ export default function VehicleList({ vehicles }: { vehicles: Vehicle[] }) {
         });
     };
 
-    const columns: ColumnDef<Vehicle>[] = [
+    const columns: ColumnDef<Vehicle_table>[] = [
         {
             id: 'index',
             header: '#',
@@ -106,7 +110,9 @@ export default function VehicleList({ vehicles }: { vehicles: Vehicle[] }) {
                             <DropdownMenuItem>
                                 <Eye /> View
                             </DropdownMenuItem>
-                            <DropdownMenuItem>
+                            <DropdownMenuItem
+                                onClick={() => router.get(edit(vehicle.id))}
+                            >
                                 <Pencil /> Edit
                             </DropdownMenuItem>
                             <DropdownMenuItem
@@ -140,7 +146,11 @@ export default function VehicleList({ vehicles }: { vehicles: Vehicle[] }) {
             </div>
 
             <div className="dark:bg-dark-800 bg-whitepx-4 rounded-lg px-4 pt-0 pb-4 text-black dark:text-white">
-                <DataTable columns={columns} data={data} />
+                <DataTable
+                    filter_columns="license_plate"
+                    columns={columns}
+                    data={data}
+                />
             </div>
         </AppLayout>
     );

@@ -3,6 +3,7 @@ import {
     ColumnFiltersState,
     flexRender,
     getCoreRowModel,
+    getFilteredRowModel,
     getPaginationRowModel,
     useReactTable,
 } from '@tanstack/react-table';
@@ -18,23 +19,28 @@ import {
     TableRow,
 } from '@/components/ui/table';
 import { useState } from 'react';
+import { Input } from './ui/input';
+import { Label } from './ui/label';
 
 interface DataTableProps<TData, TValue> {
     columns: ColumnDef<TData, TValue>[];
     data: TData[];
+    filter_columns: string;
 }
 
 export function DataTable<TData, TValue>({
     columns,
     data,
+    filter_columns,
 }: DataTableProps<TData, TValue>) {
     const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
     const table = useReactTable({
         data,
         columns,
+        onColumnFiltersChange: setColumnFilters,
         getCoreRowModel: getCoreRowModel(),
         getPaginationRowModel: getPaginationRowModel(),
-        getFilteredRowModel: getCoreRowModel(),
+        getFilteredRowModel: getFilteredRowModel(),
         state: {
             columnFilters,
         },
@@ -43,6 +49,24 @@ export function DataTable<TData, TValue>({
     return (
         <>
             <div className="overflow-hidden rounded-md border">
+                <div className="m-3">
+                    <Label className="mb-2">Search</Label>
+                    <Input
+                        placeholder="Search License Plate.."
+                        value={
+                            (table
+                                .getColumn(filter_columns)
+                                ?.getFilterValue() as string) ?? ''
+                        }
+                        onChange={(event) =>
+                            table
+                                .getColumn(filter_columns)
+                                ?.setFilterValue(event.target.value)
+                        }
+                        className="max-w-max"
+                    />
+                </div>
+
                 <Table className="p-7">
                     <TableHeader>
                         {table.getHeaderGroups().map((headerGroup) => (

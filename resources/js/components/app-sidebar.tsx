@@ -12,7 +12,7 @@ import {
 } from '@/components/ui/sidebar';
 import { dashboard } from '@/routes';
 import { ownerDashboard } from '@/routes/owner';
-import { index } from '@/routes/owner/vehicles';
+import vehicles from '@/routes/owner/vehicles';
 import { Auth, type NavItem } from '@/types';
 import { Link, usePage } from '@inertiajs/react';
 import { Car, LayoutGrid } from 'lucide-react';
@@ -48,7 +48,12 @@ export function AppSidebar() {
             icon: LayoutGrid,
             roles: ['owner'],
         },
-        { title: 'Vehicles', href: index().url, icon: Car, roles: ['owner'] },
+        {
+            title: 'Vehicles',
+            href: vehicles.index().url,
+            icon: Car,
+            roles: ['owner'],
+        },
     ];
 
     const mainNavItems: NavItem[] = allNavItems.filter((item) =>
@@ -56,12 +61,19 @@ export function AppSidebar() {
     );
 
     return (
-        <Sidebar collapsible="icon" variant="inset">
+        <Sidebar collapsible="icon" variant="floating">
             <SidebarHeader>
                 <SidebarMenu>
                     <SidebarMenuItem>
                         <SidebarMenuButton size="lg" asChild>
-                            <Link href={dashboard()} prefetch>
+                            <Link
+                                href={
+                                    role == 'owner'
+                                        ? ownerDashboard()
+                                        : dashboard()
+                                }
+                                prefetch
+                            >
                                 <AppLogo />
                             </Link>
                         </SidebarMenuButton>

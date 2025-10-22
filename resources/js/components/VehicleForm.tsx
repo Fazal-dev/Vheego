@@ -1,5 +1,5 @@
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import {
     Select,
@@ -9,47 +9,20 @@ import {
     SelectValue,
 } from '@/components/ui/select';
 
-import { store } from '@/routes/owner/vehicles';
+import { store, update } from '@/routes/owner/vehicles';
+import { VehicleFormProps } from '@/types';
 import { useForm } from '@inertiajs/react';
 import { LoaderCircle } from 'lucide-react';
 import { Label } from './ui/label';
-
-interface Vehicle {
-    id?: number;
-    name: string;
-    model: string;
-    brand: string;
-    transmision: string;
-    fuel_type: string;
-    seats: number;
-    doors: number;
-    color: string;
-    vehicle_type: string;
-    year_of_manufacture: number;
-    registration_date: number;
-    registration_expiry_date: number;
-    daily_rental_price: number;
-    weekly_rental_price: number;
-    monthly_rental_price: number;
-    engine_capacity: string;
-    engine_number: string;
-    image_urls: string[];
-    status: string;
-    license_plate: string;
-}
-
-interface VehicleFormProps {
-    vehicle?: Vehicle;
-}
 
 export default function VehicleForm({ vehicle }: VehicleFormProps) {
     const isEdit = !!vehicle;
 
     const { data, setData, post, put, processing, errors } = useForm({
-        name: vehicle?.name || '',
+        id: vehicle?.id || 0,
         model: vehicle?.model || '',
         brand: vehicle?.brand || '',
-        transmision: vehicle?.transmision || '',
+        transmission: vehicle?.transmission || '',
         fuel_type: vehicle?.fuel_type || '',
         seats: vehicle?.seats || 4,
         doors: vehicle?.doors || 4,
@@ -63,31 +36,26 @@ export default function VehicleForm({ vehicle }: VehicleFormProps) {
         weekly_rental_price: vehicle?.weekly_rental_price || 0,
         monthly_rental_price: vehicle?.monthly_rental_price || 0,
         engine_capacity: vehicle?.engine_capacity || '',
+        bond_amount: vehicle?.bond_amount || 0,
         engine_number: vehicle?.engine_number || '',
         status: vehicle?.status || 'available',
         license_plate: vehicle?.license_plate || '',
-        image_urls: vehicle?.image_urls || [],
+        image_urls: vehicle?.image_urls ? [...vehicle.image_urls] : [],
     });
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
         if (isEdit) {
-            // put(route('vehicles.update', vehicle?.id));
+            put(update({ vehicle: data.id }).url);
         } else {
             post(store().url);
         }
     };
 
     return (
-        <form className="mt-4" onSubmit={handleSubmit}>
-            <Card className="p-4">
-                <CardHeader>
-                    <CardTitle className="mt-2">
-                        {isEdit ? 'Edit Vehicle' : 'Add  New  Vehicle'}
-                    </CardTitle>
-                </CardHeader>
-
-                <CardContent>
+        <form className="mt-8">
+            <Card className="p-2">
+                <CardContent className="p-6">
                     {/* 1st Row Start */}
                     <div className="grid grid-cols-2 gap-4 sm:grid-cols-2 lg:grid-cols-6">
                         {/* model */}
@@ -130,25 +98,25 @@ export default function VehicleForm({ vehicle }: VehicleFormProps) {
 
                             <Select
                                 onValueChange={(value) =>
-                                    setData('transmision', value)
+                                    setData('transmission', value)
                                 }
-                                value={data.transmision}
+                                value={data.transmission}
                             >
                                 <SelectTrigger className="w-full">
                                     <SelectValue placeholder="Select" />
                                 </SelectTrigger>
                                 <SelectContent>
-                                    <SelectItem value="automatic">
+                                    <SelectItem value="Automatic">
                                         Automatic
                                     </SelectItem>
-                                    <SelectItem value="manual">
+                                    <SelectItem value="Manual">
                                         Manual
                                     </SelectItem>
                                 </SelectContent>
                             </Select>
-                            {errors.transmision && (
+                            {errors.transmission && (
                                 <div className="text-sm text-red-500">
-                                    {errors.transmision}
+                                    {errors.transmission}
                                 </div>
                             )}
                         </div>
@@ -166,16 +134,16 @@ export default function VehicleForm({ vehicle }: VehicleFormProps) {
                                     <SelectValue placeholder="Select" />
                                 </SelectTrigger>
                                 <SelectContent>
-                                    <SelectItem value="petrol">
+                                    <SelectItem value="Petrol">
                                         Petrol
                                     </SelectItem>
-                                    <SelectItem value="diesel">
+                                    <SelectItem value="Diesel">
                                         Diesel
                                     </SelectItem>
-                                    <SelectItem value="electric">
+                                    <SelectItem value="Electric">
                                         Electric
                                     </SelectItem>
-                                    <SelectItem value="hybrid">
+                                    <SelectItem value="Hybrid">
                                         Hybrid
                                     </SelectItem>
                                 </SelectContent>
@@ -216,21 +184,20 @@ export default function VehicleForm({ vehicle }: VehicleFormProps) {
                                     <SelectValue placeholder="Select" />
                                 </SelectTrigger>
                                 <SelectContent>
-                                    <SelectItem value="car">Car</SelectItem>
-                                    <SelectItem value="suv">SUV</SelectItem>
-                                    <SelectItem value="sedan">Sedan</SelectItem>
-                                    <SelectItem value="van">Van</SelectItem>
-                                    <SelectItem value="bike">
+                                    <SelectItem value="Car">Car</SelectItem>
+                                    <SelectItem value="SUV">SUV</SelectItem>
+                                    <SelectItem value="Van">Van</SelectItem>
+                                    <SelectItem value="Bike">
                                         Motorbike
                                     </SelectItem>
-                                    <SelectItem value="three_wheeler">
+                                    <SelectItem value="ThreeWheeler">
                                         Three Wheeler
                                     </SelectItem>
                                 </SelectContent>
                             </Select>
-                            {errors.doors && (
+                            {errors.vehicle_type && (
                                 <div className="text-sm text-red-500">
-                                    {errors.doors}
+                                    {errors.vehicle_type}
                                 </div>
                             )}
                         </div>
@@ -326,7 +293,7 @@ export default function VehicleForm({ vehicle }: VehicleFormProps) {
                         </div>
                         {/* registration_expiry_date */}
                         <div className="mb-3">
-                            <Label>Registration Expiry date</Label>
+                            <Label>Registration Expiry</Label>
                             <Input
                                 type="date"
                                 className="mt-1"
@@ -383,6 +350,23 @@ export default function VehicleForm({ vehicle }: VehicleFormProps) {
 
                     {/* 3rd Row Start */}
                     <div className="grid grid-cols-2 gap-4 sm:grid-cols-2 lg:grid-cols-6">
+                        {/* Color */}
+                        <div className="mb-3">
+                            <Label>Color</Label>
+                            <Input
+                                type="text"
+                                className="mt-1"
+                                value={data.color}
+                                onChange={(e) =>
+                                    setData('color', e.target.value)
+                                }
+                            />
+                            {errors.color && (
+                                <div className="text-sm text-red-500">
+                                    {errors.color}
+                                </div>
+                            )}
+                        </div>
                         {/* daily */}
                         <div className="mb-3">
                             <Label>Daily</Label>
@@ -443,10 +427,35 @@ export default function VehicleForm({ vehicle }: VehicleFormProps) {
                                 </div>
                             )}
                         </div>
+                        {/*bond_amount*/}
+                        <div className="mb-3">
+                            <Label>Bond amount</Label>
+                            <Input
+                                type="number"
+                                value={data.bond_amount}
+                                className="mt-1"
+                                onChange={(e) =>
+                                    setData(
+                                        'bond_amount',
+                                        parseInt(e.target.value),
+                                    )
+                                }
+                            />
+                            {errors.bond_amount && (
+                                <div className="text-sm text-red-500">
+                                    {errors.bond_amount}
+                                </div>
+                            )}
+                        </div>
                     </div>
 
                     <div className="flex justify-end">
-                        <Button size={'sm'} type="submit" disabled={processing}>
+                        <Button
+                            size={'sm'}
+                            type="button"
+                            onClick={handleSubmit}
+                            disabled={processing}
+                        >
                             {processing && (
                                 <LoaderCircle className="h-4 w-4 animate-spin" />
                             )}

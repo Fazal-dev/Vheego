@@ -1,5 +1,6 @@
 import { InertiaLinkProps } from '@inertiajs/react';
 import { LucideIcon } from 'lucide-react';
+import { PageProps as InertiaPageProps } from '@inertiajs/core';
 
 export interface Auth {
     user: User;
@@ -45,7 +46,7 @@ export interface User {
     [key: string]: unknown; // This allows for additional properties...
 }
 
-export type Vehicle = {
+export type Vehicle_table = {
   id: number;
   model: string;
   brand: string;
@@ -56,7 +57,35 @@ export type Vehicle = {
   daily_rental_price: number;
   status?: string; 
 }
-import { PageProps as InertiaPageProps } from '@inertiajs/core';
+
+interface Vehicle {
+    id:number,
+    model: string;
+    brand: string;
+    transmission: string;
+    fuel_type: string;
+    seats: number;
+    doors: number;
+    color: string;
+    vehicle_type: string;
+    year_of_manufacture: number;
+    registration_date: number;
+    registration_expiry_date: number;
+    daily_rental_price: number;
+    weekly_rental_price: number;
+    monthly_rental_price: number;
+    bond_amount: number;
+    engine_capacity: string;
+    engine_number: string;
+    image_urls: string[];
+    status: string;
+    license_plate: string;
+    image_urls: Array [];
+}
+
+interface VehicleFormProps {
+    vehicle?: Vehicle;
+}
 
 export interface FlashMessages {
   success?: string;

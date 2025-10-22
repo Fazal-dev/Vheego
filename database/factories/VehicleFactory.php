@@ -20,7 +20,7 @@ class VehicleFactory extends Factory
         $brands = ['Toyota', 'Honda', 'Nissan', 'Suzuki', 'Hyundai', 'Kia', 'Ford', 'BMW', 'Audi', 'Mercedes'];
         $transmissions = ['Automatic', 'Manual'];
         $fuelTypes = ['Petrol', 'Diesel', 'Hybrid', 'Electric'];
-        $vehicleTypes = ['Car', 'Van', 'SUV', 'Truck', 'Motorbike'];
+        $vehicleTypes = ['Car', 'Van', 'SUV', 'Motorbike', 'ThreeWheeler'];
         $status = ['Active', 'Inactive'];
 
         return [
@@ -41,6 +41,7 @@ class VehicleFactory extends Factory
             'daily_rental_price' => $this->faker->randomFloat(2, 50, 500),
             'weekly_rental_price' => $this->faker->randomFloat(2, 300, 2500),
             'monthly_rental_price' => $this->faker->randomFloat(2, 1000, 9000),
+            'bond_amount' => $this->faker->randomFloat(2, 1000, 9000),
             'engine_capacity' => $this->faker->numberBetween(800, 4000),
             'engine_number' => strtoupper($this->faker->bothify('ENG#######')),
             'image_urls' => json_encode([$this->faker->imageUrl(800, 600, 'car', true)]),

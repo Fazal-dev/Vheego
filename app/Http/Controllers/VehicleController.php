@@ -14,7 +14,7 @@ class VehicleController extends Controller
      */
     public function index()
     {
-        $vehicles = Vehicle::where('owner_id', Auth::id())->get();
+        $vehicles = Vehicle::where('owner_id', Auth::id())->orderByDesc('id')->get();
 
         return Inertia::render('Vehicle/vehicleList', [
             'vehicles' => $vehicles,
@@ -51,11 +51,13 @@ class VehicleController extends Controller
             'daily_rental_price' => 'required|numeric|min:0',
             'weekly_rental_price' => 'required|numeric|min:0',
             'monthly_rental_price' => 'required|numeric|min:0',
-            'engine_capacity' => 'required|integer|min:50|max:10000',
+            'bond_amount' => 'required|numeric|min:0',
+            'engine_capacity' => 'required|string',
             'engine_number' => 'required|string|max:100',
         ]);
 
         $validated['owner_id'] = Auth::id();
+        $validated['image_urls'] = "";
 
         Vehicle::create($validated);
 
@@ -73,9 +75,11 @@ class VehicleController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(string $id)
+    public function edit($id)
     {
-        //
+        $vehicle = Vehicle::findOrFail($id);
+
+        return Inertia::render('Vehicle/vehicleEdit', ['vehicle' => $vehicle]);
     }
 
     /**
@@ -83,7 +87,33 @@ class VehicleController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        $validated = $request->validate([
+            'model' => 'required|string|max:255',
+            'brand' => 'required|string|max:255',
+            'transmission' => 'required|string|max:50',
+            'fuel_type' => 'required|string|max:50',
+            'license_plate' => 'required|string|max:50|unique:vehicles,license_plate,' . $id,
+            'color' => 'required|string|max:50',
+            'doors' => 'required|integer|min:1|max:10',
+            'seats' => 'required|integer|min:1|max:20',
+            'vehicle_type' => 'required|string|max:50',
+            'year_of_manufacture' => 'required|integer|min:1900|max:' . date('Y'),
+            'registration_date' => 'required|date',
+            'registration_expiry_date' => 'required|date|after:registration_date',
+            'daily_rental_price' => 'required|numeric|min:0',
+            'weekly_rental_price' => 'required|numeric|min:0',
+            'monthly_rental_price' => 'required|numeric|min:0',
+            'bond_amount' => 'required|numeric|min:0',
+            'engine_capacity' => 'required|string',
+            'engine_number' => 'required|string|max:100',
+        ]);
+
+        $validated['owner_id'] = Auth::id();
+        $validated['image_urls'] = "";
+
+        Vehicle::where('id', $id)->update($validated);
+
+        return to_route('owner.vehicles.index')->withSuccess('Vehicle Updated successfully.');
     }
 
     /**

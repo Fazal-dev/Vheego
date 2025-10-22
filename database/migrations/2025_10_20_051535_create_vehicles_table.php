@@ -29,7 +29,8 @@ return new class extends Migration
             $table->decimal('daily_rental_price', 8, 2);
             $table->decimal('weekly_rental_price', 8, 2);
             $table->decimal('monthly_rental_price', 8, 2);
-            $table->integer('engine_capacity');
+            $table->decimal('bond_amount', 8, 2);
+            $table->string('engine_capacity');
             $table->string('engine_number');
             $table->text('image_urls');
             $table->string('current_status')->default('available');
