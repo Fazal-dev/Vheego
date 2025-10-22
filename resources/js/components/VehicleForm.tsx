@@ -13,10 +13,20 @@ import { store, update } from '@/routes/owner/vehicles';
 import { VehicleFormProps } from '@/types';
 import { useForm } from '@inertiajs/react';
 import { LoaderCircle } from 'lucide-react';
+import { useState } from 'react';
+import { Cropper, CropperRef } from 'react-advanced-cropper';
+import 'react-advanced-cropper/dist/style.css';
 import { Label } from './ui/label';
 
 export default function VehicleForm({ vehicle }: VehicleFormProps) {
     const isEdit = !!vehicle;
+    const [image, setImage] = useState(
+        'https://images.unsplash.com/photo-1599140849279-1014532882fe?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1300&q=80',
+    );
+
+    const onChange = (cropper: CropperRef) => {
+        console.log(cropper.getCoordinates(), cropper.getCanvas());
+    };
 
     const { data, setData, post, put, processing, errors } = useForm({
         id: vehicle?.id || 0,
@@ -51,7 +61,10 @@ export default function VehicleForm({ vehicle }: VehicleFormProps) {
             post(store().url);
         }
     };
-
+    const boxStyle = {
+        height: '600px',
+        background: '#DDD',
+    };
     return (
         <form className="mt-8">
             <Card className="p-2">
@@ -447,6 +460,14 @@ export default function VehicleForm({ vehicle }: VehicleFormProps) {
                                 </div>
                             )}
                         </div>
+                    </div>
+
+                    <div style={boxStyle} className="h-100 w-100">
+                        <Cropper
+                            src={image}
+                            onChange={onChange}
+                            className={'cropper'}
+                        />
                     </div>
 
                     <div className="flex justify-end">
