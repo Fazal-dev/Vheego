@@ -14,19 +14,14 @@ import { VehicleFormProps } from '@/types';
 import { useForm } from '@inertiajs/react';
 import { LoaderCircle } from 'lucide-react';
 import { useState } from 'react';
-import { Cropper, CropperRef } from 'react-advanced-cropper';
 import 'react-advanced-cropper/dist/style.css';
+import { ImageCropper } from './imageCropper';
 import { Label } from './ui/label';
 
 export default function VehicleForm({ vehicle }: VehicleFormProps) {
     const isEdit = !!vehicle;
-    const [image, setImage] = useState(
-        'https://images.unsplash.com/photo-1599140849279-1014532882fe?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1300&q=80',
-    );
 
-    const onChange = (cropper: CropperRef) => {
-        console.log(cropper.getCoordinates(), cropper.getCanvas());
-    };
+    const [croppedImage, setCroppedImage] = useState<string | null>(null);
 
     const { data, setData, post, put, processing, errors } = useForm({
         id: vehicle?.id || 0,
@@ -53,6 +48,18 @@ export default function VehicleForm({ vehicle }: VehicleFormProps) {
         image_urls: vehicle?.image_urls ? [...vehicle.image_urls] : [],
     });
 
+    const [croppedImages, setCroppedImages] = useState<Record<string, string>>(
+        {},
+    );
+
+    const handleCropChange = (key: string, cropped: string) => {
+        setCroppedImages((prev) => ({ ...prev, [key]: cropped }));
+    };
+
+    const save = () => {
+        console.log(croppedImage);
+    };
+
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
         if (isEdit) {
@@ -61,10 +68,7 @@ export default function VehicleForm({ vehicle }: VehicleFormProps) {
             post(store().url);
         }
     };
-    const boxStyle = {
-        height: '600px',
-        background: '#DDD',
-    };
+
     return (
         <form className="mt-8">
             <Card className="p-2">
@@ -462,12 +466,17 @@ export default function VehicleForm({ vehicle }: VehicleFormProps) {
                         </div>
                     </div>
 
-                    <div style={boxStyle} className="h-100 w-100">
-                        <Cropper
-                            src={image}
-                            onChange={onChange}
-                            className={'cropper'}
+                    <div className="h-80 w-100">
+                        <ImageCropper
+                            label="Front Image"
+                            imageKey="front_image"
+                            aspectRatio={1}
+                            onCropChange={handleCropChange}
                         />
+
+                        <button type="button" onClick={save}>
+                            save
+                        </button>
                     </div>
 
                     <div className="flex justify-end">
