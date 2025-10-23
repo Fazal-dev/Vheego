@@ -33,6 +33,7 @@ return new class extends Migration
             $table->string('engine_capacity');
             $table->string('engine_number');
             $table->text('image_urls');
+            $table->string('upload_folder')->default('uniiq');
             $table->string('current_status')->default('available');
             $table->string('status')->default('Active');
             $table->timestamps();

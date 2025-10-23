@@ -79,7 +79,8 @@ interface Vehicle {
     engine_number: string;
     status: string;
     license_plate: string;
-   image_urls:object;
+    image_urls: object;
+     old_images?: Record<string, string>;
 };
 
 interface VehicleFormProps {

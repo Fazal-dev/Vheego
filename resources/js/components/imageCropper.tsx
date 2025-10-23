@@ -57,11 +57,7 @@ export const ImageCropper: React.FC<ImageCropperProps> = ({
 
         canvas.toBlob((blob) => {
             if (blob) {
-                // Create object URL for preview
-                // const previewUrl = URL.createObjectURL(blob);
-                // setPreview(previewUrl);
                 onCropChange(imageKey, blob);
-
                 setMode('final');
             }
         }, 'image/png');

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Vehicle;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
 
 class VehicleController extends Controller
@@ -61,15 +62,18 @@ class VehicleController extends Controller
 
         $imagePaths = [];
 
+        $uniqueFolder = uniqid();
+
+        // Store images inside that unique folder
         if ($request->hasFile('image_urls')) {
-            // dd('test');
             foreach ($request->file('image_urls') as $key => $file) {
-                $path = $file->store('vehicles', 'public');
-                $imagePaths[$key] = asset('storage/' . $path);
+                $path = $file->store("vehicles/{$uniqueFolder}", 'public');
+                $imagePaths[$key] = Storage::url($path);
             }
         }
 
         $validated['image_urls'] = json_encode($imagePaths);
+        $validated['upload_folder'] = $uniqueFolder;
 
         $vehicle = Vehicle::create($validated);
 
@@ -90,6 +94,8 @@ class VehicleController extends Controller
     public function edit($id)
     {
         $vehicle = Vehicle::findOrFail($id);
+
+        $vehicle->old_images = json_decode($vehicle->image_urls, true) ?? [];
 
         return Inertia::render('Vehicle/vehicleEdit', ['vehicle' => $vehicle]);
     }
@@ -118,14 +124,43 @@ class VehicleController extends Controller
             'bond_amount' => 'required|numeric|min:0',
             'engine_capacity' => 'required|string',
             'engine_number' => 'required|string|max:100',
+            'image_urls.*' => 'nullable|file|mimes:jpg,jpeg,png,webp|max:2048',
         ]);
 
         $validated['owner_id'] = Auth::id();
-        $validated['image_urls'] = "";
 
-        Vehicle::where('id', $id)->update($validated);
+        $vehicle = Vehicle::findOrFail($id);
 
-        return to_route('owner.vehicles.index')->withSuccess('Vehicle Updated successfully.');
+        $validated['owner_id'] = Auth::id();
+
+        // Decode existing image URLs from DB
+        $existingImages = json_decode($vehicle->image_urls ?? '{}', true) ?? [];
+        $newImages = [];
+
+        if ($request->hasFile('image_urls')) {
+            dd("test");
+            foreach ($request->file('image_urls') as $key => $file) {
+
+                // Delete old file if exists (optional)
+                if (!empty($existingImages[$key])) {
+                    $oldPath = $existingImages[$key];
+                    Storage::disk('public')->delete($oldPath);
+                }
+
+                // Store new file
+                $path = $file->store("vehicles/" . $vehicle->upload_folder, 'public');
+                $newImages[$key] =  Storage::url($path);
+            }
+        }
+
+        // Merge existing + new (new replaces old where keys match)
+        $mergedImages = array_merge($existingImages, $newImages);
+
+        $validated['image_urls'] = json_encode($mergedImages);
+
+        $vehicle->update($validated);
+
+        return to_route('owner.vehicles.index')->withSuccess('Vehicle updated successfully.');
     }
 
     /**

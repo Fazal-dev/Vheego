@@ -45,28 +45,34 @@ export default function VehicleForm({ vehicle }: VehicleFormProps) {
         engine_number: vehicle?.engine_number || 'engnummm',
         status: vehicle?.status || 'available',
         license_plate: vehicle?.license_plate || 'ABR-69696',
-        image_urls: vehicle?.image_urls || {},
+        image_urls: {},
     });
 
     const [croppedImages, setCroppedImages] = useState<Record<string, Blob>>(
         {},
     );
-
     const handleCropChange = (key: string, cropped: Blob) => {
         setCroppedImages((prev) => ({ ...prev, [key]: cropped }));
     };
 
     const save = () => {
-        console.log(croppedImages);
-    };
-
-    const handleSubmit = (e: React.FormEvent) => {
-        e.preventDefault();
         Object.entries(croppedImages).forEach(([key, blob]) => {
             if (blob instanceof Blob) {
                 if (blob instanceof Blob) {
                     setData(`image_urls.${key}` as any, blob);
                 }
+            }
+        });
+
+        console.log(data);
+    };
+
+    const handleSubmit = (e: React.FormEvent) => {
+        e.preventDefault();
+
+        Object.entries(croppedImages).forEach(([key, blob]) => {
+            if (blob instanceof Blob) {
+                setData(`image_urls.${key}` as any, blob);
             }
         });
 
@@ -522,12 +528,13 @@ export default function VehicleForm({ vehicle }: VehicleFormProps) {
                             imageKey="front_image"
                             aspectRatio={4 / 3}
                             onCropChange={handleCropChange}
+                            value={vehicle?.old_images?.front_image || ''}
                         />
                         <ImageCropper
                             label="Left Image"
                             imageKey="left_image"
                             aspectRatio={16 / 9}
-                            value=""
+                            value={vehicle?.old_images?.left_image || ''}
                             onCropChange={handleCropChange}
                         />
 
@@ -536,7 +543,7 @@ export default function VehicleForm({ vehicle }: VehicleFormProps) {
                             imageKey="back_image"
                             aspectRatio={4 / 3}
                             onCropChange={handleCropChange}
-                            value=""
+                            value={vehicle?.old_images?.back_image || ''}
                         />
 
                         <ImageCropper
@@ -544,6 +551,7 @@ export default function VehicleForm({ vehicle }: VehicleFormProps) {
                             imageKey="right_image"
                             aspectRatio={16 / 9}
                             onCropChange={handleCropChange}
+                            value={vehicle?.old_images?.right_image || ''}
                         />
 
                         <ImageCropper
@@ -551,12 +559,14 @@ export default function VehicleForm({ vehicle }: VehicleFormProps) {
                             imageKey="dashboard_image"
                             aspectRatio={16 / 9}
                             onCropChange={handleCropChange}
+                            value={vehicle?.old_images?.dashboard_image || ''}
                         />
                         <ImageCropper
                             label="Seat Image"
                             imageKey="seat_image"
                             aspectRatio={16 / 9}
                             onCropChange={handleCropChange}
+                            value={vehicle?.old_images?.seat_image || ''}
                         />
 
                         <button type="button" onClick={save}>
