@@ -30,6 +30,7 @@ class Vehicle extends Model
         'engine_capacity',
         'engine_number',
         'image_urls',
+        'bond_amount'
     ];
 
     public function owner()

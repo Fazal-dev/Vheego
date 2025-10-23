@@ -54,13 +54,24 @@ class VehicleController extends Controller
             'bond_amount' => 'required|numeric|min:0',
             'engine_capacity' => 'required|string',
             'engine_number' => 'required|string|max:100',
+            'image_urls.*' => 'nullable|file|mimes:jpg,jpeg,png,webp|max:2048',
         ]);
 
         $validated['owner_id'] = Auth::id();
 
-        $validated['image_urls'] = json_encode($request->input('image_urls'));
+        $imagePaths = [];
 
-        Vehicle::create($validated);
+        if ($request->hasFile('image_urls')) {
+            // dd('test');
+            foreach ($request->file('image_urls') as $key => $file) {
+                $path = $file->store('vehicles', 'public');
+                $imagePaths[$key] = asset('storage/' . $path);
+            }
+        }
+
+        $validated['image_urls'] = json_encode($imagePaths);
+
+        $vehicle = Vehicle::create($validated);
 
         return to_route('owner.vehicles.index')->withSuccess('Vehicle created successfully.');
     }

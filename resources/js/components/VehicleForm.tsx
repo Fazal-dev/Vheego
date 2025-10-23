@@ -13,7 +13,7 @@ import { ImageCropper } from '@/components/imageCropper';
 import { Separator } from '@/components/ui/separator';
 import { store, update } from '@/routes/owner/vehicles';
 import { VehicleFormProps } from '@/types';
-import { useForm } from '@inertiajs/react';
+import { router, useForm } from '@inertiajs/react';
 import { LoaderCircle } from 'lucide-react';
 import { useState } from 'react';
 import 'react-advanced-cropper/dist/style.css';
@@ -22,52 +22,93 @@ import { Label } from './ui/label';
 export default function VehicleForm({ vehicle }: VehicleFormProps) {
     const isEdit = !!vehicle;
 
-    const { data, setData, post, put, processing, errors } = useForm({
-        id: vehicle?.id || 0,
-        model: vehicle?.model || '',
-        brand: vehicle?.brand || '',
-        transmission: vehicle?.transmission || '',
-        fuel_type: vehicle?.fuel_type || '',
-        seats: vehicle?.seats || 4,
-        doors: vehicle?.doors || 4,
-        color: vehicle?.color || '',
-        vehicle_type: vehicle?.vehicle_type || '',
-        year_of_manufacture:
-            vehicle?.year_of_manufacture || new Date().getFullYear(),
-        registration_date: vehicle?.registration_date || '',
-        registration_expiry_date: vehicle?.registration_expiry_date || '',
-        daily_rental_price: vehicle?.daily_rental_price || 0,
-        weekly_rental_price: vehicle?.weekly_rental_price || 0,
-        monthly_rental_price: vehicle?.monthly_rental_price || 0,
-        engine_capacity: vehicle?.engine_capacity || '',
-        bond_amount: vehicle?.bond_amount || 0,
-        engine_number: vehicle?.engine_number || '',
-        status: vehicle?.status || 'available',
-        license_plate: vehicle?.license_plate || '',
-        image_urls: vehicle?.image_urls ? [...vehicle.image_urls] : [],
-    });
+    const { data, setData, post, put, processing, errors, transform } = useForm(
+        {
+            id: vehicle?.id || 0,
+            model: vehicle?.model || 'm4545',
+            brand: vehicle?.brand || 'Bmw',
+            transmission: vehicle?.transmission || 'Autometic',
+            fuel_type: vehicle?.fuel_type || 'Petrol',
+            seats: vehicle?.seats || 4,
+            doors: vehicle?.doors || 4,
+            color: vehicle?.color || 'Black',
+            vehicle_type: vehicle?.vehicle_type || 'Car',
+            year_of_manufacture:
+                vehicle?.year_of_manufacture || new Date().getFullYear(),
+            registration_date: vehicle?.registration_date || '2024-10-10',
+            registration_expiry_date:
+                vehicle?.registration_expiry_date || '2026-10-10',
+            daily_rental_price: vehicle?.daily_rental_price || 0,
+            weekly_rental_price: vehicle?.weekly_rental_price || 0,
+            monthly_rental_price: vehicle?.monthly_rental_price || 0,
+            engine_capacity: vehicle?.engine_capacity || '400cc',
+            bond_amount: vehicle?.bond_amount || 1000,
+            engine_number: vehicle?.engine_number || 'engnummm',
+            status: vehicle?.status || 'available',
+            license_plate: vehicle?.license_plate || 'ABR-69696',
+            image_urls: vehicle?.image_urls,
+        },
+    );
 
-    const [croppedImages, setCroppedImages] = useState<Record<string, string>>(
+    const [croppedImages, setCroppedImages] = useState<Record<string, Blob>>(
         {},
     );
 
-    const handleCropChange = (key: string, cropped: string) => {
+    const handleCropChange = (key: string, cropped: Blob) => {
         setCroppedImages((prev) => ({ ...prev, [key]: cropped }));
     };
 
     const save = () => {
         console.log(croppedImages);
+        const formData = new FormData();
+
+        // Append all form fields (e.g., model, brand, etc.)
+        Object.entries(data).forEach(([key, value]) => {
+            if (value !== null && value !== undefined) {
+                formData.append(key, value as any);
+            }
+        });
+
+        const dataObj: object = {};
+
+        // Object.entries(croppedImages).forEach(([key, blob], i) => {
+        //     if (blob instanceof Blob)
+        //         // formData.append(`image_urls[${key}]`, blob, `${key}.png`);
+        //         dataObj[key] = blob;
+        // });
+
+        transform((data) => ({
+            ...data,
+            image_url: croppedImages,
+        }));
+
+        console.log(data);
     };
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
+        const formData = new FormData();
+
+        // Append all form fields (e.g., model, brand, etc.)
+        Object.entries(data).forEach(([key, value]) => {
+            if (value !== null && value !== undefined) {
+                formData.append(key, value as any);
+            }
+        });
+
+        Object.entries(croppedImages).forEach(([key, blob], i) => {
+            if (blob instanceof Blob)
+                formData.append(`image_urls[${key}]`, blob, `${key}.png`);
+        });
+
         if (isEdit) {
-            setData('image_urls', Object.values(croppedImages));
-            put(update({ vehicle: data.id }).url);
+            router.put(update({ vehicle: data.id }).url, formData, {
+                forceFormData: true,
+            });
         } else {
-            const imagesArray = Object.values(croppedImages);
-            setData('image_urls', imagesArray);
-            post(store().url);
+            router.post(store().url, formData, {
+                forceFormData: true,
+            });
         }
     };
 
@@ -521,6 +562,7 @@ export default function VehicleForm({ vehicle }: VehicleFormProps) {
                             label="Left Image"
                             imageKey="left_image"
                             aspectRatio={16 / 9}
+                            value=""
                             onCropChange={handleCropChange}
                         />
 
@@ -529,6 +571,7 @@ export default function VehicleForm({ vehicle }: VehicleFormProps) {
                             imageKey="back_image"
                             aspectRatio={4 / 3}
                             onCropChange={handleCropChange}
+                            value=""
                         />
 
                         <ImageCropper

@@ -9,7 +9,7 @@ interface ImageCropperProps {
     label: string;
     imageKey: string;
     aspectRatio?: number | undefined;
-    onCropChange: (key: string, cropped: string) => void;
+    onCropChange: (key: string, cropped: Blob) => void;
     value?: string;
 }
 
@@ -60,7 +60,7 @@ export const ImageCropper: React.FC<ImageCropperProps> = ({
                 // Create object URL for preview
                 // const previewUrl = URL.createObjectURL(blob);
                 // setPreview(previewUrl);
-                onCropChange(imageKey, blob as unknown as string);
+                onCropChange(imageKey, blob);
 
                 setMode('final');
             }

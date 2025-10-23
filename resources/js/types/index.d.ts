@@ -77,11 +77,9 @@ interface Vehicle {
     bond_amount: number;
     engine_capacity: string;
     engine_number: string;
-    image_urls: string[];
     status: string;
     license_plate: string;
-   image_urls: { [key: string]: object };
-   images: { [key: string]: object };
+   image_urls:object;
 };
 
 interface VehicleFormProps {
