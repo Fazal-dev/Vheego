@@ -58,21 +58,16 @@ export const ImageCropper: React.FC<ImageCropperProps> = ({
         canvas.toBlob((blob) => {
             if (blob) {
                 // Create object URL for preview
-                const previewUrl = URL.createObjectURL(blob);
-                setPreview(previewUrl);
-
-                // Convert blob to a base64 string if your onCropChange expects a string,
-                // or modify onCropChange to accept Blob directly for upload.
-                // Example of sending blob:
-                onCropChange(imageKey, blob as unknown as string); // cast if necessary, better to update onCropChange type
+                // const previewUrl = URL.createObjectURL(blob);
+                // setPreview(previewUrl);
+                onCropChange(imageKey, blob as unknown as string);
 
                 setMode('final');
             }
         }, 'image/png');
 
-        // setPreview(cropped);
-        // onCropChange(imageKey, cropped);
-        // setMode('final');
+        setPreview(cropped);
+        setMode('final');
     };
 
     const handleCancel = () => {
@@ -91,7 +86,7 @@ export const ImageCropper: React.FC<ImageCropperProps> = ({
             : undefined;
 
     return (
-        <div className="flex flex-col gap-2 rounded-md border p-2 text-center">
+        <div className="flex flex-col gap-2 rounded-md border border-black p-2 text-center">
             <span className="font-semibold">{label}</span>
 
             {/* Drop area */}
@@ -132,10 +127,16 @@ export const ImageCropper: React.FC<ImageCropperProps> = ({
                         />
                     </div>
                     <div className="flex gap-2">
-                        <Button onClick={handleCancel} variant="destructive">
+                        <Button
+                            size="sm"
+                            onClick={handleCancel}
+                            variant="destructive"
+                        >
                             Cancel
                         </Button>
-                        <Button onClick={handleCrop}>Confirm Crop</Button>
+                        <Button size="sm" onClick={handleCrop}>
+                            Confirm Crop
+                        </Button>
                     </div>
                 </div>
             )}

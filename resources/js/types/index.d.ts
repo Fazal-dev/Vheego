@@ -81,6 +81,7 @@ interface Vehicle {
     status: string;
     license_plate: string;
    image_urls: { [key: string]: object };
+   images: { [key: string]: object };
 };
 
 interface VehicleFormProps {
