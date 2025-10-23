@@ -9,19 +9,18 @@ import {
     SelectValue,
 } from '@/components/ui/select';
 
+import { ImageCropper } from '@/components/imageCropper';
+import { Separator } from '@/components/ui/separator';
 import { store, update } from '@/routes/owner/vehicles';
 import { VehicleFormProps } from '@/types';
 import { useForm } from '@inertiajs/react';
 import { LoaderCircle } from 'lucide-react';
 import { useState } from 'react';
 import 'react-advanced-cropper/dist/style.css';
-import { ImageCropper } from './imageCropper';
 import { Label } from './ui/label';
 
 export default function VehicleForm({ vehicle }: VehicleFormProps) {
     const isEdit = !!vehicle;
-
-    const [croppedImage, setCroppedImage] = useState<string | null>(null);
 
     const { data, setData, post, put, processing, errors } = useForm({
         id: vehicle?.id || 0,
@@ -57,22 +56,25 @@ export default function VehicleForm({ vehicle }: VehicleFormProps) {
     };
 
     const save = () => {
-        console.log(croppedImage);
+        console.log(croppedImages);
     };
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
         if (isEdit) {
+            setData('image_urls', Object.values(croppedImages));
             put(update({ vehicle: data.id }).url);
         } else {
+            const imagesArray = Object.values(croppedImages);
+            setData('image_urls', imagesArray);
             post(store().url);
         }
     };
 
     return (
-        <form className="mt-8">
-            <Card className="p-2">
-                <CardContent className="p-6">
+        <Card className="mt-8 p-2">
+            <CardContent className="p-2 sm:p-6">
+                <form className="">
                     {/* 1st Row Start */}
                     <div className="grid grid-cols-2 gap-4 sm:grid-cols-2 lg:grid-cols-6">
                         {/* model */}
@@ -466,19 +468,95 @@ export default function VehicleForm({ vehicle }: VehicleFormProps) {
                         </div>
                     </div>
 
-                    <div className="h-80 w-100">
+                    {/* images upload quid lines */}
+                    <div className="mt-4 mb-4 rounded-md bg-blue-50 p-4 text-sm text-gray-700">
+                        <h4 className="mb-2 font-semibold text-blue-800">
+                            📸 Vehicle Photo Guidelines
+                        </h4>
+                        <ul className="list-disc space-y-1 pl-5">
+                            <li>
+                                Upload <strong>clear and well-lit</strong>{' '}
+                                images of your vehicle.
+                            </li>
+                            <li>
+                                Include all major angles:{' '}
+                                <strong>Front, Back, Left, Right,</strong> and{' '}
+                                <strong>Interior</strong>.
+                            </li>
+                            <li>
+                                Ensure the entire vehicle is visible — avoid
+                                cutting off parts.
+                            </li>
+                            <li>
+                                Use a <strong>plain background</strong>{' '}
+                                (preferably outdoors in daylight).
+                            </li>
+                            <li>
+                                Make sure the vehicle is{' '}
+                                <strong>clean and undamaged</strong> in all
+                                photos.
+                            </li>
+                            <li>
+                                Interior photo should clearly show the{' '}
+                                <strong>dashboard and seats</strong>.
+                            </li>
+                            <li>
+                                Accepted formats: <strong>JPG, PNG</strong> (max
+                                5 MB per image).
+                            </li>
+                        </ul>
+                    </div>
+
+                    <Separator className="my-6" />
+
+                    {/* vehicle Images upload section */}
+                    <div className="gap-lg-4 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
                         <ImageCropper
                             label="Front Image"
                             imageKey="front_image"
-                            aspectRatio={1}
+                            aspectRatio={4 / 3}
+                            onCropChange={handleCropChange}
+                        />
+                        <ImageCropper
+                            label="Left Image"
+                            imageKey="left_image"
+                            aspectRatio={16 / 9}
+                            onCropChange={handleCropChange}
+                        />
+
+                        <ImageCropper
+                            label="Back Image"
+                            imageKey="back_image"
+                            aspectRatio={4 / 3}
+                            onCropChange={handleCropChange}
+                        />
+
+                        <ImageCropper
+                            label="Right Image"
+                            imageKey="right_image"
+                            aspectRatio={16 / 9}
+                            onCropChange={handleCropChange}
+                        />
+
+                        <ImageCropper
+                            label="Dashboard Image"
+                            imageKey="dashboard_image"
+                            aspectRatio={16 / 9}
+                            onCropChange={handleCropChange}
+                        />
+                        <ImageCropper
+                            label="Seat Image"
+                            imageKey="seat_image"
+                            aspectRatio={16 / 9}
                             onCropChange={handleCropChange}
                         />
 
                         <button type="button" onClick={save}>
-                            save
+                            Save
                         </button>
                     </div>
 
+                    {/* Action button */}
                     <div className="flex justify-end">
                         <Button
                             size={'sm'}
@@ -492,8 +570,8 @@ export default function VehicleForm({ vehicle }: VehicleFormProps) {
                             {isEdit ? 'Update Vehicle' : 'New Vehicle'}
                         </Button>
                     </div>
-                </CardContent>
-            </Card>
-        </form>
+                </form>
+            </CardContent>
+        </Card>
     );
 }

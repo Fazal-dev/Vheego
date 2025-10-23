@@ -57,7 +57,8 @@ class VehicleController extends Controller
         ]);
 
         $validated['owner_id'] = Auth::id();
-        $validated['image_urls'] = "";
+
+        $validated['image_urls'] = json_encode($request->input('image_urls'));
 
         Vehicle::create($validated);
 

@@ -80,8 +80,8 @@ interface Vehicle {
     image_urls: string[];
     status: string;
     license_plate: string;
-    image_urls: Array [];
-}
+   image_urls: { [key: string]: object };
+};
 
 interface VehicleFormProps {
     vehicle?: Vehicle;
