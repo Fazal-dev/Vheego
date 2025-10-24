@@ -1,5 +1,5 @@
 import AppLayout from '@/layouts/app-layout';
-import { create, destroy, edit, index } from '@/routes/owner/vehicles';
+import { create, destroy, edit, index, show } from '@/routes/owner/vehicles';
 import { Vehicle_table, type BreadcrumbItem } from '@/types';
 import { Head } from '@inertiajs/react';
 import { ColumnDef } from '@tanstack/react-table';
@@ -15,7 +15,6 @@ import {
 } from '@/components/ui/dropdown-menu';
 
 import { Chip } from '@/components/chip';
-
 import { router } from '@inertiajs/react';
 import Swal from 'sweetalert2';
 
@@ -107,7 +106,9 @@ export default function VehicleList({
                             </Button>
                         </DropdownMenuTrigger>
                         <DropdownMenuContent align="end">
-                            <DropdownMenuItem>
+                            <DropdownMenuItem
+                                onClick={() => router.get(show(vehicle.id))}
+                            >
                                 <Eye /> View
                             </DropdownMenuItem>
                             <DropdownMenuItem

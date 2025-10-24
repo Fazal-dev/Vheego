@@ -17,6 +17,7 @@ import { useForm } from '@inertiajs/react';
 import { LoaderCircle } from 'lucide-react';
 import { useState } from 'react';
 import 'react-advanced-cropper/dist/style.css';
+import Swal from 'sweetalert2';
 import { Label } from './ui/label';
 
 export default function VehicleForm({ vehicle }: VehicleFormProps) {
@@ -26,7 +27,7 @@ export default function VehicleForm({ vehicle }: VehicleFormProps) {
         id: vehicle?.id || 0,
         model: vehicle?.model || 'm4545',
         brand: vehicle?.brand || 'Bmw',
-        transmission: vehicle?.transmission || 'Autometic',
+        transmission: vehicle?.transmission || 'Automatic',
         fuel_type: vehicle?.fuel_type || 'Petrol',
         seats: vehicle?.seats || 4,
         doors: vehicle?.doors || 4,
@@ -46,25 +47,15 @@ export default function VehicleForm({ vehicle }: VehicleFormProps) {
         status: vehicle?.status || 'available',
         license_plate: vehicle?.license_plate || 'ABR-69696',
         image_urls: {},
+        _method: 'post',
     });
 
     const [croppedImages, setCroppedImages] = useState<Record<string, Blob>>(
         {},
     );
+
     const handleCropChange = (key: string, cropped: Blob) => {
         setCroppedImages((prev) => ({ ...prev, [key]: cropped }));
-    };
-
-    const save = () => {
-        Object.entries(croppedImages).forEach(([key, blob]) => {
-            if (blob instanceof Blob) {
-                if (blob instanceof Blob) {
-                    setData(`image_urls.${key}` as any, blob);
-                }
-            }
-        });
-
-        console.log(data);
     };
 
     const handleSubmit = (e: React.FormEvent) => {
@@ -77,16 +68,40 @@ export default function VehicleForm({ vehicle }: VehicleFormProps) {
         });
 
         if (isEdit) {
-            put(update({ vehicle: data.id }).url);
+            put(update({ vehicle: data.id }).url, { forceFormData: true });
         } else {
-            post(store().url);
+            const images = [
+                'left_image',
+                'front_image',
+                'back_image',
+                'right_image',
+                'dashboard_image',
+                'seat_image',
+            ];
+
+            for (const key of images) {
+                if (
+                    !(key in croppedImages) ||
+                    !(croppedImages[key] instanceof Blob)
+                ) {
+                    Swal.fire({
+                        icon: 'warning',
+                        title: 'Image missing',
+                        text: `Please select and crop the ${key.replace('_', ' ')} first.`,
+                        confirmButtonText: 'OK',
+                    });
+                    return;
+                }
+            }
+
+            post(store().url, { forceFormData: true });
         }
     };
 
     return (
         <Card className="mt-8 p-2">
             <CardContent className="p-2 sm:p-6">
-                <form className="">
+                <form className="" encType="multipart/form-data">
                     {/* 1st Row Start */}
                     <div className="grid grid-cols-2 gap-4 sm:grid-cols-2 lg:grid-cols-6">
                         {/* model */}
@@ -522,7 +537,7 @@ export default function VehicleForm({ vehicle }: VehicleFormProps) {
                     <Separator className="my-6" />
 
                     {/* vehicle Images upload section */}
-                    <div className="gap-lg-4 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                    <div className="gap-lg-4 mb-4 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
                         <ImageCropper
                             label="Front Image"
                             imageKey="front_image"
@@ -530,6 +545,7 @@ export default function VehicleForm({ vehicle }: VehicleFormProps) {
                             onCropChange={handleCropChange}
                             value={vehicle?.old_images?.front_image || ''}
                         />
+
                         <ImageCropper
                             label="Left Image"
                             imageKey="left_image"
@@ -561,6 +577,7 @@ export default function VehicleForm({ vehicle }: VehicleFormProps) {
                             onCropChange={handleCropChange}
                             value={vehicle?.old_images?.dashboard_image || ''}
                         />
+
                         <ImageCropper
                             label="Seat Image"
                             imageKey="seat_image"
@@ -568,10 +585,6 @@ export default function VehicleForm({ vehicle }: VehicleFormProps) {
                             onCropChange={handleCropChange}
                             value={vehicle?.old_images?.seat_image || ''}
                         />
-
-                        <button type="button" onClick={save}>
-                            Save
-                        </button>
                     </div>
 
                     {/* Action button */}

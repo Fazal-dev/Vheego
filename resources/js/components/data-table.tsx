@@ -1,5 +1,4 @@
 import {
-    ColumnDef,
     ColumnFiltersState,
     flexRender,
     getCoreRowModel,
@@ -10,6 +9,8 @@ import {
 
 import { Button } from '@/components/ui/button';
 
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 import {
     Table,
     TableBody,
@@ -18,15 +19,8 @@ import {
     TableHeader,
     TableRow,
 } from '@/components/ui/table';
+import { DataTableProps } from '@/types';
 import { useState } from 'react';
-import { Input } from './ui/input';
-import { Label } from './ui/label';
-
-interface DataTableProps<TData, TValue> {
-    columns: ColumnDef<TData, TValue>[];
-    data: TData[];
-    filter_columns: string;
-}
 
 export function DataTable<TData, TValue>({
     columns,
@@ -49,8 +43,9 @@ export function DataTable<TData, TValue>({
     return (
         <>
             <div className="overflow-hidden rounded-md border">
+                {/* filter section */}
                 <div className="m-3">
-                    <Label className="mb-2">Search</Label>
+                    <Label className="mb-4">Search</Label>
                     <Input
                         placeholder="Search License Plate.."
                         value={
@@ -63,7 +58,7 @@ export function DataTable<TData, TValue>({
                                 .getColumn(filter_columns)
                                 ?.setFilterValue(event.target.value)
                         }
-                        className="max-w-max"
+                        className="mt-1 h-8 max-w-max"
                     />
                 </div>
 
@@ -117,7 +112,7 @@ export function DataTable<TData, TValue>({
                             <TableRow>
                                 <TableCell
                                     colSpan={columns.length}
-                                    className="h-20 text-center"
+                                    className="h-15 text-center"
                                 >
                                     No results.
                                 </TableCell>

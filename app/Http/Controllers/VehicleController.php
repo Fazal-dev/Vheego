@@ -55,7 +55,7 @@ class VehicleController extends Controller
             'bond_amount' => 'required|numeric|min:0',
             'engine_capacity' => 'required|string',
             'engine_number' => 'required|string|max:100',
-            'image_urls.*' => 'nullable|file|mimes:jpg,jpeg,png,webp|max:2048',
+            'image_urls.*' => 'nullable|file|mimes:jpg,jpeg,png,webp',
         ]);
 
         $validated['owner_id'] = Auth::id();
@@ -67,15 +67,20 @@ class VehicleController extends Controller
         // Store images inside that unique folder
         if ($request->hasFile('image_urls')) {
             foreach ($request->file('image_urls') as $key => $file) {
-                $path = $file->store("vehicles/{$uniqueFolder}", 'public');
-                $imagePaths[$key] = Storage::url($path);
+                if ($file->isValid()) {
+                    $extension = $file->getClientOriginalExtension();
+                    $fileName = $key . '_' . time() . '.' . $extension;
+                    $path = $file->storeAs("vehicles/{$uniqueFolder}", $fileName, 'public');
+                    // Generate a full URL
+                    $imagePaths[$key] = asset(Storage::url($path));
+                }
             }
         }
 
         $validated['image_urls'] = json_encode($imagePaths);
         $validated['upload_folder'] = $uniqueFolder;
 
-        $vehicle = Vehicle::create($validated);
+        Vehicle::create($validated);
 
         return to_route('owner.vehicles.index')->withSuccess('Vehicle created successfully.');
     }
@@ -85,7 +90,11 @@ class VehicleController extends Controller
      */
     public function show(string $id)
     {
-        //
+        $vehicle = Vehicle::findOrFail($id);
+
+        $vehicle->old_images = json_decode($vehicle->image_urls, true) ?? [];
+
+        return Inertia::render('Vehicle/vehicleShow', ['vehicle' => $vehicle]);
     }
 
     /**

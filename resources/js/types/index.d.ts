@@ -80,7 +80,8 @@ interface Vehicle {
     status: string;
     license_plate: string;
     image_urls: object;
-     old_images?: Record<string, string>;
+    old_images?: Record<string, string>;
+    _method?:string
 };
 
 interface VehicleFormProps {
@@ -94,4 +95,10 @@ export interface FlashMessages {
 
 export interface PageProps extends InertiaPageProps {
   flash: FlashMessages;
+}
+
+export interface DataTableProps<TData, TValue> {
+    columns: ColumnDef<TData, TValue>[];
+    data: TData[];
+    filter_columns: string;
 }
