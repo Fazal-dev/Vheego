@@ -24,9 +24,18 @@ export default function AuthSplitLayout({
                     href={home()}
                     className="relative z-20 flex items-center text-lg font-medium"
                 >
-                    <AppLogoIcon className="mr-2 size-8 fill-current text-white" />
+                    <AppLogoIcon className="mr-2 size-4 fill-current text-white" />
                     {name}
                 </Link>
+
+                {/* <div className="z-25 p-5">
+                    <img
+                        className="h-ful mt-1 rounded-2xl"
+                        src="/images/login_image.jpg"
+                        alt=""
+                    />
+                </div> */}
+
                 {quote && (
                     <div className="relative z-20 mt-auto">
                         <blockquote className="space-y-2">
