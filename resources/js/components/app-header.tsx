@@ -29,17 +29,18 @@ import {
 import { UserMenuContent } from '@/components/user-menu-content';
 import { useInitials } from '@/hooks/use-initials';
 import { cn } from '@/lib/utils';
-import { dashboard } from '@/routes';
+import customer from '@/routes/customer';
 import { type BreadcrumbItem, type NavItem, type SharedData } from '@/types';
 import { Link, usePage } from '@inertiajs/react';
 import { BookOpen, Folder, LayoutGrid, Menu, Search } from 'lucide-react';
 import AppLogo from './app-logo';
 import AppLogoIcon from './app-logo-icon';
+import { ownerDashboard } from '@/routes/owner';
 
 const mainNavItems: NavItem[] = [
     {
         title: 'Dashboard',
-        href: dashboard(),
+        href: ,
         icon: LayoutGrid,
     },
 ];
@@ -145,7 +146,7 @@ export function AppHeader({ breadcrumbs = [] }: AppHeaderProps) {
                     </div>
 
                     <Link
-                        href={dashboard()}
+                        href={auth.user.role == 'owner' ? ownerDashboard() :customer.customerDashboard()}
                         prefetch
                         className="flex items-center space-x-2"
                     >

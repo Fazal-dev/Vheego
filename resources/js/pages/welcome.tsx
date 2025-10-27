@@ -1,4 +1,6 @@
-import { dashboard, login, register } from '@/routes';
+import { login, register } from '@/routes';
+import customer from '@/routes/customer';
+import { ownerDashboard } from '@/routes/owner';
 import { type SharedData } from '@/types';
 import { Head, Link, usePage } from '@inertiajs/react';
 
@@ -19,7 +21,11 @@ export default function Welcome() {
                     <nav className="flex items-center justify-end gap-4">
                         {auth.user ? (
                             <Link
-                                href={dashboard()}
+                                href={
+                                    auth.user.role == 'owner'
+                                        ? ownerDashboard()
+                                        : customer.customerDashboard()
+                                }
                                 className="inline-block rounded-sm border border-[#19140035] px-5 py-1.5 text-sm leading-normal text-[#1b1b18] hover:border-[#1915014a] dark:border-[#3E3E3A] dark:text-[#EDEDEC] dark:hover:border-[#62605b]"
                             >
                                 Dashboard

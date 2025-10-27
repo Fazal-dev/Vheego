@@ -10,12 +10,12 @@ import {
     SidebarMenuButton,
     SidebarMenuItem,
 } from '@/components/ui/sidebar';
-import { dashboard } from '@/routes';
+import customer from '@/routes/customer';
 import { ownerDashboard } from '@/routes/owner';
 import vehicles from '@/routes/owner/vehicles';
 import { Auth, type NavItem } from '@/types';
 import { Link, usePage } from '@inertiajs/react';
-import { Car, LayoutGrid } from 'lucide-react';
+import { Car, LayoutGrid, Search } from 'lucide-react';
 import AppLogo from './app-logo';
 
 const footerNavItems: NavItem[] = [
@@ -38,7 +38,7 @@ export function AppSidebar() {
     const allNavItems: NavItem[] = [
         {
             title: 'Dashboard',
-            href: dashboard(),
+            href: customer.customerDashboard().url,
             icon: LayoutGrid,
             roles: ['customer'],
         },
@@ -53,6 +53,12 @@ export function AppSidebar() {
             href: vehicles.index().url,
             icon: Car,
             roles: ['owner'],
+        },
+        {
+            title: 'Find a Vehicle',
+            href: vehicles.index().url,
+            icon: Search,
+            roles: ['customer'],
         },
     ];
 
@@ -70,7 +76,7 @@ export function AppSidebar() {
                                 href={
                                     role == 'owner'
                                         ? ownerDashboard()
-                                        : dashboard()
+                                        : customer.customerDashboard()
                                 }
                                 prefetch
                             >

@@ -1,6 +1,8 @@
 <?php
 
+use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\VehicleController;
+use Illuminate\Support\Facades\Redis;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -8,17 +10,11 @@ Route::get('/', function () {
     return Inertia::render('welcome');
 })->name('home');
 
-Route::middleware(['auth', 'role:customer', 'verified'])->group(function () {
-    Route::get('dashboard', function () {
-        return Inertia::render('dashboard');
-    })->name('dashboard');
-});
-
-Route::middleware(['auth', 'role:owner', 'verified'])->group(function () {
-    Route::get('dashboard', function () {
-        return Inertia::render('dashboard');
-    })->name('dashboard');
-});
+Route::middleware(['auth', 'role:customer', 'verified', 'web'])->prefix('customer')
+    ->name('customer.')
+    ->controller(CustomerController::class)->group(function () {
+        Route::get('dashboard', 'getDashboard')->name('customerDashboard');
+    });
 
 Route::middleware(['auth', 'role:owner', 'verified', 'web'])->prefix('owner')
     ->name('owner.')->group(function () {
