@@ -56,7 +56,7 @@ export function AppSidebar() {
         },
         {
             title: 'Find a Vehicle',
-            href: vehicles.index().url,
+            href: customer.findVehicle(),
             icon: Search,
             roles: ['customer'],
         },

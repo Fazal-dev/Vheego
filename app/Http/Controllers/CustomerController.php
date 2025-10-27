@@ -11,11 +11,11 @@ class CustomerController extends Controller
     /**
      * Display All Vehicles For Explore
      */
-    public function getVehicles(Request $request)
+    public function findVehicle(Request $request)
     {
         $vehicles = Vehicle::where('status', 'Available')->orderByDesc('id')->get();
 
-        return Inertia::render('Vehicle/vehicleList', [
+        return Inertia::render('User/vehicleSearch', [
             'vehicles' => $vehicles,
         ]);
     }

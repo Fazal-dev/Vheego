@@ -14,6 +14,7 @@ Route::middleware(['auth', 'role:customer', 'verified', 'web'])->prefix('custome
     ->name('customer.')
     ->controller(CustomerController::class)->group(function () {
         Route::get('dashboard', 'getDashboard')->name('customerDashboard');
+        Route::get('find-vehicle', 'findVehicle')->name('findVehicle');
     });
 
 Route::middleware(['auth', 'role:owner', 'verified', 'web'])->prefix('owner')
