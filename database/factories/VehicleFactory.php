@@ -22,6 +22,7 @@ class VehicleFactory extends Factory
         $fuelTypes = ['Petrol', 'Diesel', 'Hybrid', 'Electric'];
         $vehicleTypes = ['Car', 'Van', 'SUV', 'Motorbike', 'ThreeWheeler'];
         $status = ['Active', 'Inactive'];
+        $pickUpLocation = ['Colombo', 'Kandy', 'Kurunegala', 'Jaffna'];
 
         return [
             'owner_id' => 2,
@@ -44,6 +45,7 @@ class VehicleFactory extends Factory
             'bond_amount' => $this->faker->randomFloat(2, 1000, 9000),
             'engine_capacity' => $this->faker->numberBetween(800, 4000),
             'engine_number' => strtoupper($this->faker->bothify('ENG#######')),
+            'pickup_location' => $this->faker->randomElement($pickUpLocation),
             'image_urls' => json_encode([$this->faker->imageUrl(800, 600, 'car', true)]),
         ];
     }

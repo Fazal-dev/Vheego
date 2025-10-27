@@ -31,7 +31,8 @@ class Vehicle extends Model
         'engine_number',
         'image_urls',
         'bond_amount',
-        'upload_folder'
+        'upload_folder',
+        'pickup_location'
     ];
 
     public function owner()

@@ -32,6 +32,7 @@ return new class extends Migration
             $table->decimal('bond_amount', 8, 2);
             $table->string('engine_capacity');
             $table->string('engine_number');
+            $table->string('pickup_location');
             $table->text('image_urls');
             $table->string('upload_folder')->default('uniiq');
             $table->string('current_status')->default('available');

@@ -55,6 +55,7 @@ class VehicleController extends Controller
             'bond_amount' => 'required|numeric|min:0',
             'engine_capacity' => 'required|string',
             'engine_number' => 'required|string|max:100',
+            'pickup_location' => 'required|string|max:100',
             'image_urls.*' => 'nullable|file|mimes:jpg,jpeg,png,webp',
         ]);
 
@@ -133,6 +134,7 @@ class VehicleController extends Controller
             'bond_amount' => 'required|numeric|min:0',
             'engine_capacity' => 'required|string',
             'engine_number' => 'required|string|max:100',
+            'pickup_location' => 'required|string|max:100',
             'image_urls.*' => 'nullable|file|mimes:jpg,jpeg,png,webp|max:2048',
         ]);
 

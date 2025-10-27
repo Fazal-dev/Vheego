@@ -79,6 +79,7 @@ interface Vehicle {
     engine_number: string;
     status: string;
     license_plate: string;
+    pickup_location: string;
     image_urls: object;
     old_images?: Record<string, string>;
     _method?:string

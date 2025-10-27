@@ -46,6 +46,7 @@ export default function VehicleForm({ vehicle }: VehicleFormProps) {
         engine_number: vehicle?.engine_number || 'engnummm',
         status: vehicle?.status || 'available',
         license_plate: vehicle?.license_plate || 'ABR-69696',
+        pickup_location: vehicle?.pickup_location || 'Colombo',
         image_urls: {},
         _method: 'post',
     });
@@ -490,6 +491,44 @@ export default function VehicleForm({ vehicle }: VehicleFormProps) {
                             {errors.bond_amount && (
                                 <div className="text-sm text-red-500">
                                     {errors.bond_amount}
+                                </div>
+                            )}
+                        </div>
+                        {/* Transmisson */}
+                        <div className="mb-3">
+                            <Label>Pick up Location</Label>
+
+                            <Select
+                                onValueChange={(value) =>
+                                    setData('pickup_location', value)
+                                }
+                                value={data.pickup_location}
+                            >
+                                <SelectTrigger className="w-full">
+                                    <SelectValue placeholder="Select" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    <SelectItem value="Colombo">
+                                        Colombo
+                                    </SelectItem>
+                                    <SelectItem value="Kandy">Kandy</SelectItem>
+                                    <SelectItem value="Kurunagale">
+                                        Kurunagale
+                                    </SelectItem>
+                                    <SelectItem value="Matale">
+                                        Matale
+                                    </SelectItem>
+                                    <SelectItem value="Gampola">
+                                        Gampola
+                                    </SelectItem>
+                                    <SelectItem value="Nuwereliya">
+                                        Nuwereliya
+                                    </SelectItem>
+                                </SelectContent>
+                            </Select>
+                            {errors.pickup_location && (
+                                <div className="text-sm text-red-500">
+                                    {errors.pickup_location}
                                 </div>
                             )}
                         </div>
