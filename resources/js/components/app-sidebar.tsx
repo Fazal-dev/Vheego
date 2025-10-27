@@ -43,7 +43,7 @@ export function AppSidebar() {
             roles: ['customer'],
         },
         {
-            title: 'Owner Dashboard',
+            title: 'Dashboard',
             href: ownerDashboard(),
             icon: LayoutGrid,
             roles: ['owner'],
