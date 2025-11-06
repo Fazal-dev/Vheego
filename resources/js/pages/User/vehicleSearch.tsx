@@ -1,10 +1,3 @@
-import { Button } from '@/components/ui/button';
-import {
-    Card,
-    CardContent,
-    CardFooter,
-    CardHeader,
-} from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import {
     Select,
@@ -13,12 +6,11 @@ import {
     SelectTrigger,
     SelectValue,
 } from '@/components/ui/select';
-import { Separator } from '@/components/ui/separator';
+import VehicleCard from '@/components/VehicleCard';
 import AppLayout from '@/layouts/app-layout';
 import customer from '@/routes/customer';
 import { type BreadcrumbItem } from '@/types';
 import { Head } from '@inertiajs/react';
-import { IndianRupee, MapPin } from 'lucide-react';
 import { useState } from 'react';
 
 const breadcrumbs: BreadcrumbItem[] = [
@@ -39,6 +31,7 @@ const vehicles = [
         location: 'Colombo',
         transmission: 'Automatic',
         fuel_type: 'Petrol',
+        year: 2025,
     },
     {
         id: 2,
@@ -50,6 +43,7 @@ const vehicles = [
         location: 'Kandy',
         transmission: 'Manual',
         fuel_type: 'Diesel',
+        year: 2025,
     },
     {
         id: 3,
@@ -61,6 +55,7 @@ const vehicles = [
         location: 'Kurunegala',
         transmission: 'Automatic',
         fuel_type: 'Petrol',
+        year: 2025,
     },
     {
         id: 4,
@@ -72,6 +67,7 @@ const vehicles = [
         location: 'Kurunegala',
         transmission: 'Automatic',
         fuel_type: 'Petrol',
+        year: 2025,
     },
     {
         id: 5,
@@ -83,6 +79,7 @@ const vehicles = [
         location: 'Kurunegala',
         transmission: 'Automatic',
         fuel_type: 'Petrol',
+        year: 2025,
     },
     {
         id: 6,
@@ -94,6 +91,7 @@ const vehicles = [
         location: 'Kurunegala',
         transmission: 'Automatic',
         fuel_type: 'Petrol',
+        year: 2025,
     },
 ];
 
@@ -220,53 +218,8 @@ export default function vehicleSearch() {
 
                 {/* 🚗 Vehicle Grid */}
                 <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-                    {filteredVehicles.map((vehicle) => (
-                        <Card
-                            key={vehicle.id}
-                            className="overflow-hidden transition-all hover:shadow-lg"
-                        >
-                            <CardHeader className="p-1">
-                                <img
-                                    src={vehicle.image}
-                                    alt={`${vehicle.brand} ${vehicle.model}`}
-                                    className="h-48 w-full object-cover"
-                                />
-                            </CardHeader>
-                            <CardContent className="p-4">
-                                <h2 className="text-lg font-semibold">
-                                    {vehicle.brand} {vehicle.model}
-                                </h2>
-                                <div className="mt-2 flex items-center text-sm text-muted-foreground">
-                                    <MapPin className="mr-1 h-4 w-4" />{' '}
-                                    {vehicle.location}
-                                </div>
-                                <Separator className="my-3" />
-                                <div className="flex items-center justify-between">
-                                    <div className="flex items-center text-lg font-semibold text-primary">
-                                        <IndianRupee className="mr-1 h-4 w-4" />{' '}
-                                        {vehicle.price.toLocaleString()}
-                                        <span className="ml-1 text-xs text-muted-foreground">
-                                            /day
-                                        </span>
-                                    </div>
-                                    <span className="text-sm text-muted-foreground">
-                                        {vehicle.type}
-                                    </span>
-                                </div>
-                            </CardContent>
-                            <CardFooter className="flex justify-between gap-2 border-t p-4">
-                                <Button size="sm" className="flex-1">
-                                    Book Now
-                                </Button>
-                                <Button
-                                    size="sm"
-                                    variant="outline"
-                                    className="flex-1"
-                                >
-                                    View Details
-                                </Button>
-                            </CardFooter>
-                        </Card>
+                    {filteredVehicles.map((vehicle, index) => (
+                        <VehicleCard key={index} vehicle={vehicle} />
                     ))}
                 </div>
             </div>
