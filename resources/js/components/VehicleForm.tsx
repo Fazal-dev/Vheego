@@ -17,7 +17,6 @@ import { useForm } from '@inertiajs/react';
 import { LoaderCircle } from 'lucide-react';
 import { useState } from 'react';
 import 'react-advanced-cropper/dist/style.css';
-import Swal from 'sweetalert2';
 import { Label } from './ui/label';
 
 export default function VehicleForm({ vehicle }: VehicleFormProps) {
@@ -48,7 +47,8 @@ export default function VehicleForm({ vehicle }: VehicleFormProps) {
         license_plate: vehicle?.license_plate || 'ABR-69696',
         pickup_location: vehicle?.pickup_location || 'Colombo',
         image_urls: {},
-        _method: 'post',
+        test: null,
+        _method: isEdit ? 'PUT' : 'POST',
     });
 
     const [croppedImages, setCroppedImages] = useState<Record<string, Blob>>(
@@ -69,31 +69,31 @@ export default function VehicleForm({ vehicle }: VehicleFormProps) {
         });
 
         if (isEdit) {
-            put(update({ vehicle: data.id }).url, { forceFormData: true });
+            post(update({ vehicle: data.id }).url, { forceFormData: true });
         } else {
-            const images = [
-                'left_image',
-                'front_image',
-                'back_image',
-                'right_image',
-                'dashboard_image',
-                'seat_image',
-            ];
+            // const images = [
+            //     'left_image',
+            //     'front_image',
+            //     'back_image',
+            //     'right_image',
+            //     'dashboard_image',
+            //     'seat_image',
+            // ];
 
-            for (const key of images) {
-                if (
-                    !(key in croppedImages) ||
-                    !(croppedImages[key] instanceof Blob)
-                ) {
-                    Swal.fire({
-                        icon: 'warning',
-                        title: 'Image missing',
-                        text: `Please select and crop the ${key.replace('_', ' ')} first.`,
-                        confirmButtonText: 'OK',
-                    });
-                    return;
-                }
-            }
+            // for (const key of images) {
+            //     if (
+            //         !(key in croppedImages) ||
+            //         !(croppedImages[key] instanceof Blob)
+            //     ) {
+            //         Swal.fire({
+            //             icon: 'warning',
+            //             title: 'Image missing',
+            //             text: `Please select and crop the ${key.replace('_', ' ')} first.`,
+            //             confirmButtonText: 'OK',
+            //         });
+            //         return;
+            //     }
+            // }
 
             post(store().url, { forceFormData: true });
         }
@@ -534,7 +534,7 @@ export default function VehicleForm({ vehicle }: VehicleFormProps) {
                         </div>
                     </div>
 
-                    {/* images upload quid lines */}
+                    {/* images upload guide lines */}
                     <div className="mt-4 mb-4 rounded-md bg-blue-50 p-4 text-sm text-gray-700">
                         <h4 className="mb-2 font-semibold text-blue-800">
                             📸 Vehicle Photo Guidelines
@@ -572,6 +572,16 @@ export default function VehicleForm({ vehicle }: VehicleFormProps) {
                             </li>
                         </ul>
                     </div>
+
+                    <input
+                        accept="image/*" // restrict to images
+                        onChange={(e) =>
+                            setData('test', e.target.files[0] || null)
+                        }
+                        type="file"
+                        name="test"
+                        id="test"
+                    />
 
                     <Separator className="my-6" />
 

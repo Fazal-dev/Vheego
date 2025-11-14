@@ -57,6 +57,7 @@ class VehicleController extends Controller
             'engine_number' => 'required|string|max:100',
             'pickup_location' => 'required|string|max:100',
             'image_urls.*' => 'nullable|file|mimes:jpg,jpeg,png,webp',
+            'test.*' => 'file|mimes:jpg,jpeg,png,webp',
         ]);
 
         $validated['owner_id'] = Auth::id();
@@ -78,6 +79,15 @@ class VehicleController extends Controller
             }
         }
 
+        if ($request->hasFile('test')) {
+
+            $file = $request->file('test');
+            $extension = $file->getClientOriginalExtension();
+            $fileName = 'test_' . time() . '.' . $extension;
+            $path = $file->storeAs("vehicles/{$uniqueFolder}", $fileName, 'public');
+        }
+
+        dd($request, $path);
         $validated['image_urls'] = json_encode($imagePaths);
         $validated['upload_folder'] = $uniqueFolder;
 
@@ -135,6 +145,7 @@ class VehicleController extends Controller
             'engine_capacity' => 'required|string',
             'engine_number' => 'required|string|max:100',
             'pickup_location' => 'required|string|max:100',
+            'test.*' => 'file|mimes:jpg,jpeg,png,webp',
             'image_urls.*' => 'nullable|file|mimes:jpg,jpeg,png,webp|max:2048',
         ]);
 
@@ -148,8 +159,18 @@ class VehicleController extends Controller
         $existingImages = json_decode($vehicle->image_urls ?? '{}', true) ?? [];
         $newImages = [];
 
+        if ($request->hasFile('test')) {
+
+            $file = $request->file('test');
+            $extension = $file->getClientOriginalExtension();
+            $fileName = 'test_' . time() . '.' . $extension;
+            $path = $file->storeAs("vehicles/test", $fileName, 'public');
+        }
+
+        dd($request, $path);
+
         if ($request->hasFile('image_urls')) {
-            dd("test");
+
             foreach ($request->file('image_urls') as $key => $file) {
 
                 // Delete old file if exists (optional)
