@@ -35,6 +35,9 @@ class VehicleController extends Controller
      */
     public function store(Request $request)
     {
+        $messages = [
+            'front_image.required' => 'The Front Image is required.',
+        ];
 
         $validated = $request->validate([
             'model' => 'required|string|max:255',
@@ -56,9 +59,8 @@ class VehicleController extends Controller
             'engine_capacity' => 'required|string',
             'engine_number' => 'required|string|max:100',
             'pickup_location' => 'required|string|max:100',
-            'image_urls.*' => 'nullable|file|mimes:jpg,jpeg,png,webp',
-            'test.*' => 'file|mimes:jpg,jpeg,png,webp',
-        ]);
+            'front_image' => 'required|file|mimes:jpg,jpeg,png,webp',
+        ], $messages);
 
         $validated['owner_id'] = Auth::id();
 
@@ -66,28 +68,19 @@ class VehicleController extends Controller
 
         $uniqueFolder = uniqid();
 
-        // Store images inside that unique folder
-        if ($request->hasFile('image_urls')) {
-            foreach ($request->file('image_urls') as $key => $file) {
-                if ($file->isValid()) {
-                    $extension = $file->getClientOriginalExtension();
-                    $fileName = $key . '_' . time() . '.' . $extension;
-                    $path = $file->storeAs("vehicles/{$uniqueFolder}", $fileName, 'public');
-                    // Generate a full URL
-                    $imagePaths[$key] = asset(Storage::url($path));
-                }
-            }
-        }
+        $path = "";
 
         if ($request->hasFile('test')) {
-
             $file = $request->file('test');
             $extension = $file->getClientOriginalExtension();
-            $fileName = 'test_' . time() . '.' . $extension;
+            $originalName = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
+            $fileName =  $originalName . '_' . time() . '.' . $extension;
             $path = $file->storeAs("vehicles/{$uniqueFolder}", $fileName, 'public');
+            $imagePaths[$originalName] = asset(Storage::url($path));
         }
 
-        dd($request, $path);
+        // dd($request, $path);
+
         $validated['image_urls'] = json_encode($imagePaths);
         $validated['upload_folder'] = $uniqueFolder;
 
@@ -158,7 +151,7 @@ class VehicleController extends Controller
         // Decode existing image URLs from DB
         $existingImages = json_decode($vehicle->image_urls ?? '{}', true) ?? [];
         $newImages = [];
-
+        $path = "";
         if ($request->hasFile('test')) {
 
             $file = $request->file('test');

@@ -1,5 +1,5 @@
 import { Button } from '@/components/ui/button';
-import { Card, CardContent } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import {
     Select,
@@ -10,14 +10,13 @@ import {
 } from '@/components/ui/select';
 
 import { ImageCropper } from '@/components/imageCropper';
-import { Separator } from '@/components/ui/separator';
 import { store, update } from '@/routes/owner/vehicles';
 import { VehicleFormProps } from '@/types';
 import { useForm } from '@inertiajs/react';
 import { LoaderCircle } from 'lucide-react';
-import { useState } from 'react';
 import 'react-advanced-cropper/dist/style.css';
 import { Label } from './ui/label';
+import VehicleImageGuide from './VehicleImageGuide';
 
 export default function VehicleForm({ vehicle }: VehicleFormProps) {
     const isEdit = !!vehicle;
@@ -47,62 +46,28 @@ export default function VehicleForm({ vehicle }: VehicleFormProps) {
         license_plate: vehicle?.license_plate || 'ABR-69696',
         pickup_location: vehicle?.pickup_location || 'Colombo',
         image_urls: {},
-        test: null,
+        front_image: null,
         _method: isEdit ? 'PUT' : 'POST',
     });
-
-    const [croppedImages, setCroppedImages] = useState<Record<string, Blob>>(
-        {},
-    );
-
-    const handleCropChange = (key: string, cropped: Blob) => {
-        setCroppedImages((prev) => ({ ...prev, [key]: cropped }));
-    };
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
 
-        Object.entries(croppedImages).forEach(([key, blob]) => {
-            if (blob instanceof Blob) {
-                setData(`image_urls.${key}` as any, blob);
-            }
-        });
-
         if (isEdit) {
             post(update({ vehicle: data.id }).url, { forceFormData: true });
         } else {
-            // const images = [
-            //     'left_image',
-            //     'front_image',
-            //     'back_image',
-            //     'right_image',
-            //     'dashboard_image',
-            //     'seat_image',
-            // ];
-
-            // for (const key of images) {
-            //     if (
-            //         !(key in croppedImages) ||
-            //         !(croppedImages[key] instanceof Blob)
-            //     ) {
-            //         Swal.fire({
-            //             icon: 'warning',
-            //             title: 'Image missing',
-            //             text: `Please select and crop the ${key.replace('_', ' ')} first.`,
-            //             confirmButtonText: 'OK',
-            //         });
-            //         return;
-            //     }
-            // }
-
             post(store().url, { forceFormData: true });
         }
     };
 
     return (
-        <Card className="mt-8 p-2">
-            <CardContent className="p-2 sm:p-6">
-                <form className="" encType="multipart/form-data">
+        <form className="" encType="multipart/form-data">
+            {/* Vehicle Info start */}
+            <Card className="mt-2">
+                <CardHeader>
+                    <CardTitle>Vehicle Info</CardTitle>
+                </CardHeader>
+                <CardContent className="p-2 sm:p-6">
                     {/* 1st Row Start */}
                     <div className="grid grid-cols-2 gap-4 sm:grid-cols-2 lg:grid-cols-6">
                         {/* model */}
@@ -533,125 +498,48 @@ export default function VehicleForm({ vehicle }: VehicleFormProps) {
                             )}
                         </div>
                     </div>
+                </CardContent>
+            </Card>
+            {/* Vehicle Info end */}
 
-                    {/* images upload guide lines */}
-                    <div className="mt-4 mb-4 rounded-md bg-blue-50 p-4 text-sm text-gray-700">
-                        <h4 className="mb-2 font-semibold text-blue-800">
-                            📸 Vehicle Photo Guidelines
-                        </h4>
-                        <ul className="list-disc space-y-1 pl-5">
-                            <li>
-                                Upload <strong>clear and well-lit</strong>{' '}
-                                images of your vehicle.
-                            </li>
-                            <li>
-                                Include all major angles:{' '}
-                                <strong>Front, Back, Left, Right,</strong> and{' '}
-                                <strong>Interior</strong>.
-                            </li>
-                            <li>
-                                Ensure the entire vehicle is visible — avoid
-                                cutting off parts.
-                            </li>
-                            <li>
-                                Use a <strong>plain background</strong>{' '}
-                                (preferably outdoors in daylight).
-                            </li>
-                            <li>
-                                Make sure the vehicle is{' '}
-                                <strong>clean and undamaged</strong> in all
-                                photos.
-                            </li>
-                            <li>
-                                Interior photo should clearly show the{' '}
-                                <strong>dashboard and seats</strong>.
-                            </li>
-                            <li>
-                                Accepted formats: <strong>JPG, PNG</strong> (max
-                                5 MB per image).
-                            </li>
-                        </ul>
-                    </div>
+            {/* image guide */}
+            <VehicleImageGuide />
 
-                    <input
-                        accept="image/*" // restrict to images
-                        onChange={(e) =>
-                            setData('test', e.target.files[0] || null)
-                        }
-                        type="file"
-                        name="test"
-                        id="test"
-                    />
-
-                    <Separator className="my-6" />
-
+            {/* vehicle image upload section start */}
+            <Card>
+                <CardHeader>
+                    <CardTitle>Vehicle Images</CardTitle>
+                </CardHeader>
+                <CardContent className="p-1 sm:p-6">
                     {/* vehicle Images upload section */}
                     <div className="gap-lg-4 mb-4 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
                         <ImageCropper
                             label="Front Image"
-                            imageKey="front_image"
-                            aspectRatio={4 / 3}
-                            onCropChange={handleCropChange}
+                            name="front_image"
                             value={vehicle?.old_images?.front_image || ''}
-                        />
-
-                        <ImageCropper
-                            label="Left Image"
-                            imageKey="left_image"
-                            aspectRatio={16 / 9}
-                            value={vehicle?.old_images?.left_image || ''}
-                            onCropChange={handleCropChange}
-                        />
-
-                        <ImageCropper
-                            label="Back Image"
-                            imageKey="back_image"
-                            aspectRatio={4 / 3}
-                            onCropChange={handleCropChange}
-                            value={vehicle?.old_images?.back_image || ''}
-                        />
-
-                        <ImageCropper
-                            label="Right Image"
-                            imageKey="right_image"
-                            aspectRatio={16 / 9}
-                            onCropChange={handleCropChange}
-                            value={vehicle?.old_images?.right_image || ''}
-                        />
-
-                        <ImageCropper
-                            label="Dashboard Image"
-                            imageKey="dashboard_image"
-                            aspectRatio={16 / 9}
-                            onCropChange={handleCropChange}
-                            value={vehicle?.old_images?.dashboard_image || ''}
-                        />
-
-                        <ImageCropper
-                            label="Seat Image"
-                            imageKey="seat_image"
-                            aspectRatio={16 / 9}
-                            onCropChange={handleCropChange}
-                            value={vehicle?.old_images?.seat_image || ''}
+                            setData={setData}
+                            aspectRatio={1}
+                            error={errors.front_image ? errors.front_image : ''}
                         />
                     </div>
+                </CardContent>
+            </Card>
+            {/* vehicle image upload section end  */}
 
-                    {/* Action button */}
-                    <div className="flex justify-end">
-                        <Button
-                            size={'sm'}
-                            type="button"
-                            onClick={handleSubmit}
-                            disabled={processing}
-                        >
-                            {processing && (
-                                <LoaderCircle className="h-4 w-4 animate-spin" />
-                            )}
-                            {isEdit ? 'Update Vehicle' : 'New Vehicle'}
-                        </Button>
-                    </div>
-                </form>
-            </CardContent>
-        </Card>
+            {/* Action button */}
+            <div className="my-5 flex justify-end">
+                <Button
+                    size={'sm'}
+                    type="button"
+                    onClick={handleSubmit}
+                    disabled={processing}
+                >
+                    {processing && (
+                        <LoaderCircle className="h-4 w-4 animate-spin" />
+                    )}
+                    {isEdit ? 'Update Vehicle' : 'Add Vehicle'}
+                </Button>
+            </div>
+        </form>
     );
 }

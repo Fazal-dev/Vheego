@@ -1,35 +1,39 @@
 import { Button } from '@/components/ui/button';
 import { CloudUpload } from 'lucide-react';
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Cropper, CropperRef } from 'react-advanced-cropper';
 import 'react-advanced-cropper/dist/style.css';
 import { useDropzone } from 'react-dropzone';
 
 interface ImageCropperProps {
     label: string;
-    imageKey: string;
-    aspectRatio?: number | undefined;
-    onCropChange: (key: string, cropped: Blob) => void;
-    value?: string;
+    name: string; // Form field name
+    setData: (field: string, value: any) => void; // Inertia useForm setData
+    value?: string; // URL for edit mode
+    aspectRatio?: number; // default 1:
+    error?: string;
 }
 
 export const ImageCropper: React.FC<ImageCropperProps> = ({
     label,
-    imageKey,
-    aspectRatio = 1,
-    onCropChange,
+    name,
+    setData,
     value,
+    aspectRatio = 1,
+    error,
 }) => {
     const cropperRef = useRef<CropperRef>(null);
-    const [image, setImage] = useState<string | null>(null);
-    const [preview, setPreview] = useState<string | null>(null);
-    const [mode, setMode] = useState<'drop' | 'crop' | 'final'>('drop');
 
-    // Initialize preview if value exists (edit mode)
-    React.useEffect(() => {
+    const [image, setImage] = useState<string | null>(null);
+    const [preview, setPreview] = useState<string | null>(value ?? null);
+    const [mode, setMode] = useState<'drop' | 'crop' | 'final'>(
+        value ? 'final' : 'drop',
+    );
+
+    // Initialize Inertia form on edit mode
+    useEffect(() => {
         if (value) {
-            setPreview(value);
-            setMode('final'); // directly show final preview
+            setData(name, value);
         }
     }, [value]);
 
@@ -53,29 +57,30 @@ export const ImageCropper: React.FC<ImageCropperProps> = ({
         const canvas = cropperRef.current?.getCanvas();
         if (!canvas) return;
 
-        const cropped = canvas.toDataURL('image/png');
+        const croppedDataUrl = canvas.toDataURL('image/png');
+        setPreview(croppedDataUrl);
 
         canvas.toBlob((blob) => {
-            if (blob) {
-                onCropChange(imageKey, blob);
-                setMode('final');
-            }
+            if (!blob) return;
+
+            const file = new File([blob], `${name}.png`, { type: 'image/png' });
+
+            // ✅ Update Inertia form automatically
+            setData(name, file);
+
+            setMode('final');
         }, 'image/png');
-
-        setPreview(cropped);
-        setMode('final');
-    };
-
-    const handleCancel = () => {
-        setImage(null);
-        setMode(preview ? 'final' : 'drop');
     };
 
     const handleChange = () => {
         setImage(null);
-        setPreview(null);
-        setMode('drop');
+        setPreview(value ?? null);
+        setMode(value ? 'final' : 'drop');
+
+        // If reverting to old value, restore Inertia form
+        setData(name, value ?? null);
     };
+
     const aspectRatioProp =
         aspectRatio != null
             ? { minimum: aspectRatio, maximum: aspectRatio }
@@ -89,17 +94,22 @@ export const ImageCropper: React.FC<ImageCropperProps> = ({
             {mode === 'drop' && (
                 <div
                     {...getRootProps()}
-                    className={`flex h-32 w-full cursor-pointer flex-col items-center justify-center rounded-lg border-2 border-dashed transition-colors duration-300 ${isDragActive ? 'border-blue-600 bg-blue-100' : 'border-gray-300 bg-white hover:border-blue-400'} `}
-                    aria-label="File Upload Dropzone"
-                    role="button"
-                    tabIndex={0}
+                    className={`flex h-32 w-full cursor-pointer flex-col items-center justify-center rounded-lg border-2 border-dashed transition-colors duration-300 ${
+                        isDragActive
+                            ? 'border-blue-600 bg-blue-100'
+                            : 'border-gray-300 bg-white hover:border-blue-400'
+                    }`}
                 >
                     <input {...getInputProps()} />
                     <CloudUpload
-                        className={`mb-2 h-10 w-10 ${isDragActive ? 'text-blue-600' : 'text-gray-400'}`}
+                        className={`mb-2 h-10 w-10 ${
+                            isDragActive ? 'text-blue-600' : 'text-gray-400'
+                        }`}
                     />
                     <p
-                        className={`text-center font-medium ${isDragActive ? 'text-blue-600' : 'text-gray-600'}`}
+                        className={`text-center font-medium ${
+                            isDragActive ? 'text-blue-600' : 'text-gray-600'
+                        }`}
                     >
                         {isDragActive
                             ? 'Drop image here...'
@@ -122,15 +132,17 @@ export const ImageCropper: React.FC<ImageCropperProps> = ({
                             className="h-full w-full"
                         />
                     </div>
+
                     <div className="flex gap-2">
                         <Button
                             size="sm"
-                            onClick={handleCancel}
+                            type="button"
                             variant="destructive"
+                            onClick={handleChange}
                         >
                             Cancel
                         </Button>
-                        <Button size="sm" onClick={handleCrop}>
+                        <Button type="button" size="sm" onClick={handleCrop}>
                             Confirm Crop
                         </Button>
                     </div>
@@ -143,12 +155,25 @@ export const ImageCropper: React.FC<ImageCropperProps> = ({
                     <div className="h-64 w-full overflow-hidden rounded border">
                         <img
                             src={preview}
-                            className="h-64 w-full rounded-md object-contain"
+                            className="h-64 w-full object-contain"
                         />
                     </div>
-                    <Button onClick={handleChange} variant="outline" size="sm">
+
+                    <Button
+                        onClick={handleChange}
+                        type="button"
+                        variant="outline"
+                        size="sm"
+                    >
                         Change Image
                     </Button>
+                </div>
+            )}
+            {error && (
+                <div className="text-center">
+                    <p className="mt-1 text-left text-sm text-red-600">
+                        {error}
+                    </p>
                 </div>
             )}
         </div>

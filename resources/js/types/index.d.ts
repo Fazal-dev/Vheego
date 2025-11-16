@@ -82,7 +82,7 @@ interface Vehicle {
     license_plate: string;
     pickup_location: string;
     image_urls: object;
-     test?: File;
+     front_image?: File;
     old_images?: Record<string, string>;
     _method?:string
 };
