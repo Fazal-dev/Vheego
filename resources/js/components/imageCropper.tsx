@@ -170,10 +170,8 @@ export const ImageCropper: React.FC<ImageCropperProps> = ({
                 </div>
             )}
             {error && (
-                <div className="text-center">
-                    <p className="mt-1 text-left text-sm text-red-600">
-                        {error}
-                    </p>
+                <div className="mt-1">
+                    <p className="text-center text-sm text-red-600">{error}</p>
                 </div>
             )}
         </div>

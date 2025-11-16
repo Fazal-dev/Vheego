@@ -37,6 +37,14 @@ class VehicleController extends Controller
     {
         $messages = [
             'front_image.required' => 'The Front Image is required.',
+            'back_image.required' => 'The Back Image is required.',
+            'left_image.required' => 'The Left Image is required.',
+            'right_image.required' => 'The Right Image is required.',
+            'dashboard_image.required' => 'The Dashboard Image is required.',
+            'seat_image.required' => 'The Seat Image is required.',
+            'rc_front_image.required' => 'The RC Front Image is required.',
+            'rc_back_image.required' => 'The RC Back Image is required.',
+            'pickup_location.required' => 'The Pick Up Address is required.',
         ];
 
         $validated = $request->validate([
@@ -60,6 +68,13 @@ class VehicleController extends Controller
             'engine_number' => 'required|string|max:100',
             'pickup_location' => 'required|string|max:100',
             'front_image' => 'required|file|mimes:jpg,jpeg,png,webp',
+            'back_image' => 'required|file|mimes:jpg,jpeg,png,webp',
+            'left_image' => 'required|file|mimes:jpg,jpeg,png,webp',
+            'right_image' => 'required|file|mimes:jpg,jpeg,png,webp',
+            'dashboard_image' => 'required|file|mimes:jpg,jpeg,png,webp',
+            'seat_image' => 'required|file|mimes:jpg,jpeg,png,webp',
+            'rc_front_image' => 'required|file|mimes:jpg,jpeg,png,webp',
+            'rc_back_image' => 'required|file|mimes:jpg,jpeg,png,webp',
         ], $messages);
 
         $validated['owner_id'] = Auth::id();
@@ -70,16 +85,27 @@ class VehicleController extends Controller
 
         $path = "";
 
-        if ($request->hasFile('test')) {
-            $file = $request->file('test');
-            $extension = $file->getClientOriginalExtension();
-            $originalName = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
-            $fileName =  $originalName . '_' . time() . '.' . $extension;
-            $path = $file->storeAs("vehicles/{$uniqueFolder}", $fileName, 'public');
-            $imagePaths[$originalName] = asset(Storage::url($path));
-        }
+        $imageFields = [
+            'front_image',
+            'back_image',
+            'left_image',
+            'right_image',
+            'dashboard_image',
+            'seat_image',
+            'rc_front_image',
+            'rc_back_image',
+        ];
 
-        // dd($request, $path);
+        foreach ($imageFields as $field) {
+            if ($request->hasFile($field)) {
+                $file = $request->file($field);
+                $extension = $file->getClientOriginalExtension();
+                $originalName = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
+                $fileName = $originalName . '_' . time() . '.' . $extension;
+                $path = $file->storeAs("vehicles/{$uniqueFolder}", $fileName, 'public');
+                $imagePaths[$field] = asset(Storage::url($path));
+            }
+        }
 
         $validated['image_urls'] = json_encode($imagePaths);
         $validated['upload_folder'] = $uniqueFolder;
@@ -138,7 +164,7 @@ class VehicleController extends Controller
             'engine_capacity' => 'required|string',
             'engine_number' => 'required|string|max:100',
             'pickup_location' => 'required|string|max:100',
-            'test.*' => 'file|mimes:jpg,jpeg,png,webp',
+            'front_image' => 'file|mimes:jpg,jpeg,png,webp',
             'image_urls.*' => 'nullable|file|mimes:jpg,jpeg,png,webp|max:2048',
         ]);
 
@@ -152,12 +178,16 @@ class VehicleController extends Controller
         $existingImages = json_decode($vehicle->image_urls ?? '{}', true) ?? [];
         $newImages = [];
         $path = "";
-        if ($request->hasFile('test')) {
 
-            $file = $request->file('test');
+        $uniqueFolder = $vehicle->upload_folder;
+
+        if ($request->hasFile('front_image')) {
+            $file = $request->file('front_image');
             $extension = $file->getClientOriginalExtension();
-            $fileName = 'test_' . time() . '.' . $extension;
-            $path = $file->storeAs("vehicles/test", $fileName, 'public');
+            $originalName = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
+            $fileName =  $originalName . '_' . time() . '.' . $extension;
+            $path = $file->storeAs("vehicles/{$uniqueFolder}", $fileName, 'public');
+            $imagePaths[$originalName] = asset(Storage::url($path));
         }
 
         dd($request, $path);

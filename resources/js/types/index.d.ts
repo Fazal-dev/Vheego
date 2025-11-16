@@ -83,7 +83,14 @@ interface Vehicle {
     pickup_location: string;
     image_urls: object;
      front_image?: File;
-    old_images?: Record<string, string>;
+     back_image?: File;
+     left_image?: File;
+     right_image?: File;
+     dashboard_image?: File;
+     seat_image?: File;
+     rc_back_image?: File;
+     rc_front_image?: File;
+        old_images?: Record<string, string>;
     _method?:string
 };
 

@@ -16,6 +16,8 @@ import { useForm } from '@inertiajs/react';
 import { LoaderCircle } from 'lucide-react';
 import 'react-advanced-cropper/dist/style.css';
 import { Label } from './ui/label';
+import { Separator } from './ui/separator';
+import { Textarea } from './ui/textarea';
 import VehicleImageGuide from './VehicleImageGuide';
 
 export default function VehicleForm({ vehicle }: VehicleFormProps) {
@@ -47,8 +49,24 @@ export default function VehicleForm({ vehicle }: VehicleFormProps) {
         pickup_location: vehicle?.pickup_location || 'Colombo',
         image_urls: {},
         front_image: null,
+        back_image: null,
+        left_image: null,
+        right_image: null,
+        dashboard_image: null,
+        seat_image: null,
+        rc_back_image: null,
+        rc_front_image: null,
         _method: isEdit ? 'PUT' : 'POST',
     });
+
+    const vehicleImages: Array<{ key: keyof typeof data; label: string }> = [
+        { key: 'front_image', label: 'Front Image' },
+        { key: 'back_image', label: 'Back Image' },
+        { key: 'left_image', label: 'Left Image' },
+        { key: 'right_image', label: 'Right Image' },
+        { key: 'dashboard_image', label: 'Dashboard' },
+        { key: 'seat_image', label: 'Seat' },
+    ];
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
@@ -89,20 +107,42 @@ export default function VehicleForm({ vehicle }: VehicleFormProps) {
                         </div>
                         {/* brand */}
                         <div className="mb-3">
-                            <Label>Brand</Label>
-                            <Input
-                                className="mt-1"
-                                value={data.brand}
-                                onChange={(e) =>
-                                    setData('brand', e.target.value)
-                                }
-                                placeholder="BMW"
-                            />
-                            {errors.brand && (
-                                <div className="text-sm text-red-500">
-                                    {errors.brand}
+                            <div className="mb-3 grid grid-cols-2 gap-4">
+                                {/* seats */}
+                                <div className="mb-3">
+                                    <Label>Brand</Label>
+                                    <Input
+                                        className="mt-1"
+                                        value={data.brand}
+                                        onChange={(e) =>
+                                            setData('brand', e.target.value)
+                                        }
+                                        placeholder="BMW"
+                                    />
+                                    {errors.brand && (
+                                        <div className="text-sm text-red-500">
+                                            {errors.brand}
+                                        </div>
+                                    )}
                                 </div>
-                            )}
+                                {/* Color */}
+                                <div className="mb-3">
+                                    <Label>Color</Label>
+                                    <Input
+                                        type="text"
+                                        className="mt-1"
+                                        value={data.color}
+                                        onChange={(e) =>
+                                            setData('color', e.target.value)
+                                        }
+                                    />
+                                    {errors.color && (
+                                        <div className="text-sm text-red-500">
+                                            {errors.color}
+                                        </div>
+                                    )}
+                                </div>
+                            </div>
                         </div>
                         {/* Transmisson */}
                         <div className="mb-3">
@@ -114,7 +154,7 @@ export default function VehicleForm({ vehicle }: VehicleFormProps) {
                                 }
                                 value={data.transmission}
                             >
-                                <SelectTrigger className="w-full">
+                                <SelectTrigger className="mt-1 w-full">
                                     <SelectValue placeholder="Select" />
                                 </SelectTrigger>
                                 <SelectContent>
@@ -142,7 +182,7 @@ export default function VehicleForm({ vehicle }: VehicleFormProps) {
                                 }
                                 value={data.fuel_type}
                             >
-                                <SelectTrigger className="w-full">
+                                <SelectTrigger className="mt-1 w-full">
                                     <SelectValue placeholder="Select" />
                                 </SelectTrigger>
                                 <SelectContent>
@@ -359,173 +399,192 @@ export default function VehicleForm({ vehicle }: VehicleFormProps) {
                             )}
                         </div>
                     </div>
+                </CardContent>
+            </Card>
+            {/* Vehicle Info end */}
 
-                    {/* 3rd Row Start */}
-                    <div className="grid grid-cols-2 gap-4 sm:grid-cols-2 lg:grid-cols-6">
-                        {/* Color */}
-                        <div className="mb-3">
-                            <Label>Color</Label>
-                            <Input
-                                type="text"
-                                className="mt-1"
-                                value={data.color}
-                                onChange={(e) =>
-                                    setData('color', e.target.value)
-                                }
-                            />
-                            {errors.color && (
-                                <div className="text-sm text-red-500">
-                                    {errors.color}
-                                </div>
-                            )}
+            {/* Pricing Details start */}
+            <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
+                <Card className="mt-4">
+                    <CardHeader>
+                        <CardTitle>Pricing Details</CardTitle>
+                    </CardHeader>
+                    <CardContent className="p-1 sm:p-6">
+                        {/* 4th Row Start */}
+                        <div className="grid grid-cols-4 gap-4">
+                            {/* daily */}
+                            <div className="mb-3">
+                                <Label>Daily</Label>
+                                <Input
+                                    type="number"
+                                    className="mt-1"
+                                    value={data.daily_rental_price}
+                                    onChange={(e) =>
+                                        setData(
+                                            'daily_rental_price',
+                                            parseInt(e.target.value),
+                                        )
+                                    }
+                                />
+                                {errors.daily_rental_price && (
+                                    <div className="text-sm text-red-500">
+                                        {errors.daily_rental_price}
+                                    </div>
+                                )}
+                            </div>
+                            {/* weekly */}
+                            <div className="mb-3">
+                                <Label>Weekly</Label>
+                                <Input
+                                    type="number"
+                                    className="mt-1"
+                                    value={data.weekly_rental_price}
+                                    onChange={(e) =>
+                                        setData(
+                                            'weekly_rental_price',
+                                            parseInt(e.target.value),
+                                        )
+                                    }
+                                />
+                                {errors.weekly_rental_price && (
+                                    <div className="text-sm text-red-500">
+                                        {errors.weekly_rental_price}
+                                    </div>
+                                )}
+                            </div>
+                            {/*Monthly*/}
+                            <div className="mb-3">
+                                <Label>Monthly</Label>
+                                <Input
+                                    type="number"
+                                    value={data.monthly_rental_price}
+                                    className="mt-1"
+                                    onChange={(e) =>
+                                        setData(
+                                            'monthly_rental_price',
+                                            parseInt(e.target.value),
+                                        )
+                                    }
+                                />
+                                {errors.monthly_rental_price && (
+                                    <div className="text-sm text-red-500">
+                                        {errors.monthly_rental_price}
+                                    </div>
+                                )}
+                            </div>
+                            {/*bond_amount*/}
+                            <div className="mb-3">
+                                <Label>Bond amount</Label>
+                                <Input
+                                    type="number"
+                                    value={data.bond_amount}
+                                    className="mt-1"
+                                    onChange={(e) =>
+                                        setData(
+                                            'bond_amount',
+                                            parseInt(e.target.value),
+                                        )
+                                    }
+                                />
+                                {errors.bond_amount && (
+                                    <div className="text-sm text-red-500">
+                                        {errors.bond_amount}
+                                    </div>
+                                )}
+                            </div>
                         </div>
-                        {/* daily */}
-                        <div className="mb-3">
-                            <Label>Daily</Label>
-                            <Input
-                                type="number"
-                                className="mt-1"
-                                value={data.daily_rental_price}
-                                onChange={(e) =>
-                                    setData(
-                                        'daily_rental_price',
-                                        parseInt(e.target.value),
-                                    )
-                                }
-                            />
-                            {errors.daily_rental_price && (
-                                <div className="text-sm text-red-500">
-                                    {errors.daily_rental_price}
-                                </div>
-                            )}
-                        </div>
-                        {/* weekly */}
-                        <div className="mb-3">
-                            <Label>Weekly</Label>
-                            <Input
-                                type="number"
-                                className="mt-1"
-                                value={data.weekly_rental_price}
-                                onChange={(e) =>
-                                    setData(
-                                        'weekly_rental_price',
-                                        parseInt(e.target.value),
-                                    )
-                                }
-                            />
-                            {errors.weekly_rental_price && (
-                                <div className="text-sm text-red-500">
-                                    {errors.weekly_rental_price}
-                                </div>
-                            )}
-                        </div>
-                        {/*Monthly*/}
-                        <div className="mb-3">
-                            <Label>Monthly</Label>
-                            <Input
-                                type="number"
-                                value={data.monthly_rental_price}
-                                className="mt-1"
-                                onChange={(e) =>
-                                    setData(
-                                        'monthly_rental_price',
-                                        parseInt(e.target.value),
-                                    )
-                                }
-                            />
-                            {errors.monthly_rental_price && (
-                                <div className="text-sm text-red-500">
-                                    {errors.monthly_rental_price}
-                                </div>
-                            )}
-                        </div>
-                        {/*bond_amount*/}
-                        <div className="mb-3">
-                            <Label>Bond amount</Label>
-                            <Input
-                                type="number"
-                                value={data.bond_amount}
-                                className="mt-1"
-                                onChange={(e) =>
-                                    setData(
-                                        'bond_amount',
-                                        parseInt(e.target.value),
-                                    )
-                                }
-                            />
-                            {errors.bond_amount && (
-                                <div className="text-sm text-red-500">
-                                    {errors.bond_amount}
-                                </div>
-                            )}
-                        </div>
-                        {/* Transmisson */}
-                        <div className="mb-3">
-                            <Label>Pick up Location</Label>
 
-                            <Select
-                                onValueChange={(value) =>
-                                    setData('pickup_location', value)
-                                }
+                        <Separator className="my-4" />
+
+                        <div className="mb-3">
+                            <Label>Pick up Address</Label>
+
+                            <Textarea
+                                className="mt-3"
+                                placeholder="Type Address here."
                                 value={data.pickup_location}
-                            >
-                                <SelectTrigger className="w-full">
-                                    <SelectValue placeholder="Select" />
-                                </SelectTrigger>
-                                <SelectContent>
-                                    <SelectItem value="Colombo">
-                                        Colombo
-                                    </SelectItem>
-                                    <SelectItem value="Kandy">Kandy</SelectItem>
-                                    <SelectItem value="Kurunagale">
-                                        Kurunagale
-                                    </SelectItem>
-                                    <SelectItem value="Matale">
-                                        Matale
-                                    </SelectItem>
-                                    <SelectItem value="Gampola">
-                                        Gampola
-                                    </SelectItem>
-                                    <SelectItem value="Nuwereliya">
-                                        Nuwereliya
-                                    </SelectItem>
-                                </SelectContent>
-                            </Select>
+                                onChange={(e) =>
+                                    setData('pickup_location', e.target.value)
+                                }
+                            />
                             {errors.pickup_location && (
                                 <div className="text-sm text-red-500">
                                     {errors.pickup_location}
                                 </div>
                             )}
                         </div>
-                    </div>
-                </CardContent>
-            </Card>
-            {/* Vehicle Info end */}
+                    </CardContent>
+                </Card>
+                <div className="">
+                    <Card className="mt-4">
+                        <CardHeader>
+                            <CardTitle>Registration Certificate</CardTitle>
+                        </CardHeader>
+                        <CardContent className="p-1 sm:p-6">
+                            {/* vehicle license Images upload section */}
+                            <div className="gap-lg-2 mb-4 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-2">
+                                <ImageCropper
+                                    label="RC Front Image"
+                                    name="rc_front_image"
+                                    value={
+                                        vehicle?.old_images?.rc_front_image ||
+                                        ''
+                                    }
+                                    setData={setData}
+                                    aspectRatio={1}
+                                    error={
+                                        errors.rc_front_image
+                                            ? errors.rc_front_image
+                                            : ''
+                                    }
+                                />
+                                <ImageCropper
+                                    label="RC Back Image"
+                                    name="rc_back_image"
+                                    value={
+                                        vehicle?.old_images?.rc_back_image || ''
+                                    }
+                                    setData={setData}
+                                    aspectRatio={1}
+                                    error={
+                                        errors.rc_back_image
+                                            ? errors.rc_back_image
+                                            : ''
+                                    }
+                                />
+                            </div>
+                        </CardContent>
+                    </Card>
+                </div>
+            </div>
+            {/* Pricing Details end */}
 
             {/* image guide */}
             <VehicleImageGuide />
 
             {/* vehicle image upload section start */}
-            <Card>
+            <Card className="mt-3">
                 <CardHeader>
                     <CardTitle>Vehicle Images</CardTitle>
                 </CardHeader>
                 <CardContent className="p-1 sm:p-6">
                     {/* vehicle Images upload section */}
                     <div className="gap-lg-4 mb-4 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-                        <ImageCropper
-                            label="Front Image"
-                            name="front_image"
-                            value={vehicle?.old_images?.front_image || ''}
-                            setData={setData}
-                            aspectRatio={1}
-                            error={errors.front_image ? errors.front_image : ''}
-                        />
+                        {vehicleImages.map((img) => (
+                            <ImageCropper
+                                key={img.key}
+                                label={img.label}
+                                name={img.key}
+                                value={vehicle?.old_images?.[img.key] || ''}
+                                setData={setData}
+                                aspectRatio={1}
+                                error={errors[img.key] ? errors[img.key] : ''}
+                            />
+                        ))}
                     </div>
                 </CardContent>
             </Card>
             {/* vehicle image upload section end  */}
-
             {/* Action button */}
             <div className="my-5 flex justify-end">
                 <Button
