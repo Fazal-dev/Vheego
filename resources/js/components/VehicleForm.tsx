@@ -10,15 +10,15 @@ import {
 } from '@/components/ui/select';
 
 import { ImageCropper } from '@/components/imageCropper';
+import { Label } from '@/components/ui/label';
+import { Separator } from '@/components/ui/separator';
+import { Textarea } from '@/components/ui/textarea';
+import VehicleImageGuide from '@/components/VehicleImageGuide';
 import { store, update } from '@/routes/owner/vehicles';
 import { VehicleFormProps } from '@/types';
 import { useForm } from '@inertiajs/react';
 import { LoaderCircle } from 'lucide-react';
 import 'react-advanced-cropper/dist/style.css';
-import { Label } from './ui/label';
-import { Separator } from './ui/separator';
-import { Textarea } from './ui/textarea';
-import VehicleImageGuide from './VehicleImageGuide';
 
 export default function VehicleForm({ vehicle }: VehicleFormProps) {
     const isEdit = !!vehicle;
@@ -59,13 +59,17 @@ export default function VehicleForm({ vehicle }: VehicleFormProps) {
         _method: isEdit ? 'PUT' : 'POST',
     });
 
-    const vehicleImages: Array<{ key: keyof typeof data; label: string }> = [
-        { key: 'front_image', label: 'Front Image' },
-        { key: 'back_image', label: 'Back Image' },
-        { key: 'left_image', label: 'Left Image' },
-        { key: 'right_image', label: 'Right Image' },
-        { key: 'dashboard_image', label: 'Dashboard' },
-        { key: 'seat_image', label: 'Seat' },
+    const vehicleImages: Array<{
+        key: keyof typeof data;
+        label: string;
+        aspectRatio: number;
+    }> = [
+        { key: 'front_image', label: 'Front Image', aspectRatio: 4 / 3 },
+        { key: 'back_image', label: 'Back Image', aspectRatio: 4 / 3 },
+        { key: 'left_image', label: 'Left Image', aspectRatio: 16 / 9 },
+        { key: 'right_image', label: 'Right Image', aspectRatio: 16 / 9 },
+        { key: 'dashboard_image', label: 'Dashboard', aspectRatio: 4 / 3 },
+        { key: 'seat_image', label: 'Seat', aspectRatio: 4 / 3 },
     ];
 
     const handleSubmit = (e: React.FormEvent) => {
@@ -81,7 +85,7 @@ export default function VehicleForm({ vehicle }: VehicleFormProps) {
     return (
         <form className="" encType="multipart/form-data">
             {/* Vehicle Info start */}
-            <Card className="mt-2">
+            <Card className="mt-3">
                 <CardHeader>
                     <CardTitle>Vehicle Info</CardTitle>
                 </CardHeader>
@@ -531,7 +535,7 @@ export default function VehicleForm({ vehicle }: VehicleFormProps) {
                                         ''
                                     }
                                     setData={setData}
-                                    aspectRatio={1}
+                                    aspectRatio={0.707}
                                     error={
                                         errors.rc_front_image
                                             ? errors.rc_front_image
@@ -545,7 +549,7 @@ export default function VehicleForm({ vehicle }: VehicleFormProps) {
                                         vehicle?.old_images?.rc_back_image || ''
                                     }
                                     setData={setData}
-                                    aspectRatio={1}
+                                    aspectRatio={0.707}
                                     error={
                                         errors.rc_back_image
                                             ? errors.rc_back_image
@@ -577,7 +581,7 @@ export default function VehicleForm({ vehicle }: VehicleFormProps) {
                                 name={img.key}
                                 value={vehicle?.old_images?.[img.key] || ''}
                                 setData={setData}
-                                aspectRatio={1}
+                                aspectRatio={img.aspectRatio}
                                 error={errors[img.key] ? errors[img.key] : ''}
                             />
                         ))}

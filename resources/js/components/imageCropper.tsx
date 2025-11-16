@@ -74,9 +74,8 @@ export const ImageCropper: React.FC<ImageCropperProps> = ({
 
     const handleChange = () => {
         setImage(null);
-        setPreview(value ?? null);
-        setMode(value ? 'final' : 'drop');
-
+        setPreview(null);
+        setMode('drop');
         // If reverting to old value, restore Inertia form
         setData(name, value ?? null);
     };
@@ -169,6 +168,7 @@ export const ImageCropper: React.FC<ImageCropperProps> = ({
                     </Button>
                 </div>
             )}
+
             {error && (
                 <div className="mt-1">
                     <p className="text-center text-sm text-red-600">{error}</p>
