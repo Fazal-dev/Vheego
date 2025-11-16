@@ -1,3 +1,4 @@
+import BackButton from '@/components/BackButton';
 import { Chip } from '@/components/chip';
 import Detail from '@/components/detail-lable';
 import PriceCard from '@/components/price-card';
@@ -50,6 +51,9 @@ export default function VehicleShow({ vehicle }: VehicleShowProps) {
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Vehicle List" />
+            <div className="mt-3 px-3 text-start">
+                <BackButton />
+            </div>
             <div className="p-4 sm:p-8">
                 {/* Header Section */}
                 <Card className="shadow-sm">

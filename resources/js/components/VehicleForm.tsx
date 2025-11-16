@@ -89,9 +89,9 @@ export default function VehicleForm({ vehicle }: VehicleFormProps) {
                 <CardHeader>
                     <CardTitle>Vehicle Info</CardTitle>
                 </CardHeader>
-                <CardContent className="p-2 sm:p-6">
+                <CardContent className="p-4 sm:p-6">
                     {/* 1st Row Start */}
-                    <div className="grid grid-cols-2 gap-4 sm:grid-cols-2 lg:grid-cols-6">
+                    <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-6">
                         {/* model */}
                         <div className="mb-3">
                             <Label>Model</Label>
@@ -339,7 +339,6 @@ export default function VehicleForm({ vehicle }: VehicleFormProps) {
                                 onChange={(e) =>
                                     setData('registration_date', e.target.value)
                                 }
-                                placeholder="Ex : 4"
                             />
                             {errors.registration_date && (
                                 <div className="text-sm text-red-500">
@@ -413,9 +412,9 @@ export default function VehicleForm({ vehicle }: VehicleFormProps) {
                     <CardHeader>
                         <CardTitle>Pricing Details</CardTitle>
                     </CardHeader>
-                    <CardContent className="p-1 sm:p-6">
+                    <CardContent className="p-4 sm:p-6">
                         {/* 4th Row Start */}
-                        <div className="grid grid-cols-4 gap-4">
+                        <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
                             {/* daily */}
                             <div className="mb-3">
                                 <Label>Daily</Label>
@@ -524,7 +523,7 @@ export default function VehicleForm({ vehicle }: VehicleFormProps) {
                         <CardHeader>
                             <CardTitle>Registration Certificate</CardTitle>
                         </CardHeader>
-                        <CardContent className="p-1 sm:p-6">
+                        <CardContent className="p-4 sm:p-6">
                             {/* vehicle license Images upload section */}
                             <div className="gap-lg-2 mb-4 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-2">
                                 <ImageCropper
@@ -571,7 +570,7 @@ export default function VehicleForm({ vehicle }: VehicleFormProps) {
                 <CardHeader>
                     <CardTitle>Vehicle Images</CardTitle>
                 </CardHeader>
-                <CardContent className="p-1 sm:p-6">
+                <CardContent className="p-3 sm:p-6">
                     {/* vehicle Images upload section */}
                     <div className="gap-lg-4 mb-4 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
                         {vehicleImages.map((img) => (
@@ -589,6 +588,7 @@ export default function VehicleForm({ vehicle }: VehicleFormProps) {
                 </CardContent>
             </Card>
             {/* vehicle image upload section end  */}
+
             {/* Action button */}
             <div className="my-5 flex justify-end">
                 <Button
