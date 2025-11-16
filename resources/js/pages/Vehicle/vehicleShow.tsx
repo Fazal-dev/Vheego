@@ -8,6 +8,7 @@ import AppLayout from '@/layouts/app-layout';
 import { index } from '@/routes/owner/vehicles';
 import { BreadcrumbItem } from '@/types';
 import { Head } from '@inertiajs/react';
+import { Calendar, Clock, DollarSign } from 'lucide-react';
 
 interface VehicleShowProps {
     vehicle: any;
@@ -23,27 +24,27 @@ const breadcrumbs: BreadcrumbItem[] = [
 export default function VehicleShow({ vehicle }: VehicleShowProps) {
     const images = [
         {
-            label: 'Front',
+            label: 'Front Image',
             src: vehicle.old_images?.front_image,
         },
         {
-            label: 'Back',
+            label: 'Back Image',
             src: vehicle.old_images?.back_image,
         },
         {
-            label: 'Left',
+            label: 'Left Image',
             src: vehicle.old_images?.left_image,
         },
         {
-            label: 'Right',
+            label: 'Right Image',
             src: vehicle.old_images?.right_image,
         },
         {
-            label: 'Dashboard',
+            label: 'Dashboard Image',
             src: vehicle.old_images?.dashboard_image,
         },
         {
-            label: 'Seats',
+            label: 'Seats Image',
             src: vehicle.old_images?.seat_image,
         },
     ];
@@ -132,14 +133,23 @@ export default function VehicleShow({ vehicle }: VehicleShowProps) {
                             <PriceCard
                                 title="Daily Rate"
                                 value={vehicle.daily_rental_price}
+                                icon={<Calendar />}
+                                iconBg="bg-green-100"
+                                iconColor="text-green-600"
                             />
                             <PriceCard
                                 title="Weekly Rate"
                                 value={vehicle.weekly_rental_price}
+                                icon={<Clock />}
+                                iconBg="bg-yellow-100"
+                                iconColor="text-yellow-600"
                             />
                             <PriceCard
                                 title="Monthly Rate"
                                 value={vehicle.monthly_rental_price}
+                                icon={<DollarSign />}
+                                iconBg="bg-purple-100"
+                                iconColor="text-purple-600"
                             />
                         </div>
 
@@ -155,7 +165,7 @@ export default function VehicleShow({ vehicle }: VehicleShowProps) {
                                     img.src && (
                                         <div
                                             key={i}
-                                            className="overflow-hidden rounded-lg border bg-gray-50 shadow-sm"
+                                            className="overflow-hidden rounded-lg border bg-gray-50 p-4 shadow-sm"
                                         >
                                             <img
                                                 src={img.src}

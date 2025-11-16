@@ -1,20 +1,7 @@
 import { Button } from '@/components/ui/button';
+import { BackButtonProps } from '@/types';
 import { ArrowLeft } from 'lucide-react';
 import React from 'react';
-
-export interface BackButtonProps
-    extends React.ButtonHTMLAttributes<HTMLButtonElement> {
-    /** If provided, the button will navigate to this href. Otherwise it calls history.back() */
-    href?: string;
-    /** Optional callback instead of default navigation */
-    onNavigate?: (e?: React.MouseEvent) => void;
-    /** Small text label to show next to the icon (default: "Back") */
-    label?: string;
-    /** Button variant from shadcn (keeps API compatible) */
-    variant?: 'default' | 'outline' | 'ghost' | 'link' | 'secondary';
-    /** Extra classname to merge */
-    className?: string;
-}
 
 export default function BackButton({
     href,
