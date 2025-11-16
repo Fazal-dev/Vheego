@@ -144,6 +144,9 @@ class VehicleController extends Controller
      */
     public function update(Request $request, string $id)
     {
+        $messages = [
+            'pickup_location.required' => 'The Pick Up Address is required.',
+        ];
         $validated = $request->validate([
             'model' => 'required|string|max:255',
             'brand' => 'required|string|max:255',
@@ -164,9 +167,16 @@ class VehicleController extends Controller
             'engine_capacity' => 'required|string',
             'engine_number' => 'required|string|max:100',
             'pickup_location' => 'required|string|max:100',
-            'front_image' => 'file|mimes:jpg,jpeg,png,webp',
-            'image_urls.*' => 'nullable|file|mimes:jpg,jpeg,png,webp|max:2048',
-        ]);
+            'front_image' => 'nullable',
+            'back_image' => 'nullable',
+            'left_image' => 'nullable',
+            'right_image' => 'nullable',
+            'dashboard_image' => 'nullable',
+            'seat_image' => 'nullable',
+            'rc_front_image' => 'nullable',
+            'rc_back_image' => 'nullable',
+            'image_urls.*' => 'nullable',
+        ], $messages);
 
         $validated['owner_id'] = Auth::id();
 
@@ -176,39 +186,44 @@ class VehicleController extends Controller
 
         // Decode existing image URLs from DB
         $existingImages = json_decode($vehicle->image_urls ?? '{}', true) ?? [];
+
+        // These are the same fields used in store()
+        $imageFields = [
+            'front_image',
+            'back_image',
+            'left_image',
+            'right_image',
+            'dashboard_image',
+            'seat_image',
+            'rc_front_image',
+            'rc_back_image',
+        ];
+
         $newImages = [];
-        $path = "";
+        $folder = $vehicle->upload_folder;
 
-        $uniqueFolder = $vehicle->upload_folder;
+        // Loop through image fields
+        foreach ($imageFields as $field) {
+            if ($request->hasFile($field)) {
 
-        if ($request->hasFile('front_image')) {
-            $file = $request->file('front_image');
-            $extension = $file->getClientOriginalExtension();
-            $originalName = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
-            $fileName =  $originalName . '_' . time() . '.' . $extension;
-            $path = $file->storeAs("vehicles/{$uniqueFolder}", $fileName, 'public');
-            $imagePaths[$originalName] = asset(Storage::url($path));
-        }
-
-        dd($request, $path);
-
-        if ($request->hasFile('image_urls')) {
-
-            foreach ($request->file('image_urls') as $key => $file) {
-
-                // Delete old file if exists (optional)
-                if (!empty($existingImages[$key])) {
-                    $oldPath = $existingImages[$key];
+                // delete old file if it exists
+                if (!empty($existingImages[$field])) {
+                    $oldPath = str_replace('/storage/', '', $existingImages[$field]);
                     Storage::disk('public')->delete($oldPath);
                 }
 
-                // Store new file
-                $path = $file->store("vehicles/" . $vehicle->upload_folder, 'public');
-                $newImages[$key] =  Storage::url($path);
+                // save new file
+                $file = $request->file($field);
+                $extension = $file->getClientOriginalExtension();
+                $originalName = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
+                $fileName = $originalName . '_' . time() . '.' . $extension;
+
+                $path = $file->storeAs("vehicles/{$folder}", $fileName, 'public');
+                $newImages[$field] = asset(Storage::url($path));
             }
         }
 
-        // Merge existing + new (new replaces old where keys match)
+        // merge; new images override old ones
         $mergedImages = array_merge($existingImages, $newImages);
 
         $validated['image_urls'] = json_encode($mergedImages);
