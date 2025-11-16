@@ -51,7 +51,7 @@ export default function Profile({
                         {({ processing, recentlySuccessful, errors }) => (
                             <>
                                 <div className="grid gap-2">
-                                    <Label htmlFor="name">Name</Label>
+                                    <Label htmlFor="name">Full Name</Label>
 
                                     <Input
                                         id="name"
@@ -69,24 +69,50 @@ export default function Profile({
                                     />
                                 </div>
 
-                                <div className="grid gap-2">
-                                    <Label htmlFor="email">Email address</Label>
+                                <div className="grid grid-cols-2 gap-4">
+                                    <div className="grid gap-2">
+                                        <Label htmlFor="email">
+                                            Email address
+                                        </Label>
 
-                                    <Input
-                                        id="email"
-                                        type="email"
-                                        className="mt-1 block w-full"
-                                        defaultValue={auth.user.email}
-                                        name="email"
-                                        required
-                                        autoComplete="username"
-                                        placeholder="Email address"
-                                    />
+                                        <Input
+                                            id="email"
+                                            type="email"
+                                            className="mt-1 block w-full"
+                                            defaultValue={auth.user.email}
+                                            name="email"
+                                            required
+                                            autoComplete="username"
+                                            placeholder="Email address"
+                                        />
 
-                                    <InputError
-                                        className="mt-2"
-                                        message={errors.email}
-                                    />
+                                        <InputError
+                                            className="mt-2"
+                                            message={errors.email}
+                                        />
+                                    </div>
+
+                                    <div className="grid gap-2">
+                                        <Label htmlFor="phone_no">
+                                            Mobile Number
+                                        </Label>
+
+                                        <Input
+                                            id="phone_no"
+                                            type="text"
+                                            className="mt-1 block w-full"
+                                            defaultValue={auth.user.phone_no}
+                                            name="phone_no"
+                                            required
+                                            autoComplete="phone_no"
+                                            placeholder="Mobile Number"
+                                        />
+
+                                        <InputError
+                                            className="mt-2"
+                                            message={errors.phone_no}
+                                        />
+                                    </div>
                                 </div>
 
                                 {mustVerifyEmail &&

@@ -35,6 +35,7 @@ class RegisteredUserController extends Controller
             'email' => 'required|string|lowercase|email|max:255|unique:' . User::class,
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
             'role' => ['required', 'in:customer,owner'],
+            'phone_no' => ['required'],
         ]);
 
         $user = User::create([
@@ -42,6 +43,7 @@ class RegisteredUserController extends Controller
             'email' => $request->email,
             'password' => Hash::make($request->password),
             'role' => $request->role,
+            'phone_no' => $request->phone_no,
         ]);
 
         event(new Registered($user));
@@ -54,6 +56,6 @@ class RegisteredUserController extends Controller
             return redirect()->intended(route('owner.ownerDashboard', absolute: false));
         }
 
-        return redirect()->intended(route('dashboard', absolute: false));
+        return redirect()->intended(route('customer.customerDashboard', absolute: false));
     }
 }

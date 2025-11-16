@@ -24,6 +24,7 @@ class DatabaseSeeder extends Seeder
                 'password' => Hash::make('password'),
                 'email_verified_at' => now(),
                 'role' => 'customer',
+                'phone_no' => '07786868686',
             ]
         );
 
@@ -32,6 +33,7 @@ class DatabaseSeeder extends Seeder
             'email' => 'fazal@gmail.com',
             'password' => bcrypt('password'),
             'role' => 'owner',
+            'phone_no' => '0778433880',
         ]);
 
         User::create([
@@ -39,9 +41,8 @@ class DatabaseSeeder extends Seeder
             'email' => 'admin@gmail.com',
             'password' => bcrypt('password'),
             'role' => 'admin',
+            'phone_no' => '077868656',
         ]);
-        // UPDATE vehicles
-        // SET owner_id = 2;
         Vehicle::factory(20)->create();
     }
 }

@@ -13,8 +13,8 @@ import AuthLayout from '@/layouts/auth-layout';
 export default function Register() {
     return (
         <AuthLayout
-            title="Create an account"
-            description="Enter your details below to create your account"
+            title="Create your profile"
+            description="Your gateway to simple renting and sharing."
         >
             <Head title="Register" />
             <Form
@@ -27,7 +27,7 @@ export default function Register() {
                     <>
                         <div className="grid gap-6">
                             <div className="grid gap-2">
-                                <Label htmlFor="name">Name</Label>
+                                <Label htmlFor="name">Full Name</Label>
                                 <Input
                                     id="name"
                                     type="text"
@@ -43,19 +43,39 @@ export default function Register() {
                                     className="mt-2"
                                 />
                             </div>
+                            <div className="grid grid-cols-2 gap-4">
+                                <div className="grid gap-2">
+                                    <Label htmlFor="phone_no">
+                                        Mobile Number
+                                    </Label>
+                                    <Input
+                                        id="phone_no"
+                                        type="text"
+                                        required
+                                        tabIndex={2}
+                                        autoComplete="phone_no"
+                                        name="phone_no"
+                                        placeholder="07x xxx xxxx"
+                                    />
+                                    <InputError
+                                        message={errors.phone_no}
+                                        className="mt-2"
+                                    />
+                                </div>
 
-                            <div className="grid gap-2">
-                                <Label htmlFor="email">Email address</Label>
-                                <Input
-                                    id="email"
-                                    type="email"
-                                    required
-                                    tabIndex={2}
-                                    autoComplete="email"
-                                    name="email"
-                                    placeholder="email@example.com"
-                                />
-                                <InputError message={errors.email} />
+                                <div className="grid gap-2">
+                                    <Label htmlFor="email">Email address</Label>
+                                    <Input
+                                        id="email"
+                                        type="email"
+                                        required
+                                        tabIndex={3}
+                                        autoComplete="email"
+                                        name="email"
+                                        placeholder="email@example.com"
+                                    />
+                                    <InputError message={errors.email} />
+                                </div>
                             </div>
 
                             <div className="grid gap-2">
@@ -64,7 +84,7 @@ export default function Register() {
                                     id="password"
                                     type="password"
                                     required
-                                    tabIndex={3}
+                                    tabIndex={4}
                                     autoComplete="new-password"
                                     name="password"
                                     placeholder="Password"
@@ -80,7 +100,7 @@ export default function Register() {
                                     id="password_confirmation"
                                     type="password"
                                     required
-                                    tabIndex={4}
+                                    tabIndex={5}
                                     autoComplete="new-password"
                                     name="password_confirmation"
                                     placeholder="Confirm password"
@@ -92,52 +112,45 @@ export default function Register() {
 
                             <div className="grid grid-cols-2 gap-4">
                                 {/* Customer */}
-                                <label className="relative flex flex-col items-center justify-center border rounded-xl cursor-pointer transition-all duration-300
-                                                hover:shadow-md">
-                                <input
-                                type="radio"
-                                name="role"
-                                value="customer"
-                                className="peer hidden"
-                                defaultChecked
-                                />
+                                <label className="relative flex cursor-pointer flex-col items-center justify-center rounded-xl border transition-all duration-300 hover:shadow-md">
+                                    <input
+                                        type="radio"
+                                        name="role"
+                                        value="customer"
+                                        className="peer hidden"
+                                        defaultChecked
+                                    />
                                     {/* This div changes style based on peer-checked */}
-                                    <div className="flex p-2 flex-col items-center justify-center w-full h-full rounded-xl border border-gray-300
-                                                    peer-checked:border-blue-500
-                                                    peer-checked:bg-blue-100
-                                                    peer-checked:shadow-lg
-                                                    transition-all duration-300">
-                                    <Car className="w-10 h-10 text-blue-500 peer-checked:text-blue-700" />
-                                    <span className="mt-2 font-semibold text-sm">Customer</span>
-                                    <p className="text-xs text-muted-foreground text-center mt-1">
-                                        Rent vehicles from trusted owners
-                                    </p>
+                                    <div className="flex h-full w-full flex-col items-center justify-center rounded-xl border border-gray-300 p-2 transition-all duration-300 peer-checked:border-blue-500 peer-checked:bg-blue-100 peer-checked:shadow-lg">
+                                        <Car className="h-10 w-10 text-blue-500 peer-checked:text-blue-700" />
+                                        <span className="mt-2 text-sm font-semibold">
+                                            Customer
+                                        </span>
+                                        <p className="mt-1 text-center text-xs text-muted-foreground">
+                                            Rent vehicles from trusted owners
+                                        </p>
                                     </div>
                                 </label>
 
                                 {/* Owner */}
-                                <label className="relative flex flex-col items-center justify-center border rounded-xl  cursor-pointer transition-all duration-300
-                                                    hover:shadow-md">
+                                <label className="relative flex cursor-pointer flex-col items-center justify-center rounded-xl border transition-all duration-300 hover:shadow-md">
                                     <input
-                                    type="radio"
-                                    name="role"
-                                    value="owner"
-                                    className="peer hidden"
+                                        type="radio"
+                                        name="role"
+                                        value="owner"
+                                        className="peer hidden"
                                     />
-                                    <div className="flex p-2 flex-col items-center justify-center w-full h-full rounded-xl border border-gray-300
-                                                    peer-checked:border-green-500
-                                                    peer-checked:bg-green-100
-                                                    peer-checked:shadow-lg
-                                                    transition-all duration-300">
-                                    <Truck className="w-10 h-10 text-green-500 peer-checked:text-green-700" />
-                                    <span className="mt-2 font-semibold text-sm">Vehicle Owner</span>
-                                    <p className="text-xs text-muted-foreground text-center mt-1">
-                                        List your vehicles for rent
-                                    </p>
+                                    <div className="flex h-full w-full flex-col items-center justify-center rounded-xl border border-gray-300 p-2 transition-all duration-300 peer-checked:border-green-500 peer-checked:bg-green-100 peer-checked:shadow-lg">
+                                        <Truck className="h-10 w-10 text-green-500 peer-checked:text-green-700" />
+                                        <span className="mt-2 text-sm font-semibold">
+                                            Vehicle Owner
+                                        </span>
+                                        <p className="mt-1 text-center text-xs text-muted-foreground">
+                                            List your vehicles for rent
+                                        </p>
                                     </div>
                                 </label>
                             </div>
-
 
                             <Button
                                 type="submit"
