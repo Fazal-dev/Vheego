@@ -10,12 +10,13 @@ import {
     SidebarMenuButton,
     SidebarMenuItem,
 } from '@/components/ui/sidebar';
+import admin, { vehicleApproval } from '@/routes/admin';
 import customer from '@/routes/customer';
 import { ownerDashboard } from '@/routes/owner';
 import vehicles from '@/routes/owner/vehicles';
 import { Auth, type NavItem } from '@/types';
 import { Link, usePage } from '@inertiajs/react';
-import { Car, LayoutGrid, Search } from 'lucide-react';
+import { Car, CarFront, LayoutGrid, Search } from 'lucide-react';
 import AppLogo from './app-logo';
 
 const footerNavItems: NavItem[] = [
@@ -41,6 +42,18 @@ export function AppSidebar() {
             href: customer.customerDashboard().url,
             icon: LayoutGrid,
             roles: ['customer'],
+        },
+        {
+            title: 'Dashboard',
+            href: admin.adminDashboard(),
+            icon: LayoutGrid,
+            roles: ['admin'],
+        },
+        {
+            title: 'Vehicle Approval',
+            href: vehicleApproval().url,
+            icon: CarFront,
+            roles: ['admin'],
         },
         {
             title: 'Dashboard',

@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\AdminController;
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\VehicleController;
 use Illuminate\Support\Facades\Redis;
@@ -25,6 +26,12 @@ Route::middleware(['auth', 'role:owner', 'verified', 'web'])->prefix('owner')
         Route::get('dashboard', function () {
             return Inertia::render('Owner/ownerDashboard');
         })->name('ownerDashboard');
+    });
+
+Route::middleware(['auth', 'role:admin', 'verified', 'web'])->prefix('admin')
+    ->name('admin.')->controller(AdminController::class)->group(function () {
+        Route::get('dashboard', 'getDashboard')->name('adminDashboard');
+        Route::get('vehicle-approval', 'index')->name('vehicleApproval');
     });
 
 
