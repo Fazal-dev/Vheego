@@ -1,5 +1,6 @@
 import BackButton from '@/components/BackButton';
 import { Chip } from '@/components/chip';
+import ImagePreview from '@/components/ImagePreview';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -198,11 +199,11 @@ export default function reviewVehicle({ vehicle, owner }) {
                                             key={index}
                                             className="overflow-hidden rounded-xl border p-3"
                                         >
-                                            <img
+                                            <ImagePreview
+                                                key={index}
                                                 src={url}
-                                                alt={key}
-                                                className="h-48 w-full object-cover"
                                             />
+
                                             <p className="mt-1 text-center text-sm capitalize">
                                                 {key.charAt(0).toUpperCase() +
                                                     key
