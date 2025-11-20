@@ -16,6 +16,7 @@ class AdminController extends Controller
     {
         return Inertia::render('Admin/adminDashboard');
     }
+
     /**
      * Display Approval vehicles list
      */
@@ -26,6 +27,22 @@ class AdminController extends Controller
 
         return Inertia::render('Admin/VehicleApproval/index', [
             'vehicles' => $vehicles,
+        ]);
+    }
+
+    /**
+     * Display Review vehicles Details
+     */
+    public function reviewVehiclePage(Request $request, $id)
+    {
+
+        $vehicle = Vehicle::with('owner')->findOrFail($id);
+
+        $vehicle->image_urls = json_decode($vehicle->image_urls);
+        $owner = $vehicle->owner;
+        return Inertia::render('Admin/VehicleApproval/reviewVehicle', [
+            'vehicle' => $vehicle,
+            'owner' => $owner,
         ]);
     }
 }

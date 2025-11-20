@@ -3,7 +3,6 @@
 use App\Http\Controllers\Admin\AdminController;
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\VehicleController;
-use Illuminate\Support\Facades\Redis;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -32,6 +31,7 @@ Route::middleware(['auth', 'role:admin', 'verified', 'web'])->prefix('admin')
     ->name('admin.')->controller(AdminController::class)->group(function () {
         Route::get('dashboard', 'getDashboard')->name('adminDashboard');
         Route::get('vehicle-approval', 'index')->name('vehicleApproval');
+        Route::get('vehicle-review/{id}', 'reviewVehiclePage')->name('reviewVehicle');
     });
 
 
