@@ -1,4 +1,5 @@
 import { PhotoView } from 'react-photo-view';
+
 export default function ImagePreview({ src }: { src: string }) {
     return (
         <div className="">

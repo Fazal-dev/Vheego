@@ -1,17 +1,13 @@
 import BackButton from '@/components/BackButton';
-import { Chip } from '@/components/chip';
-import ImagePreview from '@/components/ImagePreview';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import OwnerDetails from '@/components/ownerDetails';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
+import VehicleDetailsCard from '@/components/vehicleDetailsCard';
+import VehicleImagesSlider from '@/components/vehicleImagesSlider';
 import AppLayout from '@/layouts/app-layout';
-import { capitalizeWords } from '@/lib/utils';
 import { vehicleApproval } from '@/routes/admin';
-import { type BreadcrumbItem } from '@/types';
+import { type BreadcrumbItem } from '@/types/index';
 import { Head, router, useForm } from '@inertiajs/react';
-import { Mail, Phone, RotateCw, User, ZoomIn, ZoomOut } from 'lucide-react';
-import { PhotoProvider } from 'react-photo-view';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -20,50 +16,14 @@ const breadcrumbs: BreadcrumbItem[] = [
     },
 ];
 
-export default function reviewVehicle({ vehicle, owner }) {
+export default function reviewVehicle({
+    vehicle,
+    owner,
+}: {
+    vehicle: any;
+    owner: any;
+}) {
     const { post, processing } = useForm();
-
-    console.log(vehicle);
-
-    let variant: 'default' | 'success' | 'destructive' = 'default';
-
-    const status = vehicle.status;
-
-    if (status === 'Active') variant = 'success';
-    else if (status === 'Inactive') variant = 'destructive';
-
-    const vehicle_fields = [
-        { label: 'Model', value: vehicle.model },
-        { label: 'Brand', value: vehicle.brand },
-        { label: 'Transmission', value: vehicle.transmission },
-        { label: 'Fuel Type', value: vehicle.fuel_type },
-        { label: 'Color', value: vehicle.color },
-        { label: 'Vehicle Type', value: vehicle.vehicle_type },
-        { label: 'Year of Manufacture', value: vehicle.year_of_manufacture },
-        { label: 'Doors', value: vehicle.doors },
-        { label: 'Seats', value: vehicle.seats },
-        { label: 'Number Plate', value: vehicle.license_plate },
-        {
-            label: 'Registration Date',
-            value: vehicle.registration_date,
-        },
-        {
-            label: 'Registration Expiry',
-            value: vehicle.registration_expiry_date,
-        },
-        {
-            label: 'Engine Capacity',
-            value: vehicle.engine_capacity,
-        },
-        {
-            label: 'Engine Number',
-            value: vehicle.engine_number,
-        },
-        {
-            label: 'Status',
-            value: <Chip variant={variant}>{status}</Chip>,
-        },
-    ];
 
     const handleApprove = () => {};
 
@@ -102,162 +62,14 @@ export default function reviewVehicle({ vehicle, owner }) {
                 </div>
 
                 <div className="grid grid-cols-1 gap-6 md:grid-cols-4">
-                    {/* Vehicle Details */}
-                    <Card className="col-span-4 space-x-3 md:col-span-3">
-                        <CardHeader>
-                            <CardTitle>Vehicle Information</CardTitle>
-                        </CardHeader>
-                        <CardContent className="space-y-3">
-                            <div className="grid grid-cols-2 gap-4 p-3 md:grid-cols-5">
-                                {vehicle_fields.map((field, index) => (
-                                    <div key={index} className="mb-3">
-                                        <p className="text-sm text-muted-foreground">
-                                            {field.label}
-                                        </p>
-                                        <p className="font-semibold">
-                                            {field.value}
-                                        </p>
-                                    </div>
-                                ))}
-                            </div>
-                        </CardContent>
-                    </Card>
+                    <VehicleDetailsCard vehicle={vehicle} />
                     {/* Owner Details */}
-
-                    <Card className="col-span-4 rounded-xl border-1 border-green-300 bg-white shadow-sm md:col-span-1">
-                        <CardHeader className="flex flex-row items-center gap-3 pb-1">
-                            <Avatar className="h-10 w-10">
-                                {/* If you have an owner avatar URL */}
-                                <AvatarImage
-                                    src={owner.avatar_url}
-                                    alt={owner.name}
-                                />
-                                <AvatarFallback className="bg-primary/10 font-semibold text-primary">
-                                    {owner.name?.charAt(0)}
-                                </AvatarFallback>
-                            </Avatar>
-
-                            <CardTitle className="text-md font-semibold">
-                                Owner Contact Details
-                            </CardTitle>
-                        </CardHeader>
-
-                        <CardContent className="space-y-2 px-4 pt-2">
-                            <div className="space-y-3">
-                                <div className="flex items-start gap-3 rounded-lg bg-gray-50 p-3">
-                                    <User className="mt-1 h-5 w-5 text-gray-500" />
-                                    <div>
-                                        <p className="text-sm text-gray-500">
-                                            Owner Name
-                                        </p>
-                                        <p className="font-medium">
-                                            {capitalizeWords(owner.name)}
-                                        </p>
-                                    </div>
-                                </div>
-
-                                <div className="flex items-start gap-3 rounded-lg bg-gray-50 p-3">
-                                    <Mail className="mt-1 h-5 w-5 text-gray-500" />
-                                    <div>
-                                        <p className="text-sm text-gray-500">
-                                            Email
-                                        </p>
-                                        <p className="font-medium">
-                                            {owner.email}
-                                        </p>
-                                    </div>
-                                </div>
-
-                                <div className="flex items-start gap-3 rounded-lg bg-gray-50 p-3">
-                                    <Phone className="mt-1 h-5 w-5 text-gray-500" />
-                                    <div>
-                                        <p className="text-sm text-gray-500">
-                                            Phone
-                                        </p>
-                                        <p className="font-medium">
-                                            {owner.phone_no}
-                                        </p>
-                                    </div>
-                                </div>
-                            </div>
-                        </CardContent>
-                    </Card>
+                    <OwnerDetails owner={owner} />
                 </div>
 
                 <Separator />
-
-                {/* Vehicle Images */}
-                <Card>
-                    <CardHeader>
-                        <CardTitle>Vehicle Images</CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-4">
-                            <PhotoProvider
-                                toolbarRender={({
-                                    onScale,
-                                    scale,
-                                    onRotate,
-                                    rotate,
-                                }) => {
-                                    return (
-                                        <>
-                                            <ZoomIn
-                                                className="mx-2"
-                                                onClick={() =>
-                                                    onScale(scale + 1)
-                                                }
-                                            />
-                                            <ZoomOut
-                                                className="mx-2"
-                                                onClick={() =>
-                                                    onScale(scale - 1)
-                                                }
-                                            />
-                                            <RotateCw
-                                                className="mx-2"
-                                                onClick={() =>
-                                                    onRotate(rotate + 90)
-                                                }
-                                            />
-                                        </>
-                                    );
-                                }}
-                                speed={() => 800}
-                                easing={(type) =>
-                                    type === 2
-                                        ? 'cubic-bezier(0.36, 0, 0.66, -0.56)'
-                                        : 'cubic-bezier(0.34, 1.56, 0.64, 1)'
-                                }
-                            >
-                                {vehicle.image_urls &&
-                                    Object.entries(vehicle.image_urls).map(
-                                        ([key, url], index) => (
-                                            <div
-                                                key={index}
-                                                className="overflow-hidden rounded-xl border p-3"
-                                            >
-                                                <ImagePreview
-                                                    key={index}
-                                                    src={url}
-                                                />
-
-                                                <p className="mt-1 text-center text-sm capitalize">
-                                                    {key
-                                                        .charAt(0)
-                                                        .toUpperCase() +
-                                                        key
-                                                            .split('_')
-                                                            .join(' ')
-                                                            .slice(1)}
-                                                </p>
-                                            </div>
-                                        ),
-                                    )}
-                            </PhotoProvider>
-                        </div>
-                    </CardContent>
-                </Card>
+                {/* image priview  */}
+                <VehicleImagesSlider image_urls={vehicle.image_urls} />
             </div>
         </AppLayout>
     );

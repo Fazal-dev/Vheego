@@ -33,6 +33,10 @@ export interface SharedData {
     [key: string]: unknown;
 }
 
+export type owner = {
+    owner : User;
+}
+
 export interface User {
     id: number;
     name: string;
