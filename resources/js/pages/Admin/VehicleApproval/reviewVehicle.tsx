@@ -10,7 +10,8 @@ import { capitalizeWords } from '@/lib/utils';
 import { vehicleApproval } from '@/routes/admin';
 import { type BreadcrumbItem } from '@/types';
 import { Head, router, useForm } from '@inertiajs/react';
-import { Mail, Phone, User } from 'lucide-react';
+import { Mail, Phone, RotateCw, User, ZoomIn, ZoomOut } from 'lucide-react';
+import { PhotoProvider } from 'react-photo-view';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -123,7 +124,7 @@ export default function reviewVehicle({ vehicle, owner }) {
                     </Card>
                     {/* Owner Details */}
 
-                    <Card className="col-span-4 rounded-xl border bg-white shadow-sm md:col-span-1">
+                    <Card className="col-span-4 rounded-xl border-1 border-green-300 bg-white shadow-sm md:col-span-1">
                         <CardHeader className="flex flex-row items-center gap-3 pb-1">
                             <Avatar className="h-10 w-10">
                                 {/* If you have an owner avatar URL */}
@@ -191,29 +192,69 @@ export default function reviewVehicle({ vehicle, owner }) {
                         <CardTitle>Vehicle Images</CardTitle>
                     </CardHeader>
                     <CardContent>
-                        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3">
-                            {vehicle.image_urls &&
-                                Object.entries(vehicle.image_urls).map(
-                                    ([key, url], index) => (
-                                        <div
-                                            key={index}
-                                            className="overflow-hidden rounded-xl border p-3"
-                                        >
-                                            <ImagePreview
-                                                key={index}
-                                                src={url}
+                        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-4">
+                            <PhotoProvider
+                                toolbarRender={({
+                                    onScale,
+                                    scale,
+                                    onRotate,
+                                    rotate,
+                                }) => {
+                                    return (
+                                        <>
+                                            <ZoomIn
+                                                className="mx-2"
+                                                onClick={() =>
+                                                    onScale(scale + 1)
+                                                }
                                             />
+                                            <ZoomOut
+                                                className="mx-2"
+                                                onClick={() =>
+                                                    onScale(scale - 1)
+                                                }
+                                            />
+                                            <RotateCw
+                                                className="mx-2"
+                                                onClick={() =>
+                                                    onRotate(rotate + 90)
+                                                }
+                                            />
+                                        </>
+                                    );
+                                }}
+                                speed={() => 800}
+                                easing={(type) =>
+                                    type === 2
+                                        ? 'cubic-bezier(0.36, 0, 0.66, -0.56)'
+                                        : 'cubic-bezier(0.34, 1.56, 0.64, 1)'
+                                }
+                            >
+                                {vehicle.image_urls &&
+                                    Object.entries(vehicle.image_urls).map(
+                                        ([key, url], index) => (
+                                            <div
+                                                key={index}
+                                                className="overflow-hidden rounded-xl border p-3"
+                                            >
+                                                <ImagePreview
+                                                    key={index}
+                                                    src={url}
+                                                />
 
-                                            <p className="mt-1 text-center text-sm capitalize">
-                                                {key.charAt(0).toUpperCase() +
-                                                    key
-                                                        .split('_')
-                                                        .join(' ')
-                                                        .slice(1)}
-                                            </p>
-                                        </div>
-                                    ),
-                                )}
+                                                <p className="mt-1 text-center text-sm capitalize">
+                                                    {key
+                                                        .charAt(0)
+                                                        .toUpperCase() +
+                                                        key
+                                                            .split('_')
+                                                            .join(' ')
+                                                            .slice(1)}
+                                                </p>
+                                            </div>
+                                        ),
+                                    )}
+                            </PhotoProvider>
                         </div>
                     </CardContent>
                 </Card>
