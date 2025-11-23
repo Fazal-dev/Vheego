@@ -3,6 +3,7 @@
 use App\Http\Controllers\Admin\AdminController;
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\VehicleController;
+use App\Models\Vehicle;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -32,8 +33,11 @@ Route::middleware(['auth', 'role:admin', 'verified', 'web'])->prefix('admin')
         Route::get('dashboard', 'getDashboard')->name('adminDashboard');
         Route::get('vehicle-approval', 'index')->name('vehicleApproval');
         Route::get('vehicle-review/{id}', 'reviewVehiclePage')->name('reviewVehicle');
+        Route::post('vehicle-approval/{vehicle}', 'updateApprovalStatus')->name('vehicleApprovals');
     });
 
-
+Route::get('/test', function () {
+    return view('emails.vehicle.rejected');
+});
 require __DIR__ . '/settings.php';
 require __DIR__ . '/auth.php';

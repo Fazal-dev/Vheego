@@ -45,4 +45,32 @@ class AdminController extends Controller
             'owner' => $owner,
         ]);
     }
+    /**
+     * Admin review vehicles Details and approve/reject
+     */
+    public function updateApprovalStatus(Request $request, Vehicle  $vehicle)
+    {
+
+        $request->validate([
+            'approval_status' => 'required|in:Approved,Rejected',
+        ]);
+
+        $status = $request->approval_status;
+        $owner = $vehicle->owner;
+        if ($status === "Approved") {
+            $vehicle->approval_status = "Approved";
+            $vehicle->status = "Active";
+            \Mail::to($owner->email)->send(new \App\Mail\VehicleApproved($vehicle));
+        }
+
+        if ($status === "Rejected") {
+            $vehicle->approval_status = "Rejected";
+            $vehicle->status = "Inactive";
+            \Mail::to($owner->email)->send(new \App\Mail\VehicleRejected($vehicle));
+        }
+
+        // $vehicle->save();
+
+        return to_route('admin.vehicleApproval')->withSuccess("Vehicle has been $status successfully.");
+    }
 }

@@ -5,7 +5,7 @@ import { Separator } from '@/components/ui/separator';
 import VehicleDetailsCard from '@/components/vehicleDetailsCard';
 import VehicleImagesSlider from '@/components/vehicleImagesSlider';
 import AppLayout from '@/layouts/app-layout';
-import { vehicleApproval } from '@/routes/admin';
+import { vehicleApproval, vehicleApprovals } from '@/routes/admin';
 import { type BreadcrumbItem } from '@/types/index';
 import { Head, router, useForm } from '@inertiajs/react';
 
@@ -23,11 +23,18 @@ export default function reviewVehicle({
     vehicle: any;
     owner: any;
 }) {
-    const { post, processing } = useForm();
+    const { post, processing, transform } = useForm({
+        approval_status: '',
+    });
 
-    const handleApprove = () => {};
+    const handleAction = (status: 'Approved' | 'Rejected') => {
+        transform((data) => ({
+            ...data,
+            approval_status: status,
+        }));
+        post(vehicleApprovals({ vehicle: vehicle.id }).url);
+    };
 
-    const handleReject = () => {};
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Vehicle Review" />
@@ -41,23 +48,25 @@ export default function reviewVehicle({
 
                     {/* Action Buttons */}
                     <div className="flex justify-end gap-3">
-                        <Button
-                            variant="destructive"
-                            disabled={processing}
-                            size={'sm'}
-                            onClick={handleReject}
-                        >
-                            Reject
-                        </Button>
+                        <form className="flex gap-3">
+                            <Button
+                                variant="destructive"
+                                disabled={processing}
+                                size={'sm'}
+                                onClick={() => handleAction('Rejected')}
+                            >
+                                Reject
+                            </Button>
 
-                        <Button
-                            variant="default"
-                            size={'sm'}
-                            disabled={processing}
-                            onClick={handleApprove}
-                        >
-                            Approve
-                        </Button>
+                            <Button
+                                variant="default"
+                                size={'sm'}
+                                disabled={processing}
+                                onClick={() => handleAction('Approved')}
+                            >
+                                Approve
+                            </Button>
+                        </form>
                     </div>
                 </div>
 
