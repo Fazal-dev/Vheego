@@ -8,6 +8,8 @@ import AppLayout from '@/layouts/app-layout';
 import { vehicleApproval, vehicleApprovals } from '@/routes/admin';
 import { type BreadcrumbItem } from '@/types/index';
 import { Head, router, useForm } from '@inertiajs/react';
+import { LoaderCircle } from 'lucide-react';
+import { useState } from 'react';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -26,13 +28,19 @@ export default function reviewVehicle({
     const { post, processing, transform } = useForm({
         approval_status: '',
     });
+    const [loadingButton, setLoadingButton] = useState<
+        'approve' | 'reject' | null
+    >(null);
 
     const handleAction = (status: 'Approved' | 'Rejected') => {
+        setLoadingButton(status === 'Approved' ? 'approve' : 'reject');
         transform((data) => ({
             ...data,
             approval_status: status,
         }));
-        post(vehicleApprovals({ vehicle: vehicle.id }).url);
+        post(vehicleApprovals({ vehicle: vehicle.id }).url, {
+            onFinish: () => setLoadingButton(null), // reset after request finishes
+        });
     };
 
     return (
@@ -55,6 +63,9 @@ export default function reviewVehicle({
                                 size={'sm'}
                                 onClick={() => handleAction('Rejected')}
                             >
+                                {loadingButton === 'reject' && (
+                                    <LoaderCircle className="mr-2 h-4 w-4 animate-spin" />
+                                )}
                                 Reject
                             </Button>
 
@@ -64,6 +75,9 @@ export default function reviewVehicle({
                                 disabled={processing}
                                 onClick={() => handleAction('Approved')}
                             >
+                                {loadingButton === 'approve' && (
+                                    <LoaderCircle className="mr-2 h-4 w-4 animate-spin" />
+                                )}
                                 Approve
                             </Button>
                         </form>

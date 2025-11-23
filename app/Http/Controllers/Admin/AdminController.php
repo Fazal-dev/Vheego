@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Vehicle;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Mail;
 use Inertia\Inertia;
 
 class AdminController extends Controller
@@ -60,13 +61,13 @@ class AdminController extends Controller
         if ($status === "Approved") {
             $vehicle->approval_status = "Approved";
             $vehicle->status = "Active";
-            \Mail::to($owner->email)->send(new \App\Mail\VehicleApproved($vehicle));
+            Mail::to($owner->email)->send(new \App\Mail\VehicleApproved($vehicle));
         }
 
         if ($status === "Rejected") {
             $vehicle->approval_status = "Rejected";
             $vehicle->status = "Inactive";
-            \Mail::to($owner->email)->send(new \App\Mail\VehicleRejected($vehicle));
+            Mail::to($owner->email)->send(new \App\Mail\VehicleRejected($vehicle));
         }
 
         // $vehicle->save();
