@@ -1,5 +1,6 @@
 import ImagePreview from '@/components/imagePreview';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { capitalizeWords } from '@/lib/utils';
 import { RotateCw, ZoomIn, ZoomOut } from 'lucide-react';
 import { PhotoProvider } from 'react-photo-view';
 export default function VehicleImagesSlider({
@@ -58,11 +59,7 @@ export default function VehicleImagesSlider({
                                         />
 
                                         <p className="mt-1 text-center text-sm capitalize">
-                                            {key.charAt(0).toUpperCase() +
-                                                key
-                                                    .split('_')
-                                                    .join(' ')
-                                                    .slice(1)}
+                                            {capitalizeWords(key)}
                                         </p>
                                     </div>
                                 ),

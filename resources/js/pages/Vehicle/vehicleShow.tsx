@@ -4,6 +4,7 @@ import Detail from '@/components/detail-lable';
 import PriceCard from '@/components/price-card';
 import { Card, CardContent } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
+import VehicleImagesSlider from '@/components/vehicleImagesSlider';
 import AppLayout from '@/layouts/app-layout';
 import { index } from '@/routes/owner/vehicles';
 import { BreadcrumbItem } from '@/types';
@@ -22,33 +23,6 @@ const breadcrumbs: BreadcrumbItem[] = [
 ];
 
 export default function VehicleShow({ vehicle }: VehicleShowProps) {
-    const images = [
-        {
-            label: 'Front Image',
-            src: vehicle.old_images?.front_image,
-        },
-        {
-            label: 'Back Image',
-            src: vehicle.old_images?.back_image,
-        },
-        {
-            label: 'Left Image',
-            src: vehicle.old_images?.left_image,
-        },
-        {
-            label: 'Right Image',
-            src: vehicle.old_images?.right_image,
-        },
-        {
-            label: 'Dashboard Image',
-            src: vehicle.old_images?.dashboard_image,
-        },
-        {
-            label: 'Seats Image',
-            src: vehicle.old_images?.seat_image,
-        },
-    ];
-
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Vehicle List" />
@@ -152,35 +126,12 @@ export default function VehicleShow({ vehicle }: VehicleShowProps) {
                                 iconColor="text-purple-600"
                             />
                         </div>
-
-                        <Separator className="my-6" />
-
-                        {/* Images */}
-                        <h2 className="mb-3 text-lg font-semibold text-gray-800">
-                            Vehicle Images
-                        </h2>
-                        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-                            {images.map(
-                                (img, i) =>
-                                    img.src && (
-                                        <div
-                                            key={i}
-                                            className="overflow-hidden rounded-lg border bg-gray-50 p-4 shadow-sm"
-                                        >
-                                            <img
-                                                src={img.src}
-                                                alt={img.label}
-                                                className="h-48 w-full object-cover transition-transform hover:scale-105"
-                                            />
-                                            <div className="p-2 text-center text-sm font-medium text-gray-700">
-                                                {img.label}
-                                            </div>
-                                        </div>
-                                    ),
-                            )}
-                        </div>
                     </CardContent>
                 </Card>
+                {/* images */}
+                <div className="mt-3">
+                    <VehicleImagesSlider image_urls={vehicle.old_images} />
+                </div>
             </div>
         </AppLayout>
     );
