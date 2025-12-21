@@ -5,7 +5,7 @@ import { Mail, Phone, User } from 'lucide-react';
 
 export default function OwnerDetails({ owner }: { owner: any }) {
     return (
-        <Card className="col-span-4 rounded-xl border-1 border-green-300 bg-white shadow-sm md:col-span-1">
+        <Card className="col-span-4 rounded-xl border-1 border-green-300 shadow-sm md:col-span-1">
             <CardHeader className="flex flex-row items-center gap-3 pb-1">
                 <Avatar className="h-10 w-10">
                     {/* If you have an owner avatar URL */}
@@ -22,7 +22,7 @@ export default function OwnerDetails({ owner }: { owner: any }) {
 
             <CardContent className="space-y-2 px-4 pt-2">
                 <div className="space-y-3">
-                    <div className="flex items-start gap-3 rounded-lg bg-gray-50 p-3">
+                    <div className="flex items-start gap-3 rounded-lg bg-gray-50 p-3 dark:bg-secondary">
                         <User className="mt-1 h-5 w-5 text-gray-500" />
                         <div>
                             <p className="text-sm text-gray-500">Owner Name</p>
@@ -32,7 +32,7 @@ export default function OwnerDetails({ owner }: { owner: any }) {
                         </div>
                     </div>
 
-                    <div className="flex items-start gap-3 rounded-lg bg-gray-50 p-3">
+                    <div className="flex items-start gap-3 rounded-lg bg-gray-50 p-3 dark:bg-secondary">
                         <Mail className="mt-1 h-5 w-5 text-gray-500" />
                         <div>
                             <p className="text-sm text-gray-500">Email</p>
@@ -40,7 +40,7 @@ export default function OwnerDetails({ owner }: { owner: any }) {
                         </div>
                     </div>
 
-                    <div className="flex items-start gap-3 rounded-lg bg-gray-50 p-3">
+                    <div className="flex items-start gap-3 rounded-lg bg-gray-50 p-3 dark:bg-secondary">
                         <Phone className="mt-1 h-5 w-5 text-gray-500" />
                         <div>
                             <p className="text-sm text-gray-500">Phone</p>

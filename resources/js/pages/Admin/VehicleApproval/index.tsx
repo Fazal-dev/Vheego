@@ -89,7 +89,7 @@ export default function VehicleApprovalPage({
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Vehicle Approval Portal" />
-            <div className="dark:bg-dark-800 mt-3 rounded-lg bg-white px-4 pt-0 pb-4 text-black dark:text-white">
+            <div className="dark:bg-dark-800 mt-3 rounded-lg px-4 pt-0 pb-4 text-black dark:text-white">
                 <DataTable
                     filter_columns="license_plate"
                     columns={columns}
