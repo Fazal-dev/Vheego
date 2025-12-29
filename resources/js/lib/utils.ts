@@ -14,3 +14,33 @@ export function capitalizeWords(text: string = "") {
         .join(" ");
 }
 
+type CurrencyInput = number | string | null | undefined;
+
+export function formatCurrency(
+    amount: CurrencyInput,
+    locale: string = 'en-LK',
+    currency: string = 'LKR'
+): string {
+    if (amount === null || amount === undefined || amount === '') {
+        return '—';
+    }
+
+    let numericAmount: number;
+
+    if (typeof amount === 'string') {
+        numericAmount = Number(amount.replace(/,/g, ''));
+    } else {
+        numericAmount = amount;
+    }
+
+    if (Number.isNaN(numericAmount)) {
+        return '—';
+    }
+
+    return new Intl.NumberFormat(locale, {
+        style: 'currency',
+        currency,
+        minimumFractionDigits: 0,
+    }).format(numericAmount);
+}
+

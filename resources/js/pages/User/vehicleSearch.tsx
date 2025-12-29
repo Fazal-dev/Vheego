@@ -123,6 +123,7 @@ export default function vehicleSearch() {
             matchesFuel
         );
     });
+
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Find Your Ride" />
@@ -138,8 +139,8 @@ export default function vehicleSearch() {
                 </div>
 
                 {/* 🔍 Advanced Search Bar */}
-                <div className="mb-8 grid grid-cols-1 gap-3 rounded-xl border bg-card p-4 shadow-sm sm:grid-cols-2 lg:grid-cols-6">
-                    <div className="lg:col-span-2">
+                <div className="mb-8 grid grid-cols-1 gap-3 rounded-xl border bg-card p-4 shadow-sm sm:grid-cols-2 lg:grid-cols-4">
+                    <div className="lg:col-span-1">
                         <Input
                             placeholder="Search by brand or model..."
                             value={search}
@@ -157,28 +158,15 @@ export default function vehicleSearch() {
                         <SelectTrigger>
                             <SelectValue placeholder="Vehicle Type" />
                         </SelectTrigger>
+
                         <SelectContent>
                             <SelectItem value="Sedan">Sedan</SelectItem>
                             <SelectItem value="SUV">SUV</SelectItem>
                             <SelectItem value="Car">Car</SelectItem>
                             <SelectItem value="Van">Van</SelectItem>
-                        </SelectContent>
-                    </Select>
-
-                    <Select
-                        onValueChange={(val) =>
-                            setFilters((f) => ({ ...f, location: val }))
-                        }
-                        value={filters.location}
-                    >
-                        <SelectTrigger>
-                            <SelectValue placeholder="Location" />
-                        </SelectTrigger>
-                        <SelectContent>
-                            <SelectItem value="Colombo">Colombo</SelectItem>
-                            <SelectItem value="Kandy">Kandy</SelectItem>
-                            <SelectItem value="Kurunegala">
-                                Kurunegala
+                            <SelectItem value="Motorbike">Motorbike</SelectItem>
+                            <SelectItem value="ThreeWheeler">
+                                Three-Wheeler
                             </SelectItem>
                         </SelectContent>
                     </Select>
