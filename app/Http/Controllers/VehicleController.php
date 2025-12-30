@@ -102,8 +102,10 @@ class VehicleController extends Controller
                 $extension = $file->getClientOriginalExtension();
                 $originalName = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
                 $fileName = $originalName . '_' . time() . '.' . $extension;
-                $path = $file->storeAs("vehicles/{$uniqueFolder}", $fileName, 'public');
-                $imagePaths[$field] = asset(Storage::url($path));
+
+                $file->storeAs("vehicles/{$uniqueFolder}", $fileName, 'public');
+
+                $imagePaths[$field] = asset("storage/vehicles/{$uniqueFolder}/{$fileName}");
             }
         }
 
@@ -217,9 +219,8 @@ class VehicleController extends Controller
                 $extension = $file->getClientOriginalExtension();
                 $originalName = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
                 $fileName = $originalName . '_' . time() . '.' . $extension;
-
-                $path = $file->storeAs("vehicles/{$folder}", $fileName, 'public');
-                $newImages[$field] = asset(Storage::url($path));
+                $file->storeAs("vehicles/{$folder}", $fileName, 'public');
+                $newImages[$field] = asset("storage/vehicles/{$folder}/{$fileName}");
             }
         }
 

@@ -10,8 +10,9 @@ import VehicleCard from '@/components/VehicleCard';
 import AppLayout from '@/layouts/app-layout';
 import customer from '@/routes/customer';
 import { type BreadcrumbItem } from '@/types';
-import { Head } from '@inertiajs/react';
-import { useState } from 'react';
+import { Head, router } from '@inertiajs/react';
+import { CarFront } from 'lucide-react';
+import { useEffect, useState } from 'react';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -20,109 +21,53 @@ const breadcrumbs: BreadcrumbItem[] = [
     },
 ];
 
-const vehicles = [
-    {
-        id: 1,
-        brand: 'BMW',
-        model: 'M5',
-        image: 'https://placehold.co/400x250?text=BMW+M5&font=roboto',
-        type: 'Sedan',
-        price: 15000,
-        location: 'Colombo',
-        transmission: 'Automatic',
-        fuel_type: 'Petrol',
-        year: 2025,
-    },
-    {
-        id: 2,
-        brand: 'Toyota',
-        model: 'Fortuner',
-        image: 'https://placehold.co/400x250?text=Toyota+Fortuner&font=roboto',
-        type: 'SUV',
-        price: 12000,
-        location: 'Kandy',
-        transmission: 'Manual',
-        fuel_type: 'Diesel',
-        year: 2025,
-    },
-    {
-        id: 3,
-        brand: 'Honda',
-        model: 'Civic',
-        image: 'https://placehold.co/400x250?text=Honda+Civic&font=roboto',
-        type: 'Car',
-        price: 9000,
-        location: 'Kurunegala',
-        transmission: 'Automatic',
-        fuel_type: 'Petrol',
-        year: 2025,
-    },
-    {
-        id: 4,
-        brand: 'Honda',
-        model: 'Civic',
-        image: 'https://placehold.co/400x250?text=Honda+Civic&font=roboto',
-        type: 'Car',
-        price: 9000,
-        location: 'Kurunegala',
-        transmission: 'Automatic',
-        fuel_type: 'Petrol',
-        year: 2025,
-    },
-    {
-        id: 5,
-        brand: 'Honda',
-        model: 'Civic',
-        image: 'https://placehold.co/400x250?text=Honda+Civic&font=roboto',
-        type: 'Car',
-        price: 9000,
-        location: 'Kurunegala',
-        transmission: 'Automatic',
-        fuel_type: 'Petrol',
-        year: 2025,
-    },
-    {
-        id: 6,
-        brand: 'Honda',
-        model: 'Civic',
-        image: 'https://placehold.co/400x250?text=Honda+Civic&font=roboto',
-        type: 'Car',
-        price: 9000,
-        location: 'Kurunegala',
-        transmission: 'Automatic',
-        fuel_type: 'Petrol',
-        year: 2025,
-    },
-];
+interface VehicleSearchProps {
+    initialSearch?: string;
+    initialFilters?: {
+        type?: string;
+        transmission?: string;
+        fuel_type?: string;
+    };
+    initialVehicles: Vehicle[];
+}
 
-export default function vehicleSearch() {
-    const [search, setSearch] = useState('');
-    const [filters, setFilters] = useState({
-        type: '',
-        location: '',
-        transmission: '',
-        fuel_type: '',
-    });
+interface Vehicle {
+    id: number;
+    brand: string;
+    model: string;
+    type: string;
+    transmission: string;
+    fuel_type: string;
+    daily_price: number;
+    front_image_url: string;
+    year: number;
+}
 
-    const filteredVehicles = vehicles.filter((v) => {
-        const matchesSearch =
-            v.brand.toLowerCase().includes(search.toLowerCase()) ||
-            v.model.toLowerCase().includes(search.toLowerCase());
-        const matchesType = !filters.type || v.type === filters.type;
-        const matchesLocation =
-            !filters.location || v.location === filters.location;
-        const matchesTransmission =
-            !filters.transmission || v.transmission === filters.transmission;
-        const matchesFuel =
-            !filters.fuel_type || v.fuel_type === filters.fuel_type;
-        return (
-            matchesSearch &&
-            matchesType &&
-            matchesLocation &&
-            matchesTransmission &&
-            matchesFuel
+export default function VehicleSearch({
+    initialSearch = '',
+    initialFilters = {},
+    initialVehicles,
+}: VehicleSearchProps) {
+    const [search, setSearch] = useState(initialSearch || '');
+    const [filters, setFilters] = useState(initialFilters);
+    const [vehicleList, setVehicleList] = useState(initialVehicles || []);
+
+    useEffect(() => {
+        router.get(
+            customer.findVehicle().url,
+            {
+                search: search,
+                ...filters,
+            },
+            {
+                preserveState: true,
+                replace: true,
+                onSuccess: (page) => {
+                    setVehicleList(page.props.vehicles as Vehicle[]);
+                },
+            },
         );
-    });
+    }, [filters]);
 
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
@@ -205,11 +150,38 @@ export default function vehicleSearch() {
                 </div>
 
                 {/* 🚗 Vehicle Grid */}
-                <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-                    {filteredVehicles.map((vehicle, index) => (
-                        <VehicleCard key={index} vehicle={vehicle} />
-                    ))}
-                </div>
+                {vehicleList.length > 0 ? (
+                    <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+                        {vehicleList.map((vehicle) => (
+                            <VehicleCard key={vehicle.id} vehicle={vehicle} />
+                        ))}
+                    </div>
+                ) : (
+                    <div className="flex flex-col items-center justify-center rounded-xl border border-dashed bg-muted/30 py-20 text-center">
+                        <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-background shadow-sm">
+                            <CarFront className="h-8 w-8 text-muted-foreground" />
+                        </div>
+
+                        <h2 className="text-lg font-semibold">
+                            No vehicles found
+                        </h2>
+
+                        <p className="mt-2 max-w-md text-sm text-muted-foreground">
+                            We couldn’t find any rides matching your search. Try
+                            adjusting filters or explore different options.
+                        </p>
+
+                        <button
+                            onClick={() => {
+                                setSearch('');
+                                setFilters({});
+                            }}
+                            className="mt-6 rounded-lg border bg-background px-5 py-2 text-sm font-medium transition hover:bg-muted"
+                        >
+                            Reset filters
+                        </button>
+                    </div>
+                )}
             </div>
         </AppLayout>
     );
