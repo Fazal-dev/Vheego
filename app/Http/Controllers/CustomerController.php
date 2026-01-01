@@ -15,7 +15,7 @@ class CustomerController extends Controller
     {
         $search = $request->input('search');
         $filters = $request->only(['type', 'transmission', 'fuel_type']);
-        // SELECT `id`, `owner_id`, `model`, `brand`, `transmission`, `fuel_type`, `license_plate`, `color`, `doors`, `seats`, `vehicle_type`, `year_of_manufacture`, `registration_date`, `registration_expiry_date`, `daily_rental_price`, `weekly_rental_price`, `monthly_rental_price`, `bond_amount`, `engine_capacity`, `engine_number`, `pickup_location`, `image_urls`, `upload_folder`, `current_status`, `status`, `created_at`, `updated_at`, `approval_status` FROM `vehicles` WHERE 1
+
         $vehicles = Vehicle::where('current_status', 'available')
             ->when($search, function ($query, $search) {
                 $query->where(function ($q) use ($search) {
