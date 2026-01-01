@@ -51,8 +51,10 @@ export default function VehicleSearch({
     const [search, setSearch] = useState(initialSearch || '');
     const [filters, setFilters] = useState(initialFilters);
     const [vehicleList, setVehicleList] = useState(initialVehicles || []);
-
+    const shouldSearch = search.length === 0 || search.length >= 3;
     useEffect(() => {
+        if (!shouldSearch) return;
+
         router.get(
             customer.findVehicle().url,
             {
@@ -67,7 +69,7 @@ export default function VehicleSearch({
                 },
             },
         );
-    }, [filters]);
+    }, [filters, search]);
 
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
