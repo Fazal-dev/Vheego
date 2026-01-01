@@ -85,6 +85,8 @@ interface Vehicle {
     status: string;
     license_plate: string;
     pickup_location: string;
+    description: string;
+    highlights: string;
     image_urls: object;
      front_image?: File;
      back_image?: File;

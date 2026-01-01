@@ -2,7 +2,7 @@ import BackButton from '@/components/BackButton';
 import { Chip } from '@/components/chip';
 import Detail from '@/components/detail-lable';
 import PriceCard from '@/components/price-card';
-import { Card, CardContent } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
 import VehicleImagesSlider from '@/components/vehicleImagesSlider';
 import AppLayout from '@/layouts/app-layout';
@@ -95,6 +95,30 @@ export default function VehicleShow({ vehicle }: VehicleShowProps) {
                                 label="Registration Expiry"
                                 value={vehicle.registration_expiry_date}
                             />
+                        </div>
+
+                        <div className="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2">
+                            <Card>
+                                <CardHeader className="pb-2">
+                                    <CardTitle className="text-base">
+                                        Description
+                                    </CardTitle>
+                                </CardHeader>
+                                <CardContent className="text-sm leading-relaxed text-muted-foreground">
+                                    {vehicle.description}
+                                </CardContent>
+                            </Card>
+
+                            <Card>
+                                <CardHeader className="pb-2">
+                                    <CardTitle className="text-base">
+                                        Highlights
+                                    </CardTitle>
+                                </CardHeader>
+                                <CardContent className="text-sm">
+                                    {vehicle.highlights}
+                                </CardContent>
+                            </Card>
                         </div>
 
                         <Separator className="my-6" />

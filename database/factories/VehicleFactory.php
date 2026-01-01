@@ -22,6 +22,7 @@ class VehicleFactory extends Factory
         $fuelTypes = ['Petrol', 'Diesel', 'Hybrid', 'Electric'];
         $vehicleTypes = ['Car', 'Van', 'SUV', 'Motorbike', 'ThreeWheeler'];
         $status = ['Active', 'Inactive'];
+        $current_status = ['Available', 'Unavailable'];
         $pickUpLocation = ['Colombo', 'Kandy', 'Kurunegala', 'Jaffna'];
 
         return [
@@ -36,6 +37,7 @@ class VehicleFactory extends Factory
             'seats' => $this->faker->numberBetween(2, 8),
             'vehicle_type' => $this->faker->randomElement($vehicleTypes),
             'status' => $this->faker->randomElement($status),
+            'current_status' => $this->faker->randomElement($current_status),
             'year_of_manufacture' => $this->faker->year(),
             'registration_date' => $this->faker->dateTimeBetween('-5 years', 'now'),
             'registration_expiry_date' => $this->faker->dateTimeBetween('now', '+2 years'),
@@ -47,6 +49,8 @@ class VehicleFactory extends Factory
             'engine_number' => strtoupper($this->faker->bothify('ENG#######')),
             'pickup_location' => $this->faker->randomElement($pickUpLocation),
             'image_urls' => json_encode([$this->faker->imageUrl(800, 600, 'car', true)]),
+            'description' => 'A reliable and comfortable sedan.',
+            'highlights' => 'Fuel-efficient, Smooth drive',
         ];
     }
 }

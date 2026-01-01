@@ -12,7 +12,8 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('vehicles', function (Blueprint $table) {
-            $table->string('approval_status')->default('Pending');
+            $table->text('description')->nullable()->after('vehicle_type');
+            $table->text('highlights')->nullable()->after('description');
         });
     }
 
@@ -22,7 +23,7 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('vehicles', function (Blueprint $table) {
-            $table->dropColumn(['approval_status']);
+            $table->dropColumn(['description', 'highlights']);
         });
     }
 };

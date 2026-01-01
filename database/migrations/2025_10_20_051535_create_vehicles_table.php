@@ -35,7 +35,7 @@ return new class extends Migration
             $table->string('pickup_location');
             $table->text('image_urls');
             $table->string('upload_folder')->default('uniiq');
-            $table->string('current_status')->default('available');
+            $table->string('current_status')->default('unavailable');
             $table->string('status')->default('Inactive');
             $table->timestamps();
         });

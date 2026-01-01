@@ -32,7 +32,9 @@ class Vehicle extends Model
         'image_urls',
         'bond_amount',
         'upload_folder',
-        'pickup_location'
+        'pickup_location',
+        'description',
+        'highlights',
     ];
 
     public function owner()

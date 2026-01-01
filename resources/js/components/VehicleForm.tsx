@@ -47,6 +47,8 @@ export default function VehicleForm({ vehicle }: VehicleFormProps) {
         status: vehicle?.status || 'available',
         license_plate: vehicle?.license_plate || 'ABR-69696',
         pickup_location: vehicle?.pickup_location || 'Colombo',
+        description: vehicle?.description || 'test Description',
+        highlights: vehicle?.highlights || 'test Highlisghts',
         image_urls: {},
         front_image: null,
         back_image: null,
@@ -402,6 +404,47 @@ export default function VehicleForm({ vehicle }: VehicleFormProps) {
                             )}
                         </div>
                     </div>
+
+                    {/* 3rd Row Start */}
+                    <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-2">
+                        {/* description */}
+                        <div className="mb-3">
+                            <Label>Description</Label>
+                            <Textarea
+                                className="mt-1"
+                                onChange={(e) =>
+                                    setData('description', e.target.value)
+                                }
+                                value={data.description}
+                                placeholder="Briefly describe the vehicle, its condition, and any important rental details.
+"
+                            />
+                            {errors.description && (
+                                <div className="text-sm text-red-500">
+                                    {errors.description}
+                                </div>
+                            )}
+                        </div>
+                        {/* highlights */}
+                        <div className="mb-3">
+                            <Label>Highlights</Label>
+                            <Textarea
+                                className="mt-1"
+                                onChange={(e) =>
+                                    setData('highlights', e.target.value)
+                                }
+                                value={data.highlights}
+                                placeholder="Mention top features and benefits that make this vehicle stand out.
+"
+                                rows={5}
+                            ></Textarea>
+                            {errors.highlights && (
+                                <div className="text-sm text-red-500">
+                                    {errors.highlights}
+                                </div>
+                            )}
+                        </div>
+                    </div>
                 </CardContent>
             </Card>
             {/* Vehicle Info end */}
@@ -504,7 +547,7 @@ export default function VehicleForm({ vehicle }: VehicleFormProps) {
 
                             <Textarea
                                 className="mt-3"
-                                placeholder="Type Address here."
+                                placeholder="Enter pickup location (street, city, nearby landmark)"
                                 value={data.pickup_location}
                                 onChange={(e) =>
                                     setData('pickup_location', e.target.value)
