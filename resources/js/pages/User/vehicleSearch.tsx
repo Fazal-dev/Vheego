@@ -11,7 +11,7 @@ import AppLayout from '@/layouts/app-layout';
 import customer from '@/routes/customer';
 import { type BreadcrumbItem } from '@/types';
 import { Head, router } from '@inertiajs/react';
-import { CarFront } from 'lucide-react';
+import { CarFront, FilterX } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
 const breadcrumbs: BreadcrumbItem[] = [
@@ -52,6 +52,7 @@ export default function VehicleSearch({
     const [filters, setFilters] = useState(initialFilters);
     const [vehicleList, setVehicleList] = useState(initialVehicles || []);
     const shouldSearch = search.length === 0 || search.length >= 3;
+
     useEffect(() => {
         if (!shouldSearch) return;
 
@@ -132,23 +133,50 @@ export default function VehicleSearch({
                             <SelectItem value="Manual">Manual</SelectItem>
                         </SelectContent>
                     </Select>
-
-                    <Select
-                        onValueChange={(val) =>
-                            setFilters((f) => ({ ...f, fuel_type: val }))
-                        }
-                        value={filters.fuel_type}
-                    >
-                        <SelectTrigger>
-                            <SelectValue placeholder="Fuel Type" />
-                        </SelectTrigger>
-                        <SelectContent>
-                            <SelectItem value="Petrol">Petrol</SelectItem>
-                            <SelectItem value="Diesel">Diesel</SelectItem>
-                            <SelectItem value="Hybrid">Hybrid</SelectItem>
-                            <SelectItem value="Electric">Electric</SelectItem>
-                        </SelectContent>
-                    </Select>
+                    <div className="grid grid-cols-3">
+                        <div className="col-span-2">
+                            <Select
+                                onValueChange={(val) =>
+                                    setFilters((f) => ({
+                                        ...f,
+                                        fuel_type: val,
+                                    }))
+                                }
+                                value={filters.fuel_type}
+                            >
+                                <SelectTrigger>
+                                    <SelectValue placeholder="Fuel Type" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    <SelectItem value="Petrol">
+                                        Petrol
+                                    </SelectItem>
+                                    <SelectItem value="Diesel">
+                                        Diesel
+                                    </SelectItem>
+                                    <SelectItem value="Hybrid">
+                                        Hybrid
+                                    </SelectItem>
+                                    <SelectItem value="Electric">
+                                        Electric
+                                    </SelectItem>
+                                </SelectContent>
+                            </Select>
+                        </div>
+                        <div className="mx-3 mt-2" title="Clear all filters">
+                            <FilterX
+                                onClick={() => {
+                                    setSearch('');
+                                    setFilters({
+                                        type: '',
+                                        transmission: '',
+                                        fuel_type: '',
+                                    });
+                                }}
+                                className="h-6 w-6"
+                            />
+                        </div>
+                    </div>
                 </div>
 
                 {/* 🚗 Vehicle Grid */}
