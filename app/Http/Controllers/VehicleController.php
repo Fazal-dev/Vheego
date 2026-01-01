@@ -85,8 +85,6 @@ class VehicleController extends Controller
 
         $uniqueFolder = uniqid();
 
-        $path = "";
-
         $imageFields = [
             'front_image',
             'back_image',
