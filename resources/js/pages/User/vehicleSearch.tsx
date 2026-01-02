@@ -9,10 +9,10 @@ import {
 import VehicleCard from '@/components/VehicleCard';
 import AppLayout from '@/layouts/app-layout';
 import customer from '@/routes/customer';
-import { type BreadcrumbItem } from '@/types';
+import { Vehicle, VehicleSearchProps, type BreadcrumbItem } from '@/types';
 import { Head, router } from '@inertiajs/react';
 import { CarFront, FilterX } from 'lucide-react';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -20,30 +20,6 @@ const breadcrumbs: BreadcrumbItem[] = [
         href: customer.customerDashboard().url,
     },
 ];
-
-interface VehicleSearchProps {
-    initialSearch?: string;
-    initialFilters?: {
-        type?: string;
-        transmission?: string;
-        fuel_type?: string;
-        sort?: string;
-        seats?: string;
-    };
-    initialVehicles: Vehicle[];
-}
-
-interface Vehicle {
-    id: number;
-    brand: string;
-    model: string;
-    type: string;
-    transmission: string;
-    fuel_type: string;
-    daily_price: number;
-    front_image_url: string;
-    year: number;
-}
 
 export default function VehicleSearch({
     initialSearch = '',
@@ -54,6 +30,9 @@ export default function VehicleSearch({
     const [filters, setFilters] = useState(initialFilters);
     const [vehicleList, setVehicleList] = useState(initialVehicles || []);
     const shouldSearch = search.length === 0 || search.length >= 3;
+    const [pagination, setPagination] = useState<any>(null);
+    const [loadingMore, setLoadingMore] = useState(false);
+    const loadMoreRef = useRef<HTMLDivElement | null>(null);
 
     useEffect(() => {
         if (!shouldSearch) return;
@@ -69,10 +48,49 @@ export default function VehicleSearch({
                 replace: true,
                 onSuccess: (page) => {
                     setVehicleList(page.props.vehicles as Vehicle[]);
+                    setPagination(page.props.pagination);
                 },
             },
         );
     }, [filters, search]);
+
+    // Load more feature
+    useEffect(() => {
+        if (!pagination?.next_page_url || loadingMore) return;
+
+        const observer = new IntersectionObserver(
+            ([entry]) => {
+                if (entry.isIntersecting) {
+                    setLoadingMore(true);
+
+                    router.get(
+                        pagination.next_page_url,
+                        {},
+                        {
+                            preserveState: true,
+                            preserveScroll: true,
+                            onSuccess: (page) => {
+                                setVehicleList((prev) => [
+                                    ...prev,
+                                    ...((page.props as any)
+                                        .vehicles as Vehicle[]),
+                                ]);
+                                setPagination(page.props.pagination);
+                                setLoadingMore(false);
+                            },
+                        },
+                    );
+                }
+            },
+            { rootMargin: '200px' },
+        );
+
+        if (loadMoreRef.current) {
+            observer.observe(loadMoreRef.current);
+        }
+
+        return () => observer.disconnect();
+    }, [pagination, loadingMore]);
 
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
@@ -89,8 +107,8 @@ export default function VehicleSearch({
                 </div>
 
                 {/* 🔍 Advanced Search Bar */}
-                <div className="mb-8 grid grid-cols-1 gap-3 rounded-xl border bg-card p-4 shadow-sm sm:grid-cols-2 lg:grid-cols-6">
-                    <div className="lg:col-span-1">
+                <div className="mb-8 grid grid-cols-2 gap-3 rounded-xl border bg-card p-4 shadow-sm sm:grid-cols-2 lg:grid-cols-6">
+                    <div className="col-span-2 lg:col-span-1">
                         <Input
                             placeholder="Search by brand or model..."
                             value={search}
@@ -158,6 +176,7 @@ export default function VehicleSearch({
                             </SelectItem>
                         </SelectContent>
                     </Select>
+
                     <Select
                         value={filters.seats}
                         onValueChange={(val) =>
@@ -233,6 +252,12 @@ export default function VehicleSearch({
                         {vehicleList.map((vehicle) => (
                             <VehicleCard key={vehicle.id} vehicle={vehicle} />
                         ))}
+                        <div ref={loadMoreRef} className="h-10" />
+                        {loadingMore && (
+                            <div className="mt-6 text-center text-sm text-muted-foreground">
+                                Loading more vehicles...
+                            </div>
+                        )}
                     </div>
                 ) : (
                     <div className="flex flex-col items-center justify-center rounded-xl border border-dashed bg-muted/30 py-20 text-center">

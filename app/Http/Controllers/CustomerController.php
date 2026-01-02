@@ -68,6 +68,11 @@ class CustomerController extends Controller
 
         return Inertia::render('User/vehicleSearch', [
             'vehicles' => $vehiclesTransformed,
+            'pagination' => [
+                'current_page' => $vehicles->currentPage(),
+                'last_page' => $vehicles->lastPage(),
+                'next_page_url' => $vehicles->nextPageUrl(),
+            ],
             'filters' => $filters,
             'search' => $search,
         ]);

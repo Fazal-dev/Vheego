@@ -63,7 +63,7 @@ export type Vehicle_table = {
   status?: string; 
 }
 
-interface Vehicle {
+interface VehicleAll {
     id:number,
     model: string;
     brand: string;
@@ -101,7 +101,7 @@ interface Vehicle {
 };
 
 interface VehicleFormProps {
-    vehicle?: Vehicle;
+    vehicle?: VehicleAll;
 }
 
 export interface FlashMessages {
@@ -119,6 +119,29 @@ export interface DataTableProps<TData, TValue> {
     filter_columns: string;
 }
 
+interface Vehicle {
+    id: number;
+    brand: string;
+    model: string;
+    type: string;
+    transmission: string;
+    fuel_type: string;
+    daily_price: number;
+    front_image_url: string;
+    year: number;
+}
+
+export interface VehicleSearchProps {
+    initialSearch?: string;
+    initialFilters?: {
+        type?: string;
+        transmission?: string;
+        fuel_type?: string;
+        sort?: string;
+        seats?: string;
+    };
+    initialVehicles: Vehicle[];
+}
 
 export interface BackButtonProps
     extends React.ButtonHTMLAttributes<HTMLButtonElement> {
