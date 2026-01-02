@@ -69,7 +69,7 @@ export default function Profile({
                                     />
                                 </div>
 
-                                <div className="grid grid-cols-2 gap-4">
+                                <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-2">
                                     <div className="grid gap-2">
                                         <Label htmlFor="email">
                                             Email address
