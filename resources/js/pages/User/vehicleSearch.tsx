@@ -27,6 +27,8 @@ interface VehicleSearchProps {
         type?: string;
         transmission?: string;
         fuel_type?: string;
+        sort?: string;
+        seats?: string;
     };
     initialVehicles: Vehicle[];
 }
@@ -87,7 +89,7 @@ export default function VehicleSearch({
                 </div>
 
                 {/* 🔍 Advanced Search Bar */}
-                <div className="mb-8 grid grid-cols-1 gap-3 rounded-xl border bg-card p-4 shadow-sm sm:grid-cols-2 lg:grid-cols-4">
+                <div className="mb-8 grid grid-cols-1 gap-3 rounded-xl border bg-card p-4 shadow-sm sm:grid-cols-2 lg:grid-cols-6">
                     <div className="lg:col-span-1">
                         <Input
                             placeholder="Search by brand or model..."
@@ -108,6 +110,7 @@ export default function VehicleSearch({
                         </SelectTrigger>
 
                         <SelectContent>
+                            <SelectItem value=" ">Default</SelectItem>
                             <SelectItem value="Sedan">Sedan</SelectItem>
                             <SelectItem value="SUV">SUV</SelectItem>
                             <SelectItem value="Car">Car</SelectItem>
@@ -129,10 +132,52 @@ export default function VehicleSearch({
                             <SelectValue placeholder="Transmission" />
                         </SelectTrigger>
                         <SelectContent>
+                            <SelectItem value=" ">Default</SelectItem>
                             <SelectItem value="Automatic">Automatic</SelectItem>
                             <SelectItem value="Manual">Manual</SelectItem>
                         </SelectContent>
                     </Select>
+
+                    <Select
+                        value={filters.sort}
+                        onValueChange={(val) =>
+                            setFilters((f) => ({ ...f, sort: val }))
+                        }
+                    >
+                        <SelectTrigger>
+                            <SelectValue placeholder="Sort by Price" />
+                        </SelectTrigger>
+
+                        <SelectContent>
+                            <SelectItem value=" ">Default</SelectItem>
+                            <SelectItem value="price_asc">
+                                Price: Low → High
+                            </SelectItem>
+                            <SelectItem value="price_desc">
+                                Price: High → Low
+                            </SelectItem>
+                        </SelectContent>
+                    </Select>
+                    <Select
+                        value={filters.seats}
+                        onValueChange={(val) =>
+                            setFilters((f) => ({ ...f, seats: val }))
+                        }
+                    >
+                        <SelectTrigger>
+                            <SelectValue placeholder="Seats" />
+                        </SelectTrigger>
+
+                        <SelectContent>
+                            <SelectItem value=" ">Default</SelectItem>
+                            <SelectItem value="4">4 or more</SelectItem>
+                            <SelectItem value="5">5 or more</SelectItem>
+                            <SelectItem value="6">6 or more</SelectItem>
+                            <SelectItem value="7">7 or more</SelectItem>
+                            <SelectItem value="8">8 or more</SelectItem>
+                        </SelectContent>
+                    </Select>
+
                     <div className="grid grid-cols-3">
                         <div className="col-span-2">
                             <Select
@@ -148,6 +193,7 @@ export default function VehicleSearch({
                                     <SelectValue placeholder="Fuel Type" />
                                 </SelectTrigger>
                                 <SelectContent>
+                                    <SelectItem value=" ">Default</SelectItem>
                                     <SelectItem value="Petrol">
                                         Petrol
                                     </SelectItem>
@@ -171,6 +217,8 @@ export default function VehicleSearch({
                                         type: '',
                                         transmission: '',
                                         fuel_type: '',
+                                        seats: '',
+                                        sort: '',
                                     });
                                 }}
                                 className="h-6 w-6"
@@ -181,7 +229,7 @@ export default function VehicleSearch({
 
                 {/* 🚗 Vehicle Grid */}
                 {vehicleList.length > 0 ? (
-                    <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+                    <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
                         {vehicleList.map((vehicle) => (
                             <VehicleCard key={vehicle.id} vehicle={vehicle} />
                         ))}

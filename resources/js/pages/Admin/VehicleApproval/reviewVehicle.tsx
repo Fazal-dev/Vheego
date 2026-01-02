@@ -39,7 +39,7 @@ export default function reviewVehicle({
             approval_status: status,
         }));
         post(vehicleApprovals({ vehicle: vehicle.id }).url, {
-            onFinish: () => setLoadingButton(null), // reset after request finishes
+            onFinish: () => setLoadingButton(null),
         });
     };
 
@@ -88,6 +88,27 @@ export default function reviewVehicle({
                     <VehicleDetailsCard vehicle={vehicle} />
                     {/* Owner Details */}
                     <OwnerDetails owner={owner} />
+                </div>
+
+                {/* Description & Highlights */}
+                <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
+                    {/* Description */}
+                    <div className="col-span-2 rounded-lg border bg-muted/30 p-4">
+                        <h4 className="mb-2 text-sm font-medium">
+                            Description
+                        </h4>
+                        <p className="text-sm leading-relaxed text-muted-foreground">
+                            {vehicle.description || 'No description provided.'}
+                        </p>
+                    </div>
+
+                    {/* Highlights */}
+                    <div className="rounded-lg border bg-muted/30 p-4">
+                        <h4 className="mb-2 text-sm font-medium">Highlights</h4>
+                        <p className="space-y-2 text-sm text-muted-foreground">
+                            {vehicle.highlights}
+                        </p>
+                    </div>
                 </div>
 
                 <Separator />

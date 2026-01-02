@@ -14,7 +14,7 @@ class CustomerController extends Controller
     public function findVehicle(Request $request)
     {
         $search = $request->input('search');
-        $filters = $request->only(['type', 'transmission', 'fuel_type']);
+        $filters = $request->only(['type', 'transmission', 'fuel_type', 'seats', 'sort']);
 
         $vehicles = Vehicle::where('current_status', 'available')
             ->when($search, function ($query, $search) {
@@ -31,6 +31,18 @@ class CustomerController extends Controller
             })
             ->when($filters['fuel_type'] ?? null, function ($query, $fuelType) {
                 $query->where('fuel_type', $fuelType);
+            })
+            ->when($filters['seats'] ?? null, function ($query, $seats) {
+                $query->where('seats', '>=', $seats);
+            })
+            ->when($filters['sort'] ?? null, function ($query, $sort) {
+                if ($sort === 'price_asc') {
+                    $query->orderBy('daily_rental_price', 'asc');
+                }
+
+                if ($sort === 'price_desc') {
+                    $query->orderBy('daily_rental_price', 'desc');
+                }
             })
             ->orderByDesc('id')
             ->paginate(12)
@@ -50,6 +62,7 @@ class CustomerController extends Controller
                 'transmission' => $vehicle->transmission,
                 'fuel_type' => $vehicle->fuel_type,
                 'front_image_url' => $frontImage,
+                'seats' => $vehicle->seats
             ];
         });
 
