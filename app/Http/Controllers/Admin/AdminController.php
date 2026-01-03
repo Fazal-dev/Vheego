@@ -70,7 +70,7 @@ class AdminController extends Controller
             Mail::to($owner->email)->send(new \App\Mail\VehicleRejected($vehicle));
         }
 
-        // $vehicle->save();
+        $vehicle->save();
 
         return to_route('admin.vehicleApproval')->withSuccess("Vehicle has been $status successfully.");
     }

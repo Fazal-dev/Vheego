@@ -253,11 +253,6 @@ export default function VehicleSearch({
                             <VehicleCard key={vehicle.id} vehicle={vehicle} />
                         ))}
                         <div ref={loadMoreRef} className="h-10" />
-                        {loadingMore && (
-                            <div className="mt-6 text-center text-sm text-muted-foreground">
-                                Loading more vehicles...
-                            </div>
-                        )}
                     </div>
                 ) : (
                     <div className="flex flex-col items-center justify-center rounded-xl border border-dashed bg-muted/30 py-20 text-center">
@@ -277,12 +272,24 @@ export default function VehicleSearch({
                         <button
                             onClick={() => {
                                 setSearch('');
-                                setFilters({});
+                                setFilters({
+                                    type: '',
+                                    transmission: '',
+                                    fuel_type: '',
+                                    seats: '',
+                                    sort: '',
+                                });
                             }}
                             className="mt-6 rounded-lg border bg-background px-5 py-2 text-sm font-medium transition hover:bg-muted"
                         >
                             Reset filters
                         </button>
+                    </div>
+                )}
+
+                {loadingMore && (
+                    <div className="mt-6 text-center text-sm text-muted-foreground">
+                        Loading more vehicles...
                     </div>
                 )}
             </div>
