@@ -6,7 +6,7 @@ import {
     SelectTrigger,
     SelectValue,
 } from '@/components/ui/select';
-import VehicleCard from '@/components/VehicleCard';
+import VehicleCard from '@/components/vehicle/vehicle-card';
 import AppLayout from '@/layouts/app-layout';
 import customer from '@/routes/customer';
 import { Vehicle, VehicleSearchProps, type BreadcrumbItem } from '@/types';

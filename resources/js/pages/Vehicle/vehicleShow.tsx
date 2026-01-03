@@ -4,7 +4,7 @@ import Detail from '@/components/detail-lable';
 import PriceCard from '@/components/price-card';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
-import VehicleImagesSlider from '@/components/vehicleImagesSlider';
+import VehicleImagesSlider from '@/components/vehicle/vehicle-images-slider';
 import AppLayout from '@/layouts/app-layout';
 import { index } from '@/routes/owner/vehicles';
 import { BreadcrumbItem } from '@/types';
@@ -98,7 +98,7 @@ export default function VehicleShow({ vehicle }: VehicleShowProps) {
                         </div>
 
                         <div className="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2">
-                            <Card>
+                            <Card className="py-4">
                                 <CardHeader className="pb-2">
                                     <CardTitle className="text-base">
                                         Description
@@ -109,7 +109,7 @@ export default function VehicleShow({ vehicle }: VehicleShowProps) {
                                 </CardContent>
                             </Card>
 
-                            <Card>
+                            <Card className="py-4">
                                 <CardHeader className="pb-2">
                                     <CardTitle className="text-base">
                                         Highlights

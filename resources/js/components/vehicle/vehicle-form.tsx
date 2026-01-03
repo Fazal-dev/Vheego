@@ -13,7 +13,7 @@ import { ImageCropper } from '@/components/imageCropper';
 import { Label } from '@/components/ui/label';
 import { Separator } from '@/components/ui/separator';
 import { Textarea } from '@/components/ui/textarea';
-import VehicleImageGuide from '@/components/VehicleImageGuide';
+import VehicleImageGuide from '@/components/vehicle/vehicle-image-guide';
 import { store, update } from '@/routes/owner/vehicles';
 import { VehicleFormProps } from '@/types';
 import { useForm } from '@inertiajs/react';

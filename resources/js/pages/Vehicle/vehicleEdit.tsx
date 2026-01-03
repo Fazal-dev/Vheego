@@ -1,5 +1,5 @@
 import BackButton from '@/components/BackButton';
-import VehicleForm from '@/components/VehicleForm';
+import VehicleForm from '@/components/vehicle/vehicle-form';
 import AppLayout from '@/layouts/app-layout';
 import { index } from '@/routes/owner/vehicles';
 import { BreadcrumbItem, VehicleFormProps } from '@/types';
