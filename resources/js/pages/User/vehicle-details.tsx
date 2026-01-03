@@ -1,0 +1,171 @@
+import ImageSliderProvider from '@/components/image-slider-provider';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent } from '@/components/ui/card';
+import Spec from '@/components/vehicle/spac';
+import AppLayout from '@/layouts/app-layout';
+import { formatCurrency } from '@/lib/utils';
+import { VehicleDetailsProp } from '@/types';
+import { Separator } from '@radix-ui/react-separator';
+import {
+    Car,
+    DoorClosed,
+    Fuel,
+    MapPin,
+    Settings,
+    Star,
+    Users,
+} from 'lucide-react';
+import { PhotoView } from 'react-photo-view';
+
+export default function VehicleDetails({
+    vehicle,
+}: {
+    vehicle: VehicleDetailsProp;
+}) {
+    return (
+        <AppLayout>
+            <div className="mx-auto max-w-7xl px-4 py-6">
+                {/* 🔝 Top Section */}
+                <div className="grid grid-cols-1 gap-6 lg:grid-cols-1">
+                    {/* Image + Info */}
+                    <div className="space-y-4 lg:col-span-2">
+                        <div className="grid grid-cols-1 gap-2 lg:grid-cols-6">
+                            {/* Left: Main Image */}
+                            <div className="lg:col-span-3">
+                                <img
+                                    src={
+                                        vehicle.images?.[0] ??
+                                        '/placeholder-car.jpg'
+                                    }
+                                    alt={`${vehicle.brand} ${vehicle.model}`}
+                                    className="h-[420px] w-full rounded-xl object-cover"
+                                />
+                            </div>
+
+                            {/* Right: Thumbnails */}
+                            <div className="grid grid-cols-2 gap-2 md:col-span-3 lg:col-span-3">
+                                <ImageSliderProvider>
+                                    {vehicle.images &&
+                                        vehicle.images
+                                            .slice(1, 5)
+                                            .map((img, index) => (
+                                                <PhotoView
+                                                    key={index}
+                                                    src={img}
+                                                >
+                                                    <img
+                                                        src={img}
+                                                        alt=""
+                                                        className="h-[200px] w-full cursor-pointer rounded-xl object-cover hover:opacity-90"
+                                                        style={{
+                                                            objectFit: 'cover',
+                                                        }}
+                                                    />
+                                                </PhotoView>
+                                            ))}
+                                </ImageSliderProvider>
+                            </div>
+                        </div>
+
+                        {/* infor */}
+                        <div>
+                            <h1 className="text-2xl font-semibold">
+                                {vehicle.brand} {vehicle.model} ({vehicle.year})
+                            </h1>
+
+                            <div className="mt-2 flex flex-wrap items-center gap-4 text-sm text-muted-foreground">
+                                <span className="flex items-center gap-1">
+                                    <MapPin className="h-4 w-4" />
+                                    {vehicle.location ?? 'Colombo'}
+                                </span>
+
+                                <span className="flex items-center gap-1">
+                                    <Star className="h-4 w-4 text-yellow-500" />
+                                    4.8 (120 trips)
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                {/* 📋 Vehicle Details */}
+                <div className="mt-10 grid grid-cols-1 gap-6 lg:grid-cols-3">
+                    <div className="space-y-6 lg:col-span-2">
+                        {/* Specs  */}
+                        <div className="grid grid-cols-2 gap-4 p-3 sm:grid-cols-5">
+                            <Spec
+                                icon={<Users />}
+                                label="Seats"
+                                value={`${vehicle.seats}`}
+                            />
+                            <Spec
+                                icon={<DoorClosed />}
+                                label="Doors"
+                                value={`${vehicle.doors}`}
+                            />
+                            <Spec
+                                icon={<Fuel />}
+                                label="Fuel"
+                                value={vehicle.fuel_type}
+                            />
+
+                            <Spec icon={<Car />} label="Type" value="Car" />
+                            <Spec
+                                icon={<Settings />}
+                                label="Transmission"
+                                value={vehicle.transmission}
+                            />
+                        </div>
+
+                        {/* Description */}
+                        <div className="p-5">
+                            <h2 className="mb-2 text-lg font-semibold">
+                                Description
+                            </h2>
+                            <p className="text-sm leading-relaxed text-muted-foreground">
+                                {vehicle.description ??
+                                    'Well-maintained vehicle, perfect for city and long trips. Clean interior, smooth drive, and excellent fuel efficiency.'}
+                            </p>
+                        </div>
+
+                        <Separator
+                            orientation="vertical"
+                            className="my-2 border"
+                        />
+
+                        {/* Highlights */}
+
+                        <div className="p-5">
+                            <h2 className="mb-3 text-lg font-semibold">
+                                Highlights
+                            </h2>
+                            <ul className="grid grid-cols-2 gap-2 text-sm text-muted-foreground">
+                                <li>✔ Air Conditioning</li>
+                                <li>✔ Bluetooth</li>
+                                <li>✔ Power Steering</li>
+                                <li>✔ USB Charging</li>
+                            </ul>
+                        </div>
+                    </div>
+                    {/* Price Card */}
+                    <Card className="sticky top-24 h-fit lg:col-span-1">
+                        <CardContent className="space-y-4 p-5">
+                            <div className="text-2xl font-semibold">
+                                {formatCurrency(vehicle.daily_rental_price)}
+                                <span className="ml-1 text-sm text-muted-foreground">
+                                    / day
+                                </span>
+                            </div>
+
+                            <Button className="w-full">Book Now</Button>
+
+                            <p className="text-center text-xs text-muted-foreground">
+                                Free cancellation • No hidden fees
+                            </p>
+                        </CardContent>
+                    </Card>
+                </div>
+            </div>
+        </AppLayout>
+    );
+}

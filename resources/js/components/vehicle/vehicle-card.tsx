@@ -1,12 +1,13 @@
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { formatCurrency } from '@/lib/utils';
+import customer from '@/routes/customer';
 import { VehicleCardProps } from '@/types';
 import { Link } from '@inertiajs/react';
 import { Fuel, MapPin, Settings, Users } from 'lucide-react';
 
 export default function VehicleCard({ vehicle }: VehicleCardProps) {
     return (
-        <Link href={`/vehicles/${vehicle.id}`}>
+        <Link href={customer.vehicleDetails(vehicle.id)}>
             <Card className="overflow-hidden p-1 transition-all hover:-translate-y-1 hover:shadow-lg">
                 {/* Image */}
                 <CardHeader className="p-0">

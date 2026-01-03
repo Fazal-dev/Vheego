@@ -84,4 +84,34 @@ class CustomerController extends Controller
     {
         return Inertia::render('User/customerDashboard');
     }
+
+    /**
+     * Display vehicle  Details
+     */
+    public function vehicleDetails(Request $request, Vehicle  $vehicle)
+    {
+
+        $images = collect(json_decode($vehicle->image_urls, true))
+            ->filter()
+            ->values();
+
+        return Inertia::render('User/vehicle-details', [
+            'vehicle' => [
+                'id' => $vehicle->id,
+                'brand' => $vehicle->brand,
+                'model' => $vehicle->model,
+                'year' => $vehicle->year_of_manufacture,
+                'type' => $vehicle->vehicle_type,
+                'daily_rental_price' => $vehicle->daily_rental_price,
+                'location' => $vehicle->location ?? "Colombo",
+                'seats' => $vehicle->seats,
+                'doors' => $vehicle->doors,
+                'transmission' => $vehicle->transmission,
+                'fuel_type' => $vehicle->fuel_type,
+                'description' => $vehicle->description,
+                'highlights' => $vehicle->highlights,
+                'images' => $images,
+            ],
+        ]);
+    }
 }

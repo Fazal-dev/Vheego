@@ -159,6 +159,22 @@ export interface VehicleCardProps {
     };
 }
 
+export interface VehicleDetailsProp {
+    id: number;
+    brand: string;
+    model: string;
+    year: number;
+    daily_rental_price: number;
+    transmission: string;
+    fuel_type: string;
+    seats: number;
+    location: string;
+    description?: string;
+    images?: string[];
+    type?: string;
+    doors?: number;
+}
+
 export interface BackButtonProps
     extends React.ButtonHTMLAttributes<HTMLButtonElement> {
     /** If provided, the button will navigate to this href. Otherwise it calls history.back() */

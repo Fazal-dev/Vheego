@@ -49,7 +49,7 @@ class VehicleFactory extends Factory
             'engine_number' => strtoupper($this->faker->bothify('ENG#######')),
             'pickup_location' => $this->faker->randomElement($pickUpLocation),
             'image_urls' => json_encode([$this->faker->imageUrl(800, 600, 'car', true)]),
-            'description' => 'A reliable and comfortable sedan.',
+            'description' => 'Well-maintained vehicle, perfect for city and long trips. Clean interior, smooth drive, and excellent fuel efficiency.',
             'highlights' => 'Fuel-efficient, Smooth drive',
         ];
     }
