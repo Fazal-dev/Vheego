@@ -1,5 +1,6 @@
 import { type ClassValue, clsx } from 'clsx';
 import { twMerge } from 'tailwind-merge';
+import { format } from 'date-fns';
 
 export function cn(...inputs: ClassValue[]) {
     return twMerge(clsx(inputs));
@@ -43,4 +44,34 @@ export function formatCurrency(
         minimumFractionDigits: 0,
     }).format(numericAmount);
 }
+
+export function  addOneDay (date: Date)  {
+        const d = new Date(date);
+        d.setDate(d.getDate() + 1);
+        return d;
+};
+
+export function  getDays (startDate:Date,endDate:Date,startTime:string,endTime:string)  {
+       
+        return Math.max(
+                  1,
+                  Math.ceil(
+                      (new Date(
+                          `${format(endDate, 'yyyy-MM-dd')}T${endTime}`,
+                      ).getTime() -
+                          new Date(
+                              `${format(startDate, 'yyyy-MM-dd')}T${startTime}`,
+                          ).getTime()) /
+                          (1000 * 60 * 60 * 24),
+                  ),
+              )
+};
+
+export function getTodayDate() { 
+     const today:Date = new Date();
+    today.setHours(0, 0, 0, 0);
+    
+    return today;
+}
+
 

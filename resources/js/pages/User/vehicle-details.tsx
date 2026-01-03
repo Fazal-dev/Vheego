@@ -1,9 +1,9 @@
+import BookingSummaryCard from '@/components/booking-summary-card';
+import { HostInfoCard } from '@/components/host-info-card';
 import ImageSliderProvider from '@/components/image-slider-provider';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent } from '@/components/ui/card';
+import IncludeBenifits from '@/components/include-benifits';
 import Spec from '@/components/vehicle/spac';
 import AppLayout from '@/layouts/app-layout';
-import { formatCurrency } from '@/lib/utils';
 import { VehicleDetailsProp } from '@/types';
 import { Separator } from '@radix-ui/react-separator';
 import {
@@ -15,6 +15,7 @@ import {
     Star,
     Users,
 } from 'lucide-react';
+
 import { PhotoView } from 'react-photo-view';
 
 export default function VehicleDetails({
@@ -38,7 +39,7 @@ export default function VehicleDetails({
                                         '/placeholder-car.jpg'
                                     }
                                     alt={`${vehicle.brand} ${vehicle.model}`}
-                                    className="h-[420px] w-full rounded-xl object-cover"
+                                    className="h-[350px] w-full rounded-xl object-cover"
                                 />
                             </div>
 
@@ -56,7 +57,7 @@ export default function VehicleDetails({
                                                     <img
                                                         src={img}
                                                         alt=""
-                                                        className="h-[200px] w-full cursor-pointer rounded-xl object-cover hover:opacity-90"
+                                                        className="h-[170px] w-full cursor-pointer rounded-xl object-cover hover:opacity-90"
                                                         style={{
                                                             objectFit: 'cover',
                                                         }}
@@ -67,7 +68,7 @@ export default function VehicleDetails({
                             </div>
                         </div>
 
-                        {/* infor */}
+                        {/* info */}
                         <div>
                             <h1 className="text-2xl font-semibold">
                                 {vehicle.brand} {vehicle.model} ({vehicle.year})
@@ -81,7 +82,7 @@ export default function VehicleDetails({
 
                                 <span className="flex items-center gap-1">
                                     <Star className="h-4 w-4 text-yellow-500" />
-                                    4.8 (120 trips)
+                                    4.8 ({vehicle.vehicleTrips} trips)
                                 </span>
                             </div>
                         </div>
@@ -116,7 +117,6 @@ export default function VehicleDetails({
                                 value={vehicle.transmission}
                             />
                         </div>
-
                         {/* Description */}
                         <div className="p-5">
                             <h2 className="mb-2 text-lg font-semibold">
@@ -132,38 +132,31 @@ export default function VehicleDetails({
                             orientation="vertical"
                             className="my-2 border"
                         />
-
                         {/* Highlights */}
-
                         <div className="p-5">
                             <h2 className="mb-3 text-lg font-semibold">
                                 Highlights
                             </h2>
-                            <ul className="grid grid-cols-2 gap-2 text-sm text-muted-foreground">
-                                <li>✔ Air Conditioning</li>
-                                <li>✔ Bluetooth</li>
-                                <li>✔ Power Steering</li>
-                                <li>✔ USB Charging</li>
-                            </ul>
+                            <p className="text-sm leading-relaxed text-muted-foreground">
+                                {vehicle.highlights ??
+                                    'Well-maintained vehicle, perfect for city and long trips. Clean interior, smooth drive, and excellent fuel efficiency.'}
+                            </p>
+                        </div>
+                        {/* host section */}
+                        <HostInfoCard
+                            hostName={vehicle.ownerName}
+                            avatarUrl={vehicle.ownerAvatar}
+                            joinDate={vehicle.ownerJoinDate}
+                            trips={vehicle.ownerTrips}
+                        />
+                        <div className=" ">
+                            <IncludeBenifits />
                         </div>
                     </div>
-                    {/* Price Card */}
-                    <Card className="sticky top-24 h-fit lg:col-span-1">
-                        <CardContent className="space-y-4 p-5">
-                            <div className="text-2xl font-semibold">
-                                {formatCurrency(vehicle.daily_rental_price)}
-                                <span className="ml-1 text-sm text-muted-foreground">
-                                    / day
-                                </span>
-                            </div>
-
-                            <Button className="w-full">Book Now</Button>
-
-                            <p className="text-center text-xs text-muted-foreground">
-                                Free cancellation • No hidden fees
-                            </p>
-                        </CardContent>
-                    </Card>
+                    {/* booking summary */}
+                    <div className="lg:col-span-1">
+                        <BookingSummaryCard vehicle={vehicle} />
+                    </div>
                 </div>
             </div>
         </AppLayout>

@@ -170,9 +170,15 @@ export interface VehicleDetailsProp {
     seats: number;
     location: string;
     description?: string;
+    highlights?: string;
     images?: string[];
     type?: string;
     doors?: number;
+    ownerName :string ,
+    ownerJoinDate : string,
+    ownerTrips :number,
+    vehicleTrips :number,
+    ownerAvatar : string
 }
 
 export interface BackButtonProps

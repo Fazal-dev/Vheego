@@ -95,6 +95,12 @@ class CustomerController extends Controller
             ->filter()
             ->values();
 
+        $owner = $vehicle->owner;
+
+        // todo: actual trip counts
+        $ownerTrips = 135;
+        $vehicleTrips = 120;
+
         return Inertia::render('User/vehicle-details', [
             'vehicle' => [
                 'id' => $vehicle->id,
@@ -111,6 +117,11 @@ class CustomerController extends Controller
                 'description' => $vehicle->description,
                 'highlights' => $vehicle->highlights,
                 'images' => $images,
+                'vehicleTrips' => $vehicleTrips,
+                'ownerName' => $owner->name,
+                'ownerJoinDate' => $owner->created_at,
+                'ownerTrips' => $ownerTrips,
+                'ownerAvatar' => $owner->avatar_url ?? 'https://i.pravatar.cc/150?img=',
             ],
         ]);
     }
