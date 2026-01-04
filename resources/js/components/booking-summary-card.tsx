@@ -1,7 +1,12 @@
-import { addOneDay, getDays, getTodayDate } from '@/lib/utils';
+import {
+    addOneDay,
+    generateTimeSlots,
+    getDays,
+    getTodayDate,
+} from '@/lib/utils';
 import { format } from 'date-fns';
 import { CalendarIcon } from 'lucide-react';
-import { useRef, useState } from 'react';
+import { useState } from 'react';
 
 import { Button } from '@/components/ui/button';
 import { Calendar } from '@/components/ui/calendar';
@@ -16,6 +21,14 @@ import { Separator } from '@/components/ui/separator';
 import { formatCurrency } from '@/lib/utils';
 import customer from '@/routes/customer';
 
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from '@/components/ui/select';
+
 export default function BookingSummaryCard({ vehicle }: any) {
     const today: Date = getTodayDate();
 
@@ -23,9 +36,9 @@ export default function BookingSummaryCard({ vehicle }: any) {
     const [endDate, setEndDate] = useState<Date>(addOneDay(today));
     const [startTime, setStartTime] = useState('10:30:00');
     const [endTime, setEndTime] = useState('10:30:00');
-    const startTimeRef = useRef<HTMLInputElement>(null);
-    const endTimeRef = useRef<HTMLInputElement>(null);
     const [loading, setLoading] = useState(false);
+    const [startOpen, setStartOpen] = useState(false);
+    const [endOpen, setendOpen] = useState(false);
 
     const [pickupLocation, setPickupLocation] = useState(vehicle.location);
 
@@ -44,6 +57,8 @@ export default function BookingSummaryCard({ vehicle }: any) {
 
         window.location.href = url;
     };
+
+    const timeSlots = generateTimeSlots(30);
 
     return (
         <Card className="sticky top-24 h-fit border-1 border-green-300">
@@ -83,12 +98,7 @@ export default function BookingSummaryCard({ vehicle }: any) {
                                             if (!date) return;
 
                                             setStartDate(date);
-                                            document.activeElement instanceof
-                                                HTMLElement &&
-                                                document.activeElement.blur();
-
-                                            startTimeRef.current?.focus();
-
+                                            setStartOpen(true);
                                             const minEndDate = addOneDay(date);
                                             if (endDate < minEndDate)
                                                 setEndDate(minEndDate);
@@ -101,13 +111,35 @@ export default function BookingSummaryCard({ vehicle }: any) {
                         </div>
 
                         <div className="">
-                            <Input
-                                type="time"
-                                ref={startTimeRef}
+                            <Select
                                 value={startTime}
-                                onChange={(e) => setStartTime(e.target.value)}
-                                className="w-[100px] appearance-none [&::-webkit-calendar-picker-indicator]:hidden [&::-webkit-calendar-picker-indicator]:appearance-none"
-                            />
+                                onValueChange={setStartTime}
+                                open={startOpen}
+                                onOpenChange={setStartOpen}
+                            >
+                                <SelectTrigger
+                                    className="w-[110px]"
+                                    onClick={() => setStartOpen(true)}
+                                >
+                                    <SelectValue>
+                                        {startTime
+                                            ? timeSlots.find(
+                                                  (t) => t.value === startTime,
+                                              )?.label
+                                            : 'Select time'}
+                                    </SelectValue>
+                                </SelectTrigger>
+                                <SelectContent>
+                                    {timeSlots.map((t) => (
+                                        <SelectItem
+                                            key={t.value}
+                                            value={t.value}
+                                        >
+                                            {t.label}
+                                        </SelectItem>
+                                    ))}
+                                </SelectContent>
+                            </Select>
                         </div>
                     </div>
                 </div>
@@ -137,12 +169,10 @@ export default function BookingSummaryCard({ vehicle }: any) {
                                             if (!date) return;
 
                                             setEndDate(date);
-
+                                            setendOpen(true);
                                             document.activeElement instanceof
                                                 HTMLElement &&
                                                 document.activeElement.blur();
-
-                                            endTimeRef.current?.focus();
                                         }}
                                         disabled={{
                                             before: addOneDay(startDate),
@@ -153,13 +183,35 @@ export default function BookingSummaryCard({ vehicle }: any) {
                             </Popover>
                         </div>
                         <div className="">
-                            <Input
-                                type="time"
-                                ref={endTimeRef}
+                            <Select
                                 value={endTime}
-                                onChange={(e) => setEndTime(e.target.value)}
-                                className="w-[100px] appearance-none [&::-webkit-calendar-picker-indicator]:hidden [&::-webkit-calendar-picker-indicator]:appearance-none"
-                            />
+                                onValueChange={setEndTime}
+                                open={endOpen}
+                                onOpenChange={setendOpen}
+                            >
+                                <SelectTrigger
+                                    className="w-[110px]"
+                                    onClick={() => setendOpen(true)}
+                                >
+                                    <SelectValue>
+                                        {startTime
+                                            ? timeSlots.find(
+                                                  (t) => t.value === endTime,
+                                              )?.label
+                                            : 'Select time'}
+                                    </SelectValue>
+                                </SelectTrigger>
+                                <SelectContent>
+                                    {timeSlots.map((t) => (
+                                        <SelectItem
+                                            key={t.value}
+                                            value={t.value}
+                                        >
+                                            {t.label}
+                                        </SelectItem>
+                                    ))}
+                                </SelectContent>
+                            </Select>
                         </div>
                     </div>
                 </div>

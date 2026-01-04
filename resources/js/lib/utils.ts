@@ -74,4 +74,21 @@ export function getTodayDate() {
     return today;
 }
 
+ export function generateTimeSlots(interval = 30) {
+        const slots = [];
+        for (let h = 0; h < 24; h++) {
+            for (let m = 0; m < 60; m += interval) {
+                const hour12 = h % 12 || 12;
+                const ampm = h < 12 ? 'AM' : 'PM';
+                const label = `${hour12}:${m
+                    .toString()
+                    .padStart(2, '0')} ${ampm}`;
+              
+                const value = `${h.toString().padStart(2,'0')}:${m.toString().padStart(2,'0')}:00`;
+                slots.push({ label, value });
+            }
+        }
+        return slots;
+    }
+
 

@@ -4,7 +4,8 @@ import ImageSliderProvider from '@/components/image-slider-provider';
 import IncludeBenifits from '@/components/include-benifits';
 import Spec from '@/components/vehicle/spac';
 import AppLayout from '@/layouts/app-layout';
-import { VehicleDetailsProp } from '@/types';
+import customer from '@/routes/customer';
+import { BreadcrumbItem, VehicleDetailsProp } from '@/types';
 import { Separator } from '@radix-ui/react-separator';
 import {
     Car,
@@ -23,8 +24,14 @@ export default function VehicleDetails({
 }: {
     vehicle: VehicleDetailsProp;
 }) {
+    const breadcrumbs: BreadcrumbItem[] = [
+        {
+            title: vehicle.brand + '-' + vehicle.model,
+            href: customer.customerDashboard().url,
+        },
+    ];
     return (
-        <AppLayout>
+        <AppLayout breadcrumbs={breadcrumbs}>
             <div className="mx-auto max-w-7xl px-4 py-6">
                 {/* 🔝 Top Section */}
                 <div className="grid grid-cols-1 gap-6 lg:grid-cols-1">
