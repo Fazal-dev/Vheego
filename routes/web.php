@@ -17,6 +17,9 @@ Route::middleware(['auth', 'role:customer', 'verified', 'web'])->prefix('custome
         Route::get('dashboard', 'getDashboard')->name('customerDashboard');
         Route::get('find-vehicle', 'findVehicle')->name('findVehicle');
         Route::get('details-vehicle/{vehicle}', 'vehicleDetails')->name('vehicleDetails');
+        Route::get('checkout/{vehicle}', 'checkout')->name('checkout');
+        Route::get('checkout-success', 'success')->name('checkout.success');
+        Route::get('checkout-cancel', 'cancel')->name('checkout.cancel');
     });
 
 Route::middleware(['auth', 'role:owner', 'verified', 'web'])->prefix('owner')

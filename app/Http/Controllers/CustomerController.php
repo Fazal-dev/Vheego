@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\Vehicle;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
+use Stripe\Stripe;
+use Stripe\checkout\Session;
 
 class CustomerController extends Controller
 {
@@ -124,5 +126,83 @@ class CustomerController extends Controller
                 'ownerAvatar' => $owner->avatar_url ?? 'https://i.pravatar.cc/150?img=',
             ],
         ]);
+    }
+    /**
+     * payment page show for customer
+     */
+    public function checkout(Request $request, Vehicle  $vehicle)
+    {
+        Stripe::setApiKey(config('services.stripe.sk'));
+        $days = (int) $request->query('days', 1);
+
+        $baseRental = $vehicle->daily_rental_price * $days;
+        $insuranceFee = (int) $vehicle->bond_amount * 100;
+        $vat = (int) (($baseRental + $insuranceFee) * 0.08);
+
+        $lineItems = [
+            [
+                'price_data' => [
+                    'currency' => 'lkr',
+                    'product_data' => [
+                        'name' => $vehicle->brand . ' ' . $vehicle->model,
+                        'description' => "Vehicle rental for {$days} day(s)",
+                    ],
+                    'unit_amount' => max(200, (int) ($baseRental * 100)),
+                ],
+                'quantity' => 1,
+            ],
+            [
+                'price_data' => [
+                    'currency' => 'lkr',
+                    'product_data' => [
+                        'name' => 'Insurance Fee',
+                        'description' => 'Covers damage protection during rental',
+                    ],
+                    'unit_amount' => $insuranceFee,
+                ],
+                'quantity' => 1,
+            ],
+            [
+                'price_data' => [
+                    'currency' => 'lkr',
+                    'product_data' => [
+                        'name' => 'VAT (8%)',
+                        'description' => 'Local tax included in total price',
+                    ],
+                    'unit_amount' => $vat,
+                ],
+                'quantity' => 1,
+            ],
+        ];
+
+        $session = Session::create([
+            'mode' => 'payment',
+            'payment_method_types' => ['card'],
+            'line_items' => $lineItems,
+            'success_url' => route('customer.checkout.success', [
+                "vehicle_id" => $vehicle->id
+            ]),
+            'cancel_url' => route('customer.checkout.cancel', [
+                "vehicle_id" => $vehicle->id
+            ]),
+        ]);
+        return redirect()->away($session->url);
+    }
+
+    public function success(Request $request)
+    {
+        $vehicleId = $request->query('vehicle_id');
+
+        return to_route('customer.vehicleDetails', [
+            'vehicle' => $vehicleId
+        ])->withSuccess('Payment successful! Thank you for booking.');
+    }
+
+    public function cancel(Request $request)
+    {
+        $vehicleId = $request->query('vehicle_id');
+        return to_route('customer.vehicleDetails', [
+            'vehicle' => $vehicleId
+        ])->with('error', 'Payment was cancelled. You can try again.');
     }
 }

@@ -14,6 +14,7 @@ import {
 } from '@/components/ui/popover';
 import { Separator } from '@/components/ui/separator';
 import { formatCurrency } from '@/lib/utils';
+import customer from '@/routes/customer';
 
 export default function BookingSummaryCard({ vehicle }: any) {
     const today: Date = getTodayDate();
@@ -24,6 +25,7 @@ export default function BookingSummaryCard({ vehicle }: any) {
     const [endTime, setEndTime] = useState('10:30:00');
     const startTimeRef = useRef<HTMLInputElement>(null);
     const endTimeRef = useRef<HTMLInputElement>(null);
+    const [loading, setLoading] = useState(false);
 
     const [pickupLocation, setPickupLocation] = useState(vehicle.location);
 
@@ -33,6 +35,15 @@ export default function BookingSummaryCard({ vehicle }: any) {
             : 0;
 
     const totalAmount = days * vehicle.daily_rental_price || 100;
+
+    const handleCheckout = () => {
+        if (!startDate || !endDate) return;
+
+        setLoading(true);
+        const url = customer.checkout.url(vehicle.id) + `?days=${days}`;
+
+        window.location.href = url;
+    };
 
     return (
         <Card className="sticky top-24 h-fit border-1 border-green-300">
@@ -182,8 +193,13 @@ export default function BookingSummaryCard({ vehicle }: any) {
                     </div>
                 )}
 
-                <Button className="w-full" disabled={!startDate || !endDate}>
-                    Continue
+                <Button
+                    type="button"
+                    onClick={handleCheckout}
+                    className="w-full"
+                    disabled={!startDate || !endDate || loading}
+                >
+                    {loading ? 'Proccessing...' : 'Continue'}
                 </Button>
 
                 <p className="text-center text-xs text-muted-foreground">
