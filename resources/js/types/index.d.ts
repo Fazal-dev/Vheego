@@ -181,6 +181,16 @@ export interface VehicleDetailsProp {
     ownerAvatar : string
 }
 
+
+export interface CanclePaymentProps {
+    vehicle: {
+        id: number;
+        brand: string;
+        model: string;
+    };
+    message: string;
+}
+
 export interface BackButtonProps
     extends React.ButtonHTMLAttributes<HTMLButtonElement> {
     /** If provided, the button will navigate to this href. Otherwise it calls history.back() */

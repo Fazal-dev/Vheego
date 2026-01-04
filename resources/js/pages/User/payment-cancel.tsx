@@ -6,19 +6,14 @@ import {
     CardHeader,
 } from '@/components/ui/card';
 import customer from '@/routes/customer';
+import { CanclePaymentProps } from '@/types';
 import { router } from '@inertiajs/react';
 import { XCircle } from 'lucide-react';
 
-interface Props {
-    vehicle: {
-        id: number;
-        brand: string;
-        model: string;
-    };
-    message: string;
-}
-
-export default function PaymentCancel({ vehicle, message }: Props) {
+export default function PaymentCancel({
+    vehicle,
+    message,
+}: CanclePaymentProps) {
     return (
         <div className="flex min-h-[70vh] items-center justify-center px-4">
             <Card className="w-full max-w-md rounded-2xl shadow-lg">
