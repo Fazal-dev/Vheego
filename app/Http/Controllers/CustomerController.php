@@ -189,20 +189,31 @@ class CustomerController extends Controller
         return redirect()->away($session->url);
     }
 
-    public function success(Request $request)
+    /**
+     * After payment show success message 
+     */
+    public function success()
     {
-        $vehicleId = $request->query('vehicle_id');
-
-        return to_route('customer.vehicleDetails', [
-            'vehicle' => $vehicleId
-        ])->withSuccess('Payment successful! Thank you for booking.');
+        return Inertia::render('User/payment-success', [
+            'message' => 'Your payment was successful!',
+        ]);
     }
-
+    /**
+     * After payment show Erro message 
+     */
     public function cancel(Request $request)
     {
         $vehicleId = $request->query('vehicle_id');
-        return to_route('customer.vehicleDetails', [
-            'vehicle' => $vehicleId
-        ])->with('error', 'Payment was cancelled. You can try again.');
+
+        $vehicle = Vehicle::where('id', $vehicleId)->first();
+
+        return Inertia::render('User/payment-cancel', [
+            'vehicle' => [
+                'id' => $vehicle->id,
+                'brand' => $vehicle->brand,
+                'model' => $vehicle->model,
+            ],
+            'message' => 'Payment was cancelled or failed. No charges were made.',
+        ]);
     }
 }
