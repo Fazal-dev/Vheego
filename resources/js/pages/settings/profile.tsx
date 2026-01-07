@@ -59,7 +59,7 @@ export default function Profile({
                         {({ processing, recentlySuccessful, errors }) => (
                             <>
                                 <div className="flex flex-col items-center space-y-4">
-                                    <div className="group relative h-32 w-32">
+                                    <div className="group relative h-40 w-40">
                                         {/* Avatar Circle */}
                                         <img
                                             src={
@@ -68,7 +68,7 @@ export default function Profile({
                                                 `https://api.dicebear.com/6.x/initials/svg?seed=${encodeURIComponent(auth.user.name)}`
                                             }
                                             alt="Profile Avatar"
-                                            className="h-32 w-full rounded-full border-2 border-gray-300 object-cover"
+                                            className="h-40 w-full rounded-full border-2 border-gray-300 object-cover"
                                         />
 
                                         {/* Hover Overlay */}
@@ -191,7 +191,7 @@ export default function Profile({
                                         disabled={processing}
                                         data-test="update-profile-button"
                                     >
-                                        Save
+                                        Save Changes
                                     </Button>
 
                                     <Transition
@@ -201,8 +201,8 @@ export default function Profile({
                                         leave="transition ease-in-out"
                                         leaveTo="opacity-0"
                                     >
-                                        <p className="text-sm text-neutral-600">
-                                            Saved
+                                        <p className="text-sm text-red-400">
+                                            Succefully Saved Changes
                                         </p>
                                     </Transition>
                                 </div>
