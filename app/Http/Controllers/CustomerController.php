@@ -123,7 +123,7 @@ class CustomerController extends Controller
                 'ownerName' => $owner->name,
                 'ownerJoinDate' => $owner->created_at,
                 'ownerTrips' => $ownerTrips,
-                'ownerAvatar' => $owner->avatar_url ?? 'https://i.pravatar.cc/150?img=',
+                'ownerAvatar' => $owner->profile_image ?? 'https://i.pravatar.cc/150?img=',
             ],
         ]);
     }

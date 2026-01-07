@@ -13,6 +13,8 @@ import { Label } from '@/components/ui/label';
 import AppLayout from '@/layouts/app-layout';
 import SettingsLayout from '@/layouts/settings/layout';
 import { edit } from '@/routes/profile';
+import { ImageIcon } from 'lucide-react';
+import { useState } from 'react';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -29,6 +31,12 @@ export default function Profile({
     status?: string;
 }) {
     const { auth } = usePage<SharedData>().props;
+    const [preview, setPreview] = useState<string | null>(null);
+
+    const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0];
+        if (file) setPreview(URL.createObjectURL(file));
+    };
 
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
@@ -50,6 +58,42 @@ export default function Profile({
                     >
                         {({ processing, recentlySuccessful, errors }) => (
                             <>
+                                <div className="flex flex-col items-center space-y-4">
+                                    <div className="group relative h-32 w-32">
+                                        {/* Avatar Circle */}
+                                        <img
+                                            src={
+                                                preview ||
+                                                auth.user.profile_image ||
+                                                `https://api.dicebear.com/6.x/initials/svg?seed=${encodeURIComponent(auth.user.name)}`
+                                            }
+                                            alt="Profile Avatar"
+                                            className="h-32 w-full rounded-full border-2 border-gray-300 object-cover"
+                                        />
+
+                                        {/* Hover Overlay */}
+                                        <label
+                                            htmlFor="profile-upload"
+                                            className="bg-opacity-40 absolute inset-0 flex cursor-pointer items-center justify-center rounded-full bg-black text-white opacity-0 transition-opacity group-hover:opacity-100"
+                                        >
+                                            <ImageIcon className="h-6 w-6" />
+                                        </label>
+
+                                        {/* Hidden File Input */}
+                                        <input
+                                            type="file"
+                                            id="profile-upload"
+                                            accept="image/*"
+                                            className="hidden"
+                                            name="profile_image"
+                                            onChange={handleFileChange}
+                                        />
+                                    </div>
+
+                                    <p className="text-sm text-gray-500">
+                                        Upload your profile picture
+                                    </p>
+                                </div>
                                 <div className="grid gap-2">
                                     <Label htmlFor="name">Full Name</Label>
 

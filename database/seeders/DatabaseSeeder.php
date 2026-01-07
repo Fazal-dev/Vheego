@@ -26,6 +26,7 @@ class DatabaseSeeder extends Seeder
                 'email_verified_at' => now(),
                 'role' => 'customer',
                 'phone_no' => '07786868686',
+                'profile_image' => 'https://picsum.photos/800/600?random=166',
             ]
         );
 
@@ -35,6 +36,7 @@ class DatabaseSeeder extends Seeder
             'password' => bcrypt('password'),
             'role' => 'owner',
             'phone_no' => '0778433880',
+            'profile_image' => 'https://picsum.photos/800/600?random=166',
         ]);
 
         User::create([
@@ -43,6 +45,7 @@ class DatabaseSeeder extends Seeder
             'password' => bcrypt('password'),
             'role' => 'admin',
             'phone_no' => '077868656',
+            'profile_image' => 'https://picsum.photos/800/600?random=166',
         ]);
 
         Vehicle::factory(20)->create();
