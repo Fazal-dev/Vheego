@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\Booking;
 use App\Models\User;
 use App\Models\Vehicle;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
@@ -20,7 +21,7 @@ class DatabaseSeeder extends Seeder
         User::firstOrCreate(
             ['email' => 'test@example.com'],
             [
-                'name' => 'Test User',
+                'name' => 'Customer',
                 'password' => Hash::make('password'),
                 'email_verified_at' => now(),
                 'role' => 'customer',
@@ -29,7 +30,7 @@ class DatabaseSeeder extends Seeder
         );
 
         $user = User::create([
-            'name' => 'Fazal',
+            'name' => 'owner',
             'email' => 'fazal@gmail.com',
             'password' => bcrypt('password'),
             'role' => 'owner',
@@ -43,6 +44,9 @@ class DatabaseSeeder extends Seeder
             'role' => 'admin',
             'phone_no' => '077868656',
         ]);
+
         Vehicle::factory(20)->create();
+
+        Booking::factory(50)->create();
     }
 }
