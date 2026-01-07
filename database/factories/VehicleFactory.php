@@ -48,7 +48,16 @@ class VehicleFactory extends Factory
             'engine_capacity' => $this->faker->numberBetween(800, 4000),
             'engine_number' => strtoupper($this->faker->bothify('ENG#######')),
             'pickup_location' => $this->faker->randomElement($pickUpLocation),
-            'image_urls' => json_encode([$this->faker->imageUrl(800, 600, 'car', true)]),
+            'image_urls' => json_encode([
+                'front_image' => 'https://picsum.photos/800/600?random=' . rand(1, 1000),
+                'back_image' => 'https://picsum.photos/800/600?random=' . rand(1001, 2000),
+                'left_image' => 'https://picsum.photos/800/600?random=' . rand(2001, 3000),
+                'right_image' => 'https://picsum.photos/800/600?random=' . rand(3001, 4000),
+                'dashboard_image' => 'https://picsum.photos/800/600?random=' . rand(4001, 5000),
+                'seat_image' => 'https://picsum.photos/800/600?random=' . rand(5001, 6000),
+                'rc_front_image' => 'https://picsum.photos/800/600?random=' . rand(6001, 7000),
+                'rc_back_image' => 'https://picsum.photos/800/600?random=' . rand(7001, 8000),
+            ]),
             'description' => 'Well-maintained vehicle, perfect for city and long trips. Clean interior, smooth drive, and excellent fuel efficiency.',
             'highlights' => 'Fuel-efficient, Smooth drive',
         ];
