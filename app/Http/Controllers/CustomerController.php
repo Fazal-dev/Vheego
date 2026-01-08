@@ -192,7 +192,7 @@ class CustomerController extends Controller
     /**
      * After payment show success message 
      */
-    public function success()
+    public function success(Request $request)
     {
         return Inertia::render('User/payment-success', [
             'message' => 'Your payment was successful!',
