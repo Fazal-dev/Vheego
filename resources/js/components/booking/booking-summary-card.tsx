@@ -28,13 +28,11 @@ import {
     SelectValue,
 } from '@/components/ui/select';
 import customer from '@/routes/customer';
-interface responseProps {
-    url?: string;
-}
+import { router, usePage } from '@inertiajs/react';
 
 export default function BookingSummaryCard({ vehicle }: any) {
+    const { isAvailable } = usePage<{ isAvailable?: boolean }>().props;
     const today: Date = getTodayDate();
-
     const [startDate, setStartDate] = useState<Date>(today);
     const [endDate, setEndDate] = useState<Date>(addOneDay(today));
     const [startTime, setStartTime] = useState('10:30:00');
@@ -42,15 +40,38 @@ export default function BookingSummaryCard({ vehicle }: any) {
     const [loading, setLoading] = useState(false);
     const [startOpen, setStartOpen] = useState(false);
     const [endOpen, setendOpen] = useState(false);
+    const [checking, setChecking] = useState(false);
 
     const [pickupLocation, setPickupLocation] = useState(vehicle.location);
+
+    const checkAvailability = (start: Date, end: Date) => {
+        setChecking(true);
+
+        router.post(
+            customer.checkAvailability(),
+            {
+                vehicle_id: vehicle.id,
+                start_date: start.toISOString().split('T')[0],
+                end_date: end.toISOString().split('T')[0],
+            },
+            {
+                preserveState: true,
+                preserveScroll: true,
+                onFinish: () => {
+                    setChecking(false);
+                },
+            },
+        );
+    };
 
     const days =
         startDate && endDate
             ? getDays(startDate, endDate, startTime, endTime)
             : 0;
 
-    const totalAmount = days * vehicle.daily_rental_price || 100;
+    const canContinue = isAvailable === true && !checking && days > 0;
+
+    const totalAmount = days > 0 ? days * vehicle.daily_rental_price : 0;
 
     const handleCheckout = async () => {
         if (!startDate || !endDate) return;
@@ -114,9 +135,21 @@ export default function BookingSummaryCard({ vehicle }: any) {
 
                                             setStartDate(date);
                                             setStartOpen(true);
+
                                             const minEndDate = addOneDay(date);
-                                            if (endDate < minEndDate)
+
+                                            if (endDate < minEndDate) {
                                                 setEndDate(minEndDate);
+                                                checkAvailability(
+                                                    date,
+                                                    minEndDate,
+                                                );
+                                            } else {
+                                                checkAvailability(
+                                                    date,
+                                                    endDate,
+                                                );
+                                            }
                                         }}
                                         disabled={{ before: today }}
                                         required
@@ -185,6 +218,8 @@ export default function BookingSummaryCard({ vehicle }: any) {
 
                                             setEndDate(date);
                                             setendOpen(true);
+
+                                            checkAvailability(startDate, date);
                                             document.activeElement instanceof
                                                 HTMLElement &&
                                                 document.activeElement.blur();
@@ -209,7 +244,7 @@ export default function BookingSummaryCard({ vehicle }: any) {
                                     onClick={() => setendOpen(true)}
                                 >
                                     <SelectValue>
-                                        {startTime
+                                        {endTime
                                             ? timeSlots.find(
                                                   (t) => t.value === endTime,
                                               )?.label
@@ -230,6 +265,13 @@ export default function BookingSummaryCard({ vehicle }: any) {
                         </div>
                     </div>
                 </div>
+                {isAvailable === false && (
+                    <div className="rounded-md border border-red-200 bg-red-50 p-2">
+                        <p className="text-center text-[13px] font-bold text-red-600">
+                            Vehicle unavailable for selected dates
+                        </p>
+                    </div>
+                )}
 
                 <div className="space-y-2">
                     <p className="text-sm font-medium">
@@ -260,14 +302,30 @@ export default function BookingSummaryCard({ vehicle }: any) {
                     </div>
                 )}
 
-                <Button
+                {/* <Button
                     type="button"
                     onClick={handleCheckout}
                     className="w-full"
-                    disabled={!startDate || !endDate || loading}
+                    disabled={isAvailable === false || checking || loading}
                 >
-                    {loading ? 'Proccessing...' : 'Continue'}
-                </Button>
+                    {checking ? 'Checking...' : 'Continue'}
+                </Button> */}
+                {canContinue && (
+                    <Button
+                        type="button"
+                        onClick={handleCheckout}
+                        className="w-full"
+                        disabled={loading}
+                    >
+                        Continue
+                    </Button>
+                )}
+
+                {checking && (
+                    <p className="text-center text-xs text-muted-foreground">
+                        Checking availability...
+                    </p>
+                )}
 
                 <p className="text-center text-xs text-muted-foreground">
                     Free cancellation • No hidden fees

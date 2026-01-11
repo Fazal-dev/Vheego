@@ -12,6 +12,26 @@ use Stripe\checkout\Session;
 class CustomerController extends Controller
 {
     /**
+     * Check the the availablitiy of vehicle
+     */
+    public function checkAvailability(Request $request)
+    {
+        $start = $request->start_date;
+        $end = $request->end_date;
+
+        $isBooked = Booking::where('vehicle_id', $request->vehicle_id)
+            ->whereIn('booking_status', ['Booked', 'OnTrip'])
+            ->where(function ($query) use ($start, $end) {
+                $query->where(function ($q) use ($start, $end) {
+                    $q->where('start_date', '<=', $end)
+                        ->where('end_date', '>=', $start);
+                });
+            })
+            ->exists();
+
+        return back()->with('isAvailable', !$isBooked);
+    }
+    /**
      * Display All Bookings belong to customer
      */
     public function getAllBookings(Request $request)
