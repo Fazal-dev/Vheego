@@ -41,9 +41,7 @@ export default function PaymentSuccess() {
                         <Button
                             variant="outline"
                             className="w-full"
-                            onClick={() =>
-                                router.visit(customer.customerDashboard())
-                            }
+                            onClick={() => router.visit(customer.bookings())}
                         >
                             View My Bookings
                         </Button>

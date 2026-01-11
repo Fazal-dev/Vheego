@@ -205,3 +205,21 @@ export interface BackButtonProps
     /** Extra classname to merge */
     className?: string;
 }
+
+// Define the allowed status strings to prevent "undefined" errors
+export type BookingStatus = 'Booked' | 'OnTrip' | 'Completed' | 'Cancelled' | string;
+
+export interface Booking {
+    id: number | string;
+    vehicle: string;
+    image: string;
+    pickup: string;
+    dropoff: string;
+    status: BookingStatus;
+    startDate: string; // ISO date string from Laravel
+    endDate: string;   // ISO date string from Laravel
+}
+
+interface BookingListPageProps {
+    bookings: Booking[];
+}

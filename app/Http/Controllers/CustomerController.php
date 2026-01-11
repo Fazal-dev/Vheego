@@ -18,33 +18,35 @@ class CustomerController extends Controller
     {
         $user = $request->user();
 
-        // Fetch all bookings for the user, including related vehicle info
-        $bookings = $user->bookings()
-            ->with('vehicle') // assuming you have a relation `vehicle` in Booking model
-            ->orderBy('start_date', 'desc')
-            ->get()
-            ->map(function ($booking) {
+        $status = $request->query('status', 'OnTrip');
 
-                $images = $booking->vehicle->image_url;
-                if (is_string($images)) {
-                    $images = json_decode($images, true);
-                }
-                $frontImage = $images['front_image'] ?? 'https://picsum.photos/800/600?random=200';
-                return [
-                    'id' => $booking->id,
-                    'vehicle' => $booking->vehicle->brand . ' ' . $booking->vehicle->model,
-                    'image' => $frontImage ?? 'https://picsum.photos/800/600?random=200',
-                    'pickup' => $booking->pickup_location ?? "Test",
-                    'dropoff' => $booking->pickup_location ?? "Test",
-                    'status' => $booking->booking_status,
-                    'startDate' => $booking->start_date,
-                    'endDate' => $booking->end_date,
-                ];
-            });
+        $query = $user->bookings()
+            ->with('vehicle')
+            ->orderBy('start_date', 'desc');
 
-        // dd($bookings);
+        if ($status !== 'all') {
+            $query->where('booking_status', $status);
+        }
+
+        $bookings = $query->get()->map(function ($booking) {
+            $images = json_decode($booking->vehicle->image_urls, true);
+            $frontImage = $images['front_image'] ?? 'https://picsum.photos/800/600?random=200';
+
+            return [
+                'id' => $booking->id,
+                'vehicle' => $booking->vehicle->brand . ' ' . $booking->vehicle->model,
+                'image' => $frontImage,
+                'pickup' => $booking->pickup_location ?? "Test",
+                'dropoff' => $booking->drop_location ?? "Test",
+                'status' => $booking->booking_status,
+                'startDate' => $booking->start_date,
+                'endDate' => $booking->end_date,
+            ];
+        });
+
         return Inertia::render('User/booking-list', [
-            'bookings' => $bookings
+            'bookings' => $bookings,
+            'currentFilter' => $status
         ]);
     }
     /**

@@ -9,9 +9,11 @@ import {
 } from '@/components/ui/dialog';
 import { Progress } from '@/components/ui/progress';
 import { Separator } from '@/components/ui/separator';
+import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import AppLayout from '@/layouts/app-layout';
 import customer from '@/routes/customer';
-import { BreadcrumbItem } from '@/types';
+import { Booking, BookingListPageProps, BreadcrumbItem } from '@/types';
+import { router } from '@inertiajs/react';
 
 import { Car, Clock, Hash, MapPin } from 'lucide-react';
 import { useState } from 'react';
@@ -20,6 +22,11 @@ const statusMap: Record<
     string,
     { label: string; color: any; progress: number }
 > = {
+    Pending: {
+        label: 'Pending',
+        color: 'secondary',
+        progress: 25,
+    },
     Booked: {
         label: 'Booked',
         color: 'secondary',
@@ -51,42 +58,30 @@ const breadcrumbs: BreadcrumbItem[] = [
     },
 ];
 
-export default function BookingListPage() {
+export default function BookingListPage({
+    bookings,
+    currentFilter,
+}: {
+    bookings: BookingListPageProps;
+    currentFilter: string;
+}) {
+    const handleTabChange = (value: string) => {
+        router.get(
+            customer.bookings(),
+            { status: value },
+            {
+                preserveState: true,
+                replace: true,
+                onSuccess: (page) => {
+                    setBooking(page.props.bookings as BookingListPageProps);
+                },
+                only: ['bookings', 'currentFilter'],
+            },
+        );
+    };
     const [selectedBooking, setSelectedBooking] = useState<any>(null);
+    const [filterbookings, setBooking] = useState<any>(bookings);
     const [cancelBooking, setCancelBooking] = useState<any>(null);
-
-    const bookings = [
-        {
-            id: 'BK-2026-001',
-            vehicle: 'Toyota Prius 2023',
-            image: 'https://picsum.photos/300/200?random=1',
-            pickup: 'Colombo',
-            dropoff: 'Kandy',
-            status: 'Completed',
-            startDate: '2026-01-10',
-            endDate: '2026-01-14',
-        },
-        {
-            id: 'BK-2026-002',
-            vehicle: 'Honda Vezel 2022',
-            image: 'https://picsum.photos/300/200?random=2',
-            pickup: 'Negombo',
-            dropoff: 'Colombo',
-            status: 'Booked',
-            startDate: '2026-01-20',
-            endDate: '2026-01-22',
-        },
-        {
-            id: 'BK-2026-003',
-            vehicle: 'Honda Vezel 2022',
-            image: 'https://picsum.photos/300/200?random=5',
-            pickup: 'Negombo',
-            dropoff: 'Colombo',
-            status: 'Booked',
-            startDate: '2026-01-20',
-            endDate: '2026-01-22',
-        },
-    ];
 
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
@@ -98,87 +93,139 @@ export default function BookingListPage() {
                     </p>
                 </div>
 
+                <div className="mt-3 mb-3">
+                    <Tabs
+                        className="mb-3"
+                        value={currentFilter}
+                        onValueChange={handleTabChange}
+                    >
+                        <TabsList className="grid w-full grid-cols-2 md:grid-cols-3 lg:grid-cols-5">
+                            <TabsTrigger value="all">All</TabsTrigger>
+                            <TabsTrigger value="Booked">Booked</TabsTrigger>
+                            <TabsTrigger value="OnTrip">On Trip</TabsTrigger>
+                            <TabsTrigger value="Cancelled">
+                                Cancelled
+                            </TabsTrigger>
+                            <TabsTrigger value="Completed">
+                                Completed
+                            </TabsTrigger>
+                        </TabsList>
+                    </Tabs>
+                </div>
+
                 {/* Booking List */}
                 <div className="mt-3 grid gap-4">
-                    {bookings.map((booking) => (
-                        <Card
-                            key={booking.id}
-                            className="cursor-pointer rounded-2xl transition hover:shadow-md"
-                            onClick={() => setSelectedBooking(booking)}
-                        >
-                            <CardContent className="grid gap-4 p-3 md:grid-cols-[140px_1fr_220px]">
-                                {/* Vehicle Image */}
-                                <img
-                                    src={booking.image}
-                                    alt={booking.vehicle}
-                                    className="h-28 w-full rounded-xl object-cover"
-                                />
+                    {filterbookings && filterbookings.length > 0 ? (
+                        // 1. If we have bookings, map them
+                        filterbookings.map((booking: Booking) => (
+                            <Card
+                                key={booking.id}
+                                className="cursor-pointer rounded-2xl transition hover:shadow-md"
+                                onClick={() => setSelectedBooking(booking)}
+                            >
+                                <CardContent className="grid gap-4 p-3 md:grid-cols-[140px_1fr_220px]">
+                                    {/* Vehicle Image */}
+                                    <img
+                                        src={booking.image}
+                                        alt={booking.vehicle}
+                                        className="h-28 w-full rounded-xl object-cover"
+                                    />
 
-                                {/* Vehicle & Location */}
-                                <div className="space-y-2">
-                                    <div className="flex items-center gap-2">
-                                        <Car className="h-4 w-4 text-muted-foreground" />
-                                        <span className="font-medium">
-                                            {booking.vehicle}
-                                        </span>
-                                    </div>
-
-                                    <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                                        <MapPin className="h-4 w-4" /> Pickup:{' '}
-                                        {booking.pickup}
-                                    </div>
-
-                                    <div className="text-xs text-muted-foreground">
-                                        {booking.startDate} – {booking.endDate}
-                                    </div>
-
-                                    {/* Tracking Progress (Main Page) */}
-                                    <div className="space-y-1">
-                                        <div className="flex justify-between text-xs">
-                                            <span>Status</span>
-                                            <span>
-                                                {
-                                                    statusMap[booking.status]
-                                                        .label
-                                                }
+                                    {/* Vehicle & Location */}
+                                    <div className="space-y-2">
+                                        <div className="flex items-center gap-2">
+                                            <Car className="h-4 w-4 text-muted-foreground" />
+                                            <span className="font-medium">
+                                                {booking.vehicle}
                                             </span>
                                         </div>
-                                        <Progress
-                                            value={
-                                                statusMap[booking.status]
-                                                    .progress
-                                            }
-                                        />
-                                    </div>
-                                </div>
 
-                                {/* Actions */}
-                                <div className="flex flex-col items-end justify-between gap-3">
-                                    <Badge
-                                        variant={
-                                            statusMap[booking.status].color
-                                        }
-                                    >
-                                        {statusMap[booking.status].label}
-                                    </Badge>
-                                    {['pending', 'confirmed', 'ready'].includes(
-                                        booking.status,
-                                    ) && (
-                                        <Button
-                                            size="sm"
-                                            variant="destructive"
-                                            onClick={(e) => {
-                                                e.stopPropagation();
-                                                setCancelBooking(booking);
-                                            }}
+                                        <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                                            <MapPin className="h-4 w-4" />{' '}
+                                            Pickup: {booking.pickup}
+                                        </div>
+
+                                        <div className="text-xs text-muted-foreground">
+                                            {booking.startDate} –{' '}
+                                            {booking.endDate}
+                                        </div>
+
+                                        {/* Tracking Progress (Main Page) */}
+                                        <div className="space-y-1">
+                                            <div className="flex justify-between text-xs">
+                                                <span>Status</span>
+                                                <span>
+                                                    {
+                                                        statusMap[
+                                                            booking.status
+                                                        ].label
+                                                    }
+                                                </span>
+                                            </div>
+                                            <Progress
+                                                value={
+                                                    statusMap[booking.status]
+                                                        .progress
+                                                }
+                                            />
+                                        </div>
+                                    </div>
+
+                                    {/* Actions */}
+                                    <div className="flex flex-col items-end justify-between gap-3">
+                                        <Badge
+                                            variant={
+                                                statusMap[booking.status].color
+                                            }
                                         >
-                                            Cancel Booking
-                                        </Button>
-                                    )}
-                                </div>
-                            </CardContent>
+                                            {statusMap[booking.status].label}
+                                        </Badge>
+                                        {['Pending', 'Booked'].includes(
+                                            booking.status,
+                                        ) && (
+                                            <Button
+                                                size="sm"
+                                                variant="destructive"
+                                                onClick={(e) => {
+                                                    e.stopPropagation();
+                                                    setCancelBooking(booking);
+                                                }}
+                                            >
+                                                Cancel Booking
+                                            </Button>
+                                        )}
+                                    </div>
+                                </CardContent>
+                            </Card>
+                        ))
+                    ) : (
+                        // 2. Fallback UI when array is empty
+                        <Card className="flex flex-col items-center justify-center border-dashed p-12 text-center">
+                            <div className="mb-4 rounded-full bg-muted p-4">
+                                <Car className="h-8 w-8 text-muted-foreground opacity-20" />
+                            </div>
+                            <h3 className="text-lg font-medium">
+                                No bookings found
+                            </h3>
+                            <p className="mt-1 max-w-[250px] text-sm text-muted-foreground">
+                                You don't have any{' '}
+                                {currentFilter === 'all'
+                                    ? ''
+                                    : currentFilter.toLowerCase()}{' '}
+                                trips at the moment.
+                            </p>
+                            {/* Optional: Add a button to redirect them to car listing */}
+                            <Button
+                                variant="outline"
+                                className="mt-6"
+                                onClick={() =>
+                                    router.get(customer.findVehicle())
+                                }
+                            >
+                                Browse Vehicles
+                            </Button>
                         </Card>
-                    ))}
+                    )}
                 </div>
 
                 {/* Booking Detail Popup */}
