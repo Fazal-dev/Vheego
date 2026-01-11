@@ -33,7 +33,7 @@ return new class extends Migration
             $table->enum('booking_status', [
                 'Pending',
                 'Booked',
-                'On Trip',
+                'OnTrip',
                 'Cancelled',
                 'Completed'
             ])->default('Pending');

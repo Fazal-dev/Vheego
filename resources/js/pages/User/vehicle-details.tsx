@@ -1,4 +1,4 @@
-import BookingSummaryCard from '@/components/booking-summary-card';
+import BookingSummaryCard from '@/components/booking/booking-summary-card';
 import { HostInfoCard } from '@/components/host-info-card';
 import ImageSliderProvider from '@/components/image-slider-provider';
 import IncludeBenifits from '@/components/include-benifits';

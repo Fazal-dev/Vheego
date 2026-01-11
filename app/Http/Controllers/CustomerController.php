@@ -12,6 +12,42 @@ use Stripe\checkout\Session;
 class CustomerController extends Controller
 {
     /**
+     * Display All Bookings belong to customer
+     */
+    public function getAllBookings(Request $request)
+    {
+        $user = $request->user();
+
+        // Fetch all bookings for the user, including related vehicle info
+        $bookings = $user->bookings()
+            ->with('vehicle') // assuming you have a relation `vehicle` in Booking model
+            ->orderBy('start_date', 'desc')
+            ->get()
+            ->map(function ($booking) {
+
+                $images = $booking->vehicle->image_url;
+                if (is_string($images)) {
+                    $images = json_decode($images, true);
+                }
+                $frontImage = $images['front_image'] ?? 'https://picsum.photos/800/600?random=200';
+                return [
+                    'id' => $booking->id,
+                    'vehicle' => $booking->vehicle->brand . ' ' . $booking->vehicle->model,
+                    'image' => $frontImage ?? 'https://picsum.photos/800/600?random=200',
+                    'pickup' => $booking->pickup_location ?? "Test",
+                    'dropoff' => $booking->pickup_location ?? "Test",
+                    'status' => $booking->booking_status,
+                    'startDate' => $booking->start_date,
+                    'endDate' => $booking->end_date,
+                ];
+            });
+
+        // dd($bookings);
+        return Inertia::render('User/booking-list', [
+            'bookings' => $bookings
+        ]);
+    }
+    /**
      * Display All Vehicles For Explore
      */
     public function findVehicle(Request $request)
@@ -128,6 +164,7 @@ class CustomerController extends Controller
             ],
         ]);
     }
+
     /**
      * payment page show for customer
      */
@@ -191,7 +228,7 @@ class CustomerController extends Controller
                 'vehicle_id' => $vehicle->id
             ]),
             'metadata' => [
-                'user_id' => auth()->id(),
+                'user_id' =>  $request->user()->id,
                 'vehicle_id' => $vehicle->id,
                 'days' => $days,
                 'total_amount' => $totalAmount,
@@ -242,6 +279,7 @@ class CustomerController extends Controller
             'message' => 'Your payment was successful!',
         ]);
     }
+
     /**
      * After payment show Erro message 
      */

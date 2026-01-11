@@ -20,6 +20,7 @@ Route::middleware(['auth', 'role:customer', 'verified', 'web'])->prefix('custome
         Route::get('checkout/{vehicle}', 'checkout')->name('checkout');
         Route::get('checkout-success', 'success')->name('checkout.success');
         Route::get('checkout-cancel', 'cancel')->name('checkout.cancel');
+        Route::get('bookings', 'getAllBookings')->name('bookings');
     });
 
 Route::middleware(['auth', 'role:owner', 'verified', 'web'])->prefix('owner')

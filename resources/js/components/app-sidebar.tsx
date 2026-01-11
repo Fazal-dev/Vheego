@@ -10,13 +10,13 @@ import {
     SidebarMenuButton,
     SidebarMenuItem,
 } from '@/components/ui/sidebar';
-import admin, { vehicleApproval } from '@/routes/admin';
+import admin, { adminDashboard, vehicleApproval } from '@/routes/admin';
 import customer from '@/routes/customer';
 import { ownerDashboard } from '@/routes/owner';
 import vehicles from '@/routes/owner/vehicles';
 import { Auth, type NavItem } from '@/types';
 import { Link, usePage } from '@inertiajs/react';
-import { Car, CarFront, LayoutGrid, Search } from 'lucide-react';
+import { CalendarCheck, Car, CarFront, LayoutGrid, Search } from 'lucide-react';
 import AppLogo from './app-logo';
 
 const footerNavItems: NavItem[] = [
@@ -73,11 +73,31 @@ export function AppSidebar() {
             icon: Search,
             roles: ['customer'],
         },
+        {
+            title: 'My Bookings',
+            href: customer.bookings(),
+            icon: CalendarCheck,
+            roles: ['customer'],
+        },
     ];
 
     const mainNavItems: NavItem[] = allNavItems.filter((item) =>
         item.roles.includes(role),
     );
+
+    let home_dashbord;
+
+    switch (role) {
+        case 'customer':
+            home_dashbord = customer.customerDashboard();
+            break;
+        case 'owner':
+            home_dashbord = ownerDashboard();
+            break;
+        case 'admin':
+            home_dashbord = adminDashboard();
+            break;
+    }
 
     return (
         <Sidebar collapsible="icon" variant="floating">
@@ -85,14 +105,7 @@ export function AppSidebar() {
                 <SidebarMenu>
                     <SidebarMenuItem>
                         <SidebarMenuButton size="lg" asChild>
-                            <Link
-                                href={
-                                    role == 'owner'
-                                        ? ownerDashboard()
-                                        : customer.customerDashboard()
-                                }
-                                prefetch
-                            >
+                            <Link href={home_dashbord} prefetch>
                                 <AppLogo />
                             </Link>
                         </SidebarMenuButton>

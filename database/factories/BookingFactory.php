@@ -40,7 +40,7 @@ class BookingFactory extends Factory
             'end_date' => $endDate->format('Y-m-d'),
             'end_time' => $this->faker->time(),
             'total_amount' => $totalAmount,
-            'booking_status' => $this->faker->randomElement(['Pending', 'Booked', 'On Trip', 'Cancelled', 'Completed']),
+            'booking_status' => $this->faker->randomElement(['Pending', 'Booked', 'OnTrip', 'Cancelled', 'Completed']),
             'payment_status' => $this->faker->randomElement(['pending', 'paid', 'failed', 'refunded']),
             'payment_reference' => $this->faker->optional()->uuid(),
         ];
