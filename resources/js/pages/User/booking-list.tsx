@@ -234,103 +234,184 @@ export default function BookingListPage({
                     onOpenChange={() => setSelectedBooking(null)}
                 >
                     {selectedBooking && (
-                        <DialogContent className="max-w-lg rounded-2xl">
+                        <DialogContent className="max-w-lg rounded-2xl p-6">
                             <DialogHeader>
-                                <DialogTitle>Booking Details</DialogTitle>
+                                <DialogTitle className="text-lg font-semibold">
+                                    Booking Details
+                                </DialogTitle>
                             </DialogHeader>
 
-                            <div className="space-y-4">
-                                <div className="flex items-center justify-between">
-                                    <span className="font-medium">
-                                        {selectedBooking.vehicle}
-                                    </span>
-                                    <Badge
-                                        variant={
-                                            statusMap[selectedBooking.status]
-                                                .color
-                                        }
-                                    >
-                                        {
-                                            statusMap[selectedBooking.status]
-                                                .label
-                                        }
-                                    </Badge>
+                            {selectedBooking && (
+                                <div className="space-y-6">
+                                    {/* Vehicle & Status */}
+                                    <div className="flex items-center justify-between">
+                                        <div className="flex items-center gap-3">
+                                            <img
+                                                src={selectedBooking.image}
+                                                alt={selectedBooking.vehicle}
+                                                className="h-16 w-16 rounded-lg object-cover"
+                                            />
+                                            <div>
+                                                <h3 className="text-md font-medium">
+                                                    {selectedBooking.vehicle}
+                                                </h3>
+                                                <p className="text-sm text-muted-foreground">
+                                                    {selectedBooking.model ||
+                                                        ''}
+                                                </p>
+                                            </div>
+                                        </div>
+                                        <Badge
+                                            variant={
+                                                statusMap[
+                                                    selectedBooking.status
+                                                ].color
+                                            }
+                                        >
+                                            {
+                                                statusMap[
+                                                    selectedBooking.status
+                                                ].label
+                                            }
+                                        </Badge>
+                                    </div>
+
+                                    <Separator />
+
+                                    {/* Booking Info Grid */}
+                                    <div className="grid grid-cols-1 gap-4 text-sm sm:grid-cols-2">
+                                        <div className="flex items-center gap-2">
+                                            <MapPin className="h-4 w-4 text-muted-foreground" />
+                                            <div>
+                                                <p className="font-medium">
+                                                    Pickup Location
+                                                </p>
+                                                <p className="text-muted-foreground">
+                                                    {selectedBooking.pickup}
+                                                </p>
+                                            </div>
+                                        </div>
+
+                                        <div className="flex items-center gap-2">
+                                            <MapPin className="h-4 w-4 text-muted-foreground" />
+                                            <div>
+                                                <p className="font-medium">
+                                                    Return Location
+                                                </p>
+                                                <p className="text-muted-foreground">
+                                                    {selectedBooking.dropoff}
+                                                </p>
+                                            </div>
+                                        </div>
+
+                                        <div className="flex items-center gap-2">
+                                            <Clock className="h-4 w-4 text-muted-foreground" />
+                                            <div>
+                                                <p className="font-medium">
+                                                    Start Date
+                                                </p>
+                                                <p className="text-muted-foreground">
+                                                    {selectedBooking.startDate}
+                                                </p>
+                                            </div>
+                                        </div>
+
+                                        <div className="flex items-center gap-2">
+                                            <Clock className="h-4 w-4 text-muted-foreground" />
+                                            <div>
+                                                <p className="font-medium">
+                                                    End Date
+                                                </p>
+                                                <p className="text-muted-foreground">
+                                                    {selectedBooking.endDate}
+                                                </p>
+                                            </div>
+                                        </div>
+
+                                        <div className="flex items-center gap-2">
+                                            <Hash className="h-4 w-4 text-muted-foreground" />
+                                            <div>
+                                                <p className="font-medium">
+                                                    Booking ID
+                                                </p>
+                                                <p className="text-muted-foreground">
+                                                    {selectedBooking.id}
+                                                </p>
+                                            </div>
+                                        </div>
+
+                                        <div className="flex items-center gap-2">
+                                            <Hash className="h-4 w-4 text-muted-foreground" />
+                                            <div>
+                                                <p className="font-medium">
+                                                    Payment Status
+                                                </p>
+                                                <Badge variant={'destructive'}>
+                                                    {
+                                                        selectedBooking.payment_status
+                                                    }
+                                                </Badge>
+                                            </div>
+                                        </div>
+
+                                        <div className="flex items-center gap-2">
+                                            <Hash className="h-4 w-4 text-muted-foreground" />
+                                            <div>
+                                                <p className="font-medium">
+                                                    Total Amount
+                                                </p>
+                                                <p className="text-muted-foreground">
+                                                    {
+                                                        selectedBooking.total_amount
+                                                    }
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <Separator />
+
+                                    {/* Progress */}
+                                    <div>
+                                        <p className="mb-1 text-sm font-medium">
+                                            Booking Progress
+                                        </p>
+                                        <Progress
+                                            value={
+                                                statusMap[
+                                                    selectedBooking.status
+                                                ].progress
+                                            }
+                                        />
+                                    </div>
+
+                                    {/* Actions */}
+                                    {['Pending', 'Booked'].includes(
+                                        selectedBooking.status,
+                                    ) && (
+                                        <div className="mt-4 flex justify-end gap-2">
+                                            <Button
+                                                variant="outline"
+                                                onClick={() =>
+                                                    setSelectedBooking(null)
+                                                }
+                                            >
+                                                Close
+                                            </Button>
+                                            <Button
+                                                variant="destructive"
+                                                onClick={() =>
+                                                    setCancelBooking(
+                                                        selectedBooking,
+                                                    )
+                                                }
+                                            >
+                                                Cancel Booking
+                                            </Button>
+                                        </div>
+                                    )}
                                 </div>
-
-                                <Separator />
-                                <div className="space-y-2 text-sm">
-                                    <div className="flex items-center gap-2">
-                                        <MapPin className="h-4 w-4 text-muted-foreground" />
-                                        <span>
-                                            <strong>Pickup Location:</strong>{' '}
-                                            {selectedBooking.pickup}
-                                        </span>
-                                    </div>
-
-                                    <div className="flex items-center gap-2">
-                                        <MapPin className="h-4 w-4 text-muted-foreground" />
-                                        <span>
-                                            <strong>Return Location:</strong>{' '}
-                                            {selectedBooking.dropoff}
-                                        </span>
-                                    </div>
-
-                                    <div className="flex items-center gap-2">
-                                        <Clock className="h-4 w-4 text-muted-foreground" />
-                                        <span>
-                                            <strong>Start Date:</strong>{' '}
-                                            {selectedBooking.startDate}
-                                        </span>
-                                    </div>
-
-                                    <div className="flex items-center gap-2">
-                                        <Clock className="h-4 w-4 text-muted-foreground" />
-                                        <span>
-                                            <strong>End Date:</strong>{' '}
-                                            {selectedBooking.endDate}
-                                        </span>
-                                    </div>
-
-                                    <div className="flex items-center gap-2">
-                                        <Hash className="h-4 w-4 text-muted-foreground" />
-                                        <span>
-                                            <strong>Booking ID:</strong>{' '}
-                                            {selectedBooking.id}
-                                        </span>
-                                    </div>
-                                    <div className="flex items-center gap-2">
-                                        <Hash className="h-4 w-4 text-muted-foreground" />
-                                        <span>
-                                            <strong>Payment Status:</strong>{' '}
-                                            <Badge variant={'destructive'}>
-                                                {selectedBooking.payment_status}
-                                            </Badge>
-                                        </span>
-                                    </div>
-                                    <div className="flex items-center gap-2">
-                                        <Hash className="h-4 w-4 text-muted-foreground" />
-                                        <span>
-                                            <strong>Total Amount:</strong>{' '}
-                                            {selectedBooking.total_amount}
-                                        </span>
-                                    </div>
-                                </div>
-
-                                <Separator />
-
-                                <div className="space-y-2">
-                                    <div className="flex items-center gap-2 text-sm font-medium">
-                                        <Clock className="h-4 w-4" />
-                                        Status
-                                    </div>
-                                    <Progress
-                                        value={
-                                            statusMap[selectedBooking.status]
-                                                .progress
-                                        }
-                                    />
-                                </div>
-                            </div>
+                            )}
                         </DialogContent>
                     )}
                 </Dialog>
