@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Booking;
 use App\Models\Vehicle;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Mail;
 use Inertia\Inertia;
 use Stripe\Stripe;
 use Stripe\checkout\Session;
@@ -282,7 +283,7 @@ class CustomerController extends Controller
 
         $meta = $session->metadata;
 
-        Booking::create([
+        $booking = Booking::create([
             'user_id' => $meta->user_id,
             'vehicle_id' => $meta->vehicle_id,
             'start_date' => $meta->start_date,
@@ -296,6 +297,10 @@ class CustomerController extends Controller
             'payment_status' => 'paid',
             'payment_reference' => $session->id,
         ]);
+
+        $booking->refresh()->load(['user', 'vehicle']);
+
+        Mail::to($booking->user->email)->send(new \App\Mail\BookingConfirmation($booking));
 
         return Inertia::render('User/payment-success', [
             'message' => 'Your payment was successful!',

@@ -78,8 +78,8 @@ export default function BookingSummaryCard({ vehicle }: any) {
 
         setLoading(true);
 
-        const formattedStartDate = startDate.toISOString().split('T')[0];
-        const formattedEndDate = endDate.toISOString().split('T')[0];
+        const formattedStartDate = format(startDate, 'yyyy-MM-dd');
+        const formattedEndDate = format(endDate, 'yyyy-MM-dd');
 
         const params = new URLSearchParams({
             days: String(days),
@@ -93,7 +93,6 @@ export default function BookingSummaryCard({ vehicle }: any) {
 
         window.location.href = url;
     };
-
     const timeSlots = generateTimeSlots(30);
 
     return (

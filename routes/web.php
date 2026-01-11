@@ -43,7 +43,7 @@ Route::middleware(['auth', 'role:admin', 'verified', 'web'])->prefix('admin')
     });
 
 Route::get('/test', function () {
-    return view('emails.vehicle.rejected');
+    return view('emails.booking.confirmation');
 });
 require __DIR__ . '/settings.php';
 require __DIR__ . '/auth.php';

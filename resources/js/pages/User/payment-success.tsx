@@ -33,7 +33,7 @@ export default function PaymentSuccess() {
                     <div className="flex-col-2 flex w-full gap-2">
                         <Button
                             variant={'outline'}
-                            className="w-full"
+                            className="w-full flex-1"
                             onClick={() => router.visit(customer.findVehicle())}
                         >
                             Find Another Vehicle
@@ -41,7 +41,7 @@ export default function PaymentSuccess() {
 
                         <Button
                             variant="outline"
-                            className="w-full"
+                            className="w-full flex-1"
                             onClick={() => router.visit(customer.bookings())}
                         >
                             View My Bookings
