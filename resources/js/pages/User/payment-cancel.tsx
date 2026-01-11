@@ -42,10 +42,10 @@ export default function PaymentCancel({
                     </div>
                 </CardContent>
 
-                <CardFooter className="flex flex-col gap-3">
+                <CardFooter className="flex-col-2 flex gap-3">
                     <Button
                         variant="outline"
-                        className="w-full"
+                        className="w-full flex-1"
                         onClick={() =>
                             router.visit(customer.vehicleDetails(vehicle.id))
                         }
@@ -54,8 +54,8 @@ export default function PaymentCancel({
                     </Button>
 
                     <Button
-                        variant="ghost"
-                        className="w-full"
+                        variant="outline"
+                        className="w-full flex-1"
                         onClick={() => router.visit(customer.findVehicle())}
                     >
                         Go to Home

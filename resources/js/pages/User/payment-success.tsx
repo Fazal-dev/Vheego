@@ -30,8 +30,9 @@ export default function PaymentSuccess() {
                     <div className="my-2 h-px w-full bg-border" />
 
                     {/* Actions */}
-                    <div className="flex w-full flex-col gap-2">
+                    <div className="flex-col-2 flex w-full gap-2">
                         <Button
+                            variant={'outline'}
                             className="w-full"
                             onClick={() => router.visit(customer.findVehicle())}
                         >
