@@ -58,10 +58,12 @@ class CustomerController extends Controller
                 'vehicle' => $booking->vehicle->brand . ' ' . $booking->vehicle->model,
                 'image' => $frontImage,
                 'pickup' => $booking->pickup_location ?? "Test",
-                'dropoff' => $booking->drop_location ?? "Test",
+                'dropoff' => $booking->pickup_location ?? "Test",
                 'status' => $booking->booking_status,
                 'startDate' => $booking->start_date,
                 'endDate' => $booking->end_date,
+                'payment_status' => $booking->payment_status,
+                'total_amount' => $booking->total_amount,
             ];
         });
 
@@ -200,6 +202,7 @@ class CustomerController extends Controller
         $start_date = $request->query('start_date');
         $end_date = $request->query('end_date');
         $end_time = $request->query('end_time');
+        $pickupLocation = $request->query('pickupLocation');
 
         $baseRental   = $vehicle->daily_rental_price * $days; // e.g., 5000 * 3 = 15000
         $insuranceFee = $vehicle->bond_amount;               // e.g., 5000
@@ -259,6 +262,7 @@ class CustomerController extends Controller
                 'start_date' => $start_date,
                 'end_date' => $end_date,
                 'end_time' => $end_time,
+                'pickupLocation' => $pickupLocation,
             ],
         ]);
 
@@ -289,6 +293,7 @@ class CustomerController extends Controller
             'start_date' => $meta->start_date,
             'end_date' => $meta->end_date,
             'start_time' => $meta->start_time,
+            'pickup_location' => $meta->pickupLocation,
             'end_time' => $meta->end_time,
             'booking_date' => now()->toDateString(),
             'booking_time' => now()->toTimeString(),

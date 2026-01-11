@@ -21,6 +21,7 @@ class Booking extends Model
         'end_time',
         'payment_status',
         'payment_reference',
+        'pickup_location',
     ];
 
     // A booking belongs to a renter

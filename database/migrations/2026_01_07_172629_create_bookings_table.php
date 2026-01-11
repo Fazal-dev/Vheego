@@ -47,6 +47,7 @@ return new class extends Migration
 
             // Optional payment reference
             $table->string('payment_reference')->nullable();
+            $table->string('pickup_location')->nullable();
 
             // Timestamps
             $table->timestamps();

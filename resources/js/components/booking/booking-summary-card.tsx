@@ -87,6 +87,7 @@ export default function BookingSummaryCard({ vehicle }: any) {
             end_date: formattedEndDate,
             start_time: startTime,
             end_time: endTime,
+            pickup_location: pickupLocation,
         });
 
         const url = customer.checkout.url(vehicle.id) + `?${params.toString()}`;

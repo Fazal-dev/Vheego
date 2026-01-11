@@ -298,6 +298,22 @@ export default function BookingListPage({
                                             {selectedBooking.id}
                                         </span>
                                     </div>
+                                    <div className="flex items-center gap-2">
+                                        <Hash className="h-4 w-4 text-muted-foreground" />
+                                        <span>
+                                            <strong>Payment Status:</strong>{' '}
+                                            <Badge variant={'destructive'}>
+                                                {selectedBooking.payment_status}
+                                            </Badge>
+                                        </span>
+                                    </div>
+                                    <div className="flex items-center gap-2">
+                                        <Hash className="h-4 w-4 text-muted-foreground" />
+                                        <span>
+                                            <strong>Total Amount:</strong>{' '}
+                                            {selectedBooking.total_amount}
+                                        </span>
+                                    </div>
                                 </div>
 
                                 <Separator />

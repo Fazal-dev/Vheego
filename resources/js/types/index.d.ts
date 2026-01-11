@@ -216,8 +216,10 @@ export interface Booking {
     pickup: string;
     dropoff: string;
     status: BookingStatus;
-    startDate: string; // ISO date string from Laravel
-    endDate: string;   // ISO date string from Laravel
+    startDate: string; 
+    endDate: string;   
+    payment_status: string;   
+    total_amount: number;   
 }
 
 interface BookingListPageProps {

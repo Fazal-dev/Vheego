@@ -108,7 +108,7 @@
 
                 <p>
                     <span class="highlight">Return Location:</span>
-                    {{ $booking->dropoff_location ?? 'Same as pickup' }}
+                    {{ $booking->pickup_location ?? 'Same as pickup' }}
                 </p>
 
                 <p>
