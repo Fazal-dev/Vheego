@@ -19,7 +19,6 @@ import {
 } from '@/components/ui/popover';
 import { Separator } from '@/components/ui/separator';
 import { formatCurrency } from '@/lib/utils';
-import customer from '@/routes/customer';
 
 import {
     Select,
@@ -28,6 +27,10 @@ import {
     SelectTrigger,
     SelectValue,
 } from '@/components/ui/select';
+import customer from '@/routes/customer';
+interface responseProps {
+    url?: string;
+}
 
 export default function BookingSummaryCard({ vehicle }: any) {
     const today: Date = getTodayDate();
@@ -49,11 +52,23 @@ export default function BookingSummaryCard({ vehicle }: any) {
 
     const totalAmount = days * vehicle.daily_rental_price || 100;
 
-    const handleCheckout = () => {
+    const handleCheckout = async () => {
         if (!startDate || !endDate) return;
 
         setLoading(true);
-        const url = customer.checkout.url(vehicle.id) + `?days=${days}`;
+
+        const formattedStartDate = startDate.toISOString().split('T')[0];
+        const formattedEndDate = endDate.toISOString().split('T')[0];
+
+        const params = new URLSearchParams({
+            days: String(days),
+            start_date: formattedStartDate,
+            end_date: formattedEndDate,
+            start_time: startTime,
+            end_time: endTime,
+        });
+
+        const url = customer.checkout.url(vehicle.id) + `?${params.toString()}`;
 
         window.location.href = url;
     };

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Booking;
 use App\Models\Vehicle;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -133,11 +134,17 @@ class CustomerController extends Controller
     public function checkout(Request $request, Vehicle  $vehicle)
     {
         Stripe::setApiKey(config('services.stripe.sk'));
-        $days = (int) $request->query('days', 1);
 
-        $baseRental = $vehicle->daily_rental_price * $days;
-        $insuranceFee = (int) $vehicle->bond_amount * 100;
-        $vat = (int) (($baseRental + $insuranceFee) * 0.08);
+        $days = $request->query('days');
+        $start_time = $request->query('start_time');
+        $start_date = $request->query('start_date');
+        $end_date = $request->query('end_date');
+        $end_time = $request->query('end_time');
+
+        $baseRental   = $vehicle->daily_rental_price * $days; // e.g., 5000 * 3 = 15000
+        $insuranceFee = $vehicle->bond_amount;               // e.g., 5000
+        $vat          = ($baseRental + $insuranceFee) * 0.08; // 8% VAT
+        $totalAmount  = $baseRental + $insuranceFee + $vat;  // Total in LKR
 
         $lineItems = [
             [
@@ -158,7 +165,7 @@ class CustomerController extends Controller
                         'name' => 'Insurance Fee',
                         'description' => 'Covers damage protection during rental',
                     ],
-                    'unit_amount' => $insuranceFee,
+                    'unit_amount' => (int) ($insuranceFee * 100),
                 ],
                 'quantity' => 1,
             ],
@@ -169,7 +176,7 @@ class CustomerController extends Controller
                         'name' => 'VAT (8%)',
                         'description' => 'Local tax included in total price',
                     ],
-                    'unit_amount' => $vat,
+                    'unit_amount' => (int) ($vat * 100),
                 ],
                 'quantity' => 1,
             ],
@@ -179,13 +186,22 @@ class CustomerController extends Controller
             'mode' => 'payment',
             'payment_method_types' => ['card'],
             'line_items' => $lineItems,
-            'success_url' => route('customer.checkout.success', [
-                "vehicle_id" => $vehicle->id
-            ]),
+            'success_url' => route('customer.checkout.success', []) . '?session_id={CHECKOUT_SESSION_ID}',
             'cancel_url' => route('customer.checkout.cancel', [
-                "vehicle_id" => $vehicle->id
+                'vehicle_id' => $vehicle->id
             ]),
+            'metadata' => [
+                'user_id' => auth()->id(),
+                'vehicle_id' => $vehicle->id,
+                'days' => $days,
+                'total_amount' => $totalAmount,
+                'start_time' => $start_time,
+                'start_date' => $start_date,
+                'end_date' => $end_date,
+                'end_time' => $end_time,
+            ],
         ]);
+
         return redirect()->away($session->url);
     }
 
@@ -194,6 +210,34 @@ class CustomerController extends Controller
      */
     public function success(Request $request)
     {
+        Stripe::setApiKey(config('services.stripe.sk'));
+
+        $sessionId = $request->query('session_id');
+
+        $session = Session::retrieve($sessionId);
+
+        //  Prevent duplicate booking
+        if (Booking::where('payment_reference', $session->id)->exists()) {
+            return Inertia::render('User/payment-success');
+        }
+
+        $meta = $session->metadata;
+
+        Booking::create([
+            'user_id' => $meta->user_id,
+            'vehicle_id' => $meta->vehicle_id,
+            'start_date' => $meta->start_date,
+            'end_date' => $meta->end_date,
+            'start_time' => $meta->start_time,
+            'end_time' => $meta->end_time,
+            'booking_date' => now()->toDateString(),
+            'booking_time' => now()->toTimeString(),
+            'total_amount' => $meta->total_amount,
+            'booking_status' => 'Booked',
+            'payment_status' => 'paid',
+            'payment_reference' => $session->id,
+        ]);
+
         return Inertia::render('User/payment-success', [
             'message' => 'Your payment was successful!',
         ]);
