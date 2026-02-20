@@ -5,6 +5,7 @@ namespace Database\Seeders;
 use App\Models\Booking;
 use App\Models\User;
 use App\Models\Vehicle;
+use App\Models\VehicleHistory;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
@@ -51,5 +52,7 @@ class DatabaseSeeder extends Seeder
         Vehicle::factory(20)->create();
 
         Booking::factory(50)->create();
+
+        VehicleHistory::factory(100)->create();
     }
 }
