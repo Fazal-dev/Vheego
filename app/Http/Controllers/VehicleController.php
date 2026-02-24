@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Vehicle;
+use App\Models\VehicleHistory;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
@@ -112,7 +113,12 @@ class VehicleController extends Controller
         $validated['image_urls'] = json_encode($imagePaths);
         $validated['upload_folder'] = $uniqueFolder;
 
-        Vehicle::create($validated);
+        $vehicle = Vehicle::create($validated);
+
+        VehicleHistory::create([
+            'vehicle_id' => $vehicle->id,
+            'status' => 'Created',
+        ]);
 
         return to_route('owner.vehicles.index')->withSuccess('Vehicle created successfully.');
     }
@@ -230,6 +236,8 @@ class VehicleController extends Controller
         $mergedImages = array_merge($existingImages, $newImages);
 
         $validated['image_urls'] = json_encode($mergedImages);
+        $validated['current_status'] = 'Unavailable';
+        $validated['status'] = 'Inactive';
 
         $vehicle->update($validated);
 
@@ -247,6 +255,11 @@ class VehicleController extends Controller
         if (Auth::id() !== $vehicle->owner_id) {
             return redirect()->back()->with('error', 'You are not authorized to delete this vehicle.');
         }
+
+        VehicleHistory::create([
+            'vehicle_id' => $vehicle->id,
+            'status' => 'Deleted',
+        ]);
 
         $vehicle->delete();
 

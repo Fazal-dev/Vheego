@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Booking;
 use App\Models\Vehicle;
+use App\Models\VehicleHistory;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
 use Inertia\Inertia;
@@ -301,6 +302,11 @@ class CustomerController extends Controller
             'booking_status' => 'Booked',
             'payment_status' => 'paid',
             'payment_reference' => $session->id,
+        ]);
+
+        VehicleHistory::create([
+            'vehicle_id' => $meta->vehicle_id,
+            'status' => 'Booked',
         ]);
 
         $booking->refresh()->load(['user', 'vehicle']);
