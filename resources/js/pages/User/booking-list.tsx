@@ -1,3 +1,5 @@
+import { BookingDetailModal } from '@/components/booking/booking-detail-modal';
+import { StartTripModal } from '@/components/booking/booking-start-trip-modal';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
@@ -8,14 +10,13 @@ import {
     DialogTitle,
 } from '@/components/ui/dialog';
 import { Progress } from '@/components/ui/progress';
-import { Separator } from '@/components/ui/separator';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import AppLayout from '@/layouts/app-layout';
 import customer from '@/routes/customer';
 import { Booking, BookingListPageProps, BreadcrumbItem } from '@/types';
 import { router } from '@inertiajs/react';
 
-import { Car, Clock, Hash, MapPin } from 'lucide-react';
+import { Car, MapPin } from 'lucide-react';
 import { useState } from 'react';
 
 const statusMap: Record<
@@ -82,6 +83,8 @@ export default function BookingListPage({
     const [selectedBooking, setSelectedBooking] = useState<any>(null);
     const [filterbookings, setBooking] = useState<any>(bookings);
     const [cancelBooking, setCancelBooking] = useState<any>(null);
+    const [isStartModalOpen, setIsStartModalOpen] = useState(false);
+    const [activeBooking, setActiveBooking] = useState<Booking | null>(null);
 
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
@@ -123,7 +126,7 @@ export default function BookingListPage({
                                 className="cursor-pointer rounded-2xl transition hover:shadow-md"
                                 onClick={() => setSelectedBooking(booking)}
                             >
-                                <CardContent className="grid gap-4 p-3 md:grid-cols-[140px_1fr_220px]">
+                                <CardContent className="grid gap-4 p-3 md:grid-cols-[140px_2fr_220px]">
                                     {/* Vehicle Image */}
                                     <img
                                         src={booking.image}
@@ -180,20 +183,42 @@ export default function BookingListPage({
                                         >
                                             {statusMap[booking.status].label}
                                         </Badge>
-                                        {['Pending', 'Booked'].includes(
-                                            booking.status,
-                                        ) && (
-                                            <Button
-                                                size="sm"
-                                                variant="destructive"
-                                                onClick={(e) => {
-                                                    e.stopPropagation();
-                                                    setCancelBooking(booking);
-                                                }}
-                                            >
-                                                Cancel Booking
-                                            </Button>
-                                        )}
+                                        <div className="flex w-full flex-row items-center justify-end gap-2">
+                                            {booking.status === 'Booked' && (
+                                                <Button
+                                                    size="sm"
+                                                    className="bg-primary hover:bg-primary/90"
+                                                    onClick={(e) => {
+                                                        e.stopPropagation();
+                                                        setActiveBooking(
+                                                            booking,
+                                                        );
+                                                        setIsStartModalOpen(
+                                                            true,
+                                                        );
+                                                    }}
+                                                >
+                                                    Start Trip
+                                                </Button>
+                                            )}
+
+                                            {['Pending', 'Booked'].includes(
+                                                booking.status,
+                                            ) && (
+                                                <Button
+                                                    size="sm"
+                                                    variant="destructive"
+                                                    onClick={(e) => {
+                                                        e.stopPropagation();
+                                                        setCancelBooking(
+                                                            booking,
+                                                        );
+                                                    }}
+                                                >
+                                                    Cancel Booking
+                                                </Button>
+                                            )}
+                                        </div>
                                     </div>
                                 </CardContent>
                             </Card>
@@ -228,193 +253,21 @@ export default function BookingListPage({
                     )}
                 </div>
 
+                {activeBooking && (
+                    <StartTripModal
+                        booking={activeBooking}
+                        open={isStartModalOpen}
+                        onOpenChange={setIsStartModalOpen}
+                    />
+                )}
+
                 {/* Booking Detail Popup */}
-                <Dialog
-                    open={!!selectedBooking}
-                    onOpenChange={() => setSelectedBooking(null)}
-                >
-                    {selectedBooking && (
-                        <DialogContent className="max-w-lg rounded-2xl p-6">
-                            <DialogHeader>
-                                <DialogTitle className="text-lg font-semibold">
-                                    Booking Details
-                                </DialogTitle>
-                            </DialogHeader>
-
-                            {selectedBooking && (
-                                <div className="space-y-6">
-                                    {/* Vehicle & Status */}
-                                    <div className="flex items-center justify-between">
-                                        <div className="flex items-center gap-3">
-                                            <img
-                                                src={selectedBooking.image}
-                                                alt={selectedBooking.vehicle}
-                                                className="h-16 w-16 rounded-lg object-cover"
-                                            />
-                                            <div>
-                                                <h3 className="text-md font-medium">
-                                                    {selectedBooking.vehicle}
-                                                </h3>
-                                                <p className="text-sm text-muted-foreground">
-                                                    {selectedBooking.model ||
-                                                        ''}
-                                                </p>
-                                            </div>
-                                        </div>
-                                        <Badge
-                                            variant={
-                                                statusMap[
-                                                    selectedBooking.status
-                                                ].color
-                                            }
-                                        >
-                                            {
-                                                statusMap[
-                                                    selectedBooking.status
-                                                ].label
-                                            }
-                                        </Badge>
-                                    </div>
-
-                                    <Separator />
-
-                                    {/* Booking Info Grid */}
-                                    <div className="grid grid-cols-1 gap-4 text-sm sm:grid-cols-2">
-                                        <div className="flex items-center gap-2">
-                                            <MapPin className="h-4 w-4 text-muted-foreground" />
-                                            <div>
-                                                <p className="font-medium">
-                                                    Pickup Location
-                                                </p>
-                                                <p className="text-muted-foreground">
-                                                    {selectedBooking.pickup}
-                                                </p>
-                                            </div>
-                                        </div>
-
-                                        <div className="flex items-center gap-2">
-                                            <MapPin className="h-4 w-4 text-muted-foreground" />
-                                            <div>
-                                                <p className="font-medium">
-                                                    Return Location
-                                                </p>
-                                                <p className="text-muted-foreground">
-                                                    {selectedBooking.dropoff}
-                                                </p>
-                                            </div>
-                                        </div>
-
-                                        <div className="flex items-center gap-2">
-                                            <Clock className="h-4 w-4 text-muted-foreground" />
-                                            <div>
-                                                <p className="font-medium">
-                                                    Start Date
-                                                </p>
-                                                <p className="text-muted-foreground">
-                                                    {selectedBooking.startDate}
-                                                </p>
-                                            </div>
-                                        </div>
-
-                                        <div className="flex items-center gap-2">
-                                            <Clock className="h-4 w-4 text-muted-foreground" />
-                                            <div>
-                                                <p className="font-medium">
-                                                    End Date
-                                                </p>
-                                                <p className="text-muted-foreground">
-                                                    {selectedBooking.endDate}
-                                                </p>
-                                            </div>
-                                        </div>
-
-                                        <div className="flex items-center gap-2">
-                                            <Hash className="h-4 w-4 text-muted-foreground" />
-                                            <div>
-                                                <p className="font-medium">
-                                                    Booking ID
-                                                </p>
-                                                <p className="text-muted-foreground">
-                                                    {selectedBooking.id}
-                                                </p>
-                                            </div>
-                                        </div>
-
-                                        <div className="flex items-center gap-2">
-                                            <Hash className="h-4 w-4 text-muted-foreground" />
-                                            <div>
-                                                <p className="font-medium">
-                                                    Payment Status
-                                                </p>
-                                                <Badge variant={'destructive'}>
-                                                    {
-                                                        selectedBooking.payment_status
-                                                    }
-                                                </Badge>
-                                            </div>
-                                        </div>
-
-                                        <div className="flex items-center gap-2">
-                                            <Hash className="h-4 w-4 text-muted-foreground" />
-                                            <div>
-                                                <p className="font-medium">
-                                                    Total Amount
-                                                </p>
-                                                <p className="text-muted-foreground">
-                                                    {
-                                                        selectedBooking.total_amount
-                                                    }
-                                                </p>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <Separator />
-
-                                    {/* Progress */}
-                                    <div>
-                                        <p className="mb-1 text-sm font-medium">
-                                            Booking Progress
-                                        </p>
-                                        <Progress
-                                            value={
-                                                statusMap[
-                                                    selectedBooking.status
-                                                ].progress
-                                            }
-                                        />
-                                    </div>
-
-                                    {/* Actions */}
-                                    {['Pending', 'Booked'].includes(
-                                        selectedBooking.status,
-                                    ) && (
-                                        <div className="mt-4 flex justify-end gap-2">
-                                            <Button
-                                                variant="outline"
-                                                onClick={() =>
-                                                    setSelectedBooking(null)
-                                                }
-                                            >
-                                                Close
-                                            </Button>
-                                            <Button
-                                                variant="destructive"
-                                                onClick={() =>
-                                                    setCancelBooking(
-                                                        selectedBooking,
-                                                    )
-                                                }
-                                            >
-                                                Cancel Booking
-                                            </Button>
-                                        </div>
-                                    )}
-                                </div>
-                            )}
-                        </DialogContent>
-                    )}
-                </Dialog>
+                <BookingDetailModal
+                    selectedBooking={selectedBooking}
+                    onClose={() => setSelectedBooking(null)}
+                    onCancel={(booking) => setCancelBooking(booking)}
+                    statusMap={statusMap}
+                />
 
                 <Dialog
                     open={!!cancelBooking}

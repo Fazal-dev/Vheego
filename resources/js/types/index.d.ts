@@ -225,3 +225,19 @@ export interface Booking {
 interface BookingListPageProps {
     bookings: Booking[];
 }
+
+interface Booking {
+    id: number;
+    vehicle: string;
+    status: string;
+    // Add other fields you are using
+    image?: string;
+    pickup?: string;
+    handover_code?: string;
+}
+
+interface StartTripModalProps {
+    booking: Booking;
+    open: boolean;
+    onOpenChange: (open: boolean) => void;
+}
