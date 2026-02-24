@@ -1,5 +1,5 @@
 import { BookingDetailModal } from '@/components/booking/booking-detail-modal';
-import { StartTripModal } from '@/components/booking/booking-start-trip-modal';
+import { StartTripWizard } from '@/components/booking/booking-start-trip-wizard';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
@@ -83,8 +83,14 @@ export default function BookingListPage({
     const [selectedBooking, setSelectedBooking] = useState<any>(null);
     const [filterbookings, setBooking] = useState<any>(bookings);
     const [cancelBooking, setCancelBooking] = useState<any>(null);
-    const [isStartModalOpen, setIsStartModalOpen] = useState(false);
-    const [activeBooking, setActiveBooking] = useState<Booking | null>(null);
+    const [bookingToStart, setBookingToStart] = useState<any>(null);
+    const [isWizardOpen, setIsWizardOpen] = useState(false);
+
+    const handleOpenWizard = (booking: any) => {
+        console.log('Opening wizard for:', booking);
+        setBookingToStart(booking);
+        setIsWizardOpen(true);
+    };
 
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
@@ -190,11 +196,8 @@ export default function BookingListPage({
                                                     className="bg-primary hover:bg-primary/90"
                                                     onClick={(e) => {
                                                         e.stopPropagation();
-                                                        setActiveBooking(
+                                                        handleOpenWizard(
                                                             booking,
-                                                        );
-                                                        setIsStartModalOpen(
-                                                            true,
                                                         );
                                                     }}
                                                 >
@@ -253,13 +256,11 @@ export default function BookingListPage({
                     )}
                 </div>
 
-                {activeBooking && (
-                    <StartTripModal
-                        booking={activeBooking}
-                        open={isStartModalOpen}
-                        onOpenChange={setIsStartModalOpen}
-                    />
-                )}
+                <StartTripWizard
+                    open={isWizardOpen}
+                    onOpenChange={setIsWizardOpen}
+                    booking={bookingToStart}
+                />
 
                 {/* Booking Detail Popup */}
                 <BookingDetailModal
