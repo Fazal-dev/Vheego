@@ -42,7 +42,9 @@ export default function BookingSummaryCard({ vehicle }: any) {
     const [endOpen, setendOpen] = useState(false);
     const [checking, setChecking] = useState(false);
 
-    const [pickupLocation, setPickupLocation] = useState(vehicle.location);
+    const [pickupLocation, setPickupLocation] = useState(
+        vehicle.pickup_location,
+    );
 
     const checkAvailability = (start: Date, end: Date) => {
         setChecking(true);
@@ -302,14 +304,6 @@ export default function BookingSummaryCard({ vehicle }: any) {
                     </div>
                 )}
 
-                {/* <Button
-                    type="button"
-                    onClick={handleCheckout}
-                    className="w-full"
-                    disabled={isAvailable === false || checking || loading}
-                >
-                    {checking ? 'Checking...' : 'Continue'}
-                </Button> */}
                 {canContinue && (
                     <Button
                         type="button"
