@@ -203,6 +203,17 @@ export default function BookingListPage({
                                                     Start Trip
                                                 </Button>
                                             )}
+                                            {booking.status === 'OnTrip' && (
+                                                <Button
+                                                    size="sm"
+                                                    className="bg-primary hover:bg-primary/90"
+                                                    onClick={(e) => {
+                                                        e.stopPropagation();
+                                                    }}
+                                                >
+                                                    End Trip
+                                                </Button>
+                                            )}
 
                                             {['Pending', 'Booked'].includes(
                                                 booking.status,
