@@ -87,7 +87,6 @@ export default function BookingListPage({
     const [isWizardOpen, setIsWizardOpen] = useState(false);
 
     const handleOpenWizard = (booking: any) => {
-        console.log('Opening wizard for:', booking);
         setBookingToStart(booking);
         setIsWizardOpen(true);
     };

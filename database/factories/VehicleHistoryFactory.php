@@ -26,6 +26,7 @@ class VehicleHistoryFactory extends Factory
                 'Available',
                 'On Trip',
                 'Booked',
+                'Created',
                 'Under Repair',
                 'Retired'
             ]),

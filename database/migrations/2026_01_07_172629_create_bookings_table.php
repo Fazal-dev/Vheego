@@ -48,6 +48,10 @@ return new class extends Migration
             // Optional payment reference
             $table->string('payment_reference')->nullable();
             $table->string('pickup_location')->nullable();
+            $table->string('start_otp', 4)->nullable();
+            $table->unsignedInteger('start_odometer')->nullable();
+            $table->unsignedInteger('end_odometer')->nullable();
+            $table->string('license_number', 50)->nullable();
 
             // Timestamps
             $table->timestamps();

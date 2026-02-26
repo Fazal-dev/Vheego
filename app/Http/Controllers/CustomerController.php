@@ -6,6 +6,7 @@ use App\Models\Booking;
 use App\Models\Vehicle;
 use App\Models\VehicleHistory;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
 use Inertia\Inertia;
 use Stripe\Stripe;
@@ -13,6 +14,84 @@ use Stripe\checkout\Session;
 
 class CustomerController extends Controller
 {
+    /**
+     * validate trip start steps
+     */
+    public function validateStep(Request $request, $step)
+    {
+        $rules = match ($step) {
+            'license' => [
+                'license_number' => 'required|string|min:6|max:12',
+            ],
+            'vehicle_docs' => [
+                'checklist' => 'required|array|min:4',
+                'checklist.*' => 'string|in:insurance,v_book,v_license,v_smog',
+            ],
+            'odometer' => [
+                'odometer' => 'required|numeric|min:0',
+            ],
+            default => [],
+        };
+
+        $messages = match ($step) {
+            'vehicle_docs' => [
+                'checklist.required' => 'You must verify all documents before proceeding.',
+                'checklist.min'      => 'Please ensure you have checked all required documents with the owner.',
+            ],
+            'license' => [
+                'license_number.required' => 'Please enter the Driver\'s License number as shown on the card.',
+            ],
+            default => [],
+        };
+
+        $request->validate($rules, $messages);
+
+        return back();
+    }
+
+    public function startTrip(Request $request)
+    {
+        $messages = [
+            'otp.required' => 'Please enter the 4-digit verification code to start your trip.',
+            'otp.digits'   => 'The verification code must be exactly 4 numeric digits.',
+        ];
+
+        $request->validate([
+            'license_number' => 'required',
+            'odometer'       => 'required|numeric',
+            'otp'            => 'required|digits:4',
+            'booking_id'     => 'required|exists:bookings,id',
+        ], $messages);
+
+        $booking = Booking::where('id', $request->booking_id)
+            ->where('user_id', Auth::id())
+            ->firstOrFail();
+
+        if ($booking->booking_status !== 'Booked') {
+            return back()->withErrors([
+                'otp' => 'This trip cannot be started at the moment.',
+            ]);
+        }
+
+        if ($booking->start_otp !== $request->otp) {
+            return back()->withErrors([
+                'otp' => 'The verification code is incorrect. Please verify with the vehicle owner.',
+            ]);
+        }
+
+        $booking->update([
+            'booking_status' => 'OnTrip',
+            'start_odometer' => $request->odometer,
+            'license_number' => $request->license_number
+        ]);
+
+        VehicleHistory::create([
+            'vehicle_id' => $booking->vehicle_id,
+            'status' => 'On Trip',
+        ]);
+
+        return back()->with('success', 'Your Trip started!');
+    }
     /**
      * Check the the availablitiy of vehicle
      */

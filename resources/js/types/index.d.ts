@@ -230,14 +230,13 @@ interface Booking {
     id: number;
     vehicle: string;
     status: string;
-    // Add other fields you are using
     image?: string;
     pickup?: string;
     handover_code?: string;
 }
 
-interface StartTripModalProps {
-    booking: Booking;
+interface StartTripWizardProps {
     open: boolean;
     onOpenChange: (open: boolean) => void;
+    booking: any;
 }

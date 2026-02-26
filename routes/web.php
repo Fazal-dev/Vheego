@@ -3,7 +3,6 @@
 use App\Http\Controllers\Admin\AdminController;
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\VehicleController;
-use App\Models\Vehicle;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -22,6 +21,10 @@ Route::middleware(['auth', 'role:customer', 'verified', 'web'])->prefix('custome
         Route::get('checkout-cancel', 'cancel')->name('checkout.cancel');
         Route::get('bookings', 'getAllBookings')->name('bookings');
         Route::post('check-availability', 'checkAvailability')->name('checkAvailability');
+        Route::post('/trips/start/validate/{step}', 'validateStep')
+            ->name('trips.validate-step');
+        Route::post('/trips/start', 'startTrip')
+            ->name('trips.start-trip');
     });
 
 Route::middleware(['auth', 'role:owner', 'verified', 'web'])->prefix('owner')
