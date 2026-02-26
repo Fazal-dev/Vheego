@@ -80,7 +80,10 @@ function StartTripContent({
 
         if (stepper.state.isLast) {
             post(trips.startTrip.url(), {
-                onSuccess: () => onOpenChange(false),
+                onSuccess: () => {
+                    onOpenChange(false);
+                    window.location.reload();
+                },
             });
             return;
         }
@@ -163,7 +166,7 @@ function StartTripContent({
                     {stepper.flow.switch({
                         license: () => (
                             <div className="space-y-5">
-                                <Label>Driver's License Number</Label>
+                                <Label>Enter your License Number</Label>
                                 <Input
                                     value={data.license_number}
                                     onChange={(e) =>
@@ -212,7 +215,7 @@ function StartTripContent({
                                         {requiredDocs.map((doc) => (
                                             <button
                                                 key={doc.id}
-                                                type="button" // Prevents form submission
+                                                type="button"
                                                 onClick={() =>
                                                     toggleDoc(doc.id)
                                                 }

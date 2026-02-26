@@ -253,7 +253,7 @@ class CustomerController extends Controller
                 'year' => $vehicle->year_of_manufacture,
                 'type' => $vehicle->vehicle_type,
                 'daily_rental_price' => $vehicle->daily_rental_price,
-                'location' => $vehicle->location ?? "Colombo",
+                'pickup_location' => $vehicle->pickup_location ?? "Colombo",
                 'seats' => $vehicle->seats,
                 'doors' => $vehicle->doors,
                 'transmission' => $vehicle->transmission,
