@@ -49,6 +49,11 @@ class CustomerController extends Controller
         return back();
     }
 
+    /**
+     * Start the vehicle trip after verifying the handover OTP.
+     * * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function startTrip(Request $request)
     {
         $messages = [

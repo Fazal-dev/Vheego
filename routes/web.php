@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Admin\AdminController;
+use App\Http\Controllers\BookingController;
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\VehicleController;
 use Illuminate\Support\Facades\Route;
@@ -35,6 +36,12 @@ Route::middleware(['auth', 'role:owner', 'verified', 'web'])->prefix('owner')
         Route::get('dashboard', function () {
             return Inertia::render('Owner/ownerDashboard');
         })->name('ownerDashboard');
+
+        Route::prefix('bookings')->name('bookings.')
+            ->controller(BookingController::class)->group(function () {
+                Route::get('/', 'index')->name('index');
+                Route::post('/trips/start/validate/{step}', 'validateStep')->name('validate-step');
+            });
     });
 
 Route::middleware(['auth', 'role:admin', 'verified', 'web'])->prefix('admin')

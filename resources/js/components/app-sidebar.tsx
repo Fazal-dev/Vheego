@@ -12,7 +12,7 @@ import {
 } from '@/components/ui/sidebar';
 import admin, { adminDashboard, vehicleApproval } from '@/routes/admin';
 import customer from '@/routes/customer';
-import { ownerDashboard } from '@/routes/owner';
+import owner, { ownerDashboard } from '@/routes/owner';
 import vehicles from '@/routes/owner/vehicles';
 import { Auth, type NavItem } from '@/types';
 import { Link, usePage } from '@inertiajs/react';
@@ -78,6 +78,12 @@ export function AppSidebar() {
             href: customer.bookings(),
             icon: CalendarCheck,
             roles: ['customer'],
+        },
+        {
+            title: 'Bookings',
+            href: owner.bookings.index(),
+            icon: CalendarCheck,
+            roles: ['owner'],
         },
     ];
 
