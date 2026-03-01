@@ -29,7 +29,7 @@ class BookingFactory extends Factory
         $endDate = (clone $startDate)->modify('+' . rand(1, 7) . ' days');
 
         $totalAmount = rand(50, 500) * ($endDate->diff($startDate)->days + 1);
-        $otp = rand(1000, 10000);
+        $otp = rand(1000, 9000);
 
         return [
             'user_id' => $userId,

@@ -42,8 +42,6 @@ class VehicleFactory extends Factory
             'registration_date' => $this->faker->dateTimeBetween('-5 years', 'now'),
             'registration_expiry_date' => $this->faker->dateTimeBetween('now', '+2 years'),
             'daily_rental_price' => $this->faker->randomFloat(2, 50, 500),
-            'weekly_rental_price' => $this->faker->randomFloat(2, 300, 2500),
-            'monthly_rental_price' => $this->faker->randomFloat(2, 1000, 9000),
             'bond_amount' => $this->faker->randomFloat(2, 1000, 9000),
             'engine_capacity' => $this->faker->numberBetween(800, 4000),
             'engine_number' => strtoupper($this->faker->bothify('ENG#######')),

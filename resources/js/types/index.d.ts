@@ -78,8 +78,6 @@ interface VehicleAll {
     registration_date: number;
     registration_expiry_date: number;
     daily_rental_price: number;
-    weekly_rental_price: number;
-    monthly_rental_price: number;
     bond_amount: number;
     engine_capacity: string;
     engine_number: string;

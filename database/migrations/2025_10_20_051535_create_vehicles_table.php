@@ -27,8 +27,6 @@ return new class extends Migration
             $table->date('registration_date');
             $table->date('registration_expiry_date');
             $table->decimal('daily_rental_price', 8, 2);
-            $table->decimal('weekly_rental_price', 8, 2);
-            $table->decimal('monthly_rental_price', 8, 2);
             $table->decimal('bond_amount', 8, 2);
             $table->string('engine_capacity');
             $table->string('engine_number');

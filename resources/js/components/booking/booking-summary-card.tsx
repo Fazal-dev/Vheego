@@ -282,7 +282,7 @@ export default function BookingSummaryCard({ vehicle }: any) {
                     <Input
                         value={pickupLocation}
                         onChange={(e) => setPickupLocation(e.target.value)}
-                        // disabled={!vehicle.allowCustomerChange}
+                        readOnly
                         placeholder={pickupLocation}
                     />
                 </div>

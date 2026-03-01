@@ -39,8 +39,6 @@ export default function VehicleForm({ vehicle }: VehicleFormProps) {
         registration_expiry_date:
             vehicle?.registration_expiry_date || '2026-10-10',
         daily_rental_price: vehicle?.daily_rental_price || 0,
-        weekly_rental_price: vehicle?.weekly_rental_price || 0,
-        monthly_rental_price: vehicle?.monthly_rental_price || 0,
         engine_capacity: vehicle?.engine_capacity || '400cc',
         bond_amount: vehicle?.bond_amount || 1000,
         engine_number: vehicle?.engine_number || 'engnummm',
@@ -475,46 +473,6 @@ export default function VehicleForm({ vehicle }: VehicleFormProps) {
                                 {errors.daily_rental_price && (
                                     <div className="text-sm text-red-500">
                                         {errors.daily_rental_price}
-                                    </div>
-                                )}
-                            </div>
-                            {/* weekly */}
-                            <div className="mb-3">
-                                <Label>Weekly</Label>
-                                <Input
-                                    type="number"
-                                    className="mt-1"
-                                    value={data.weekly_rental_price}
-                                    onChange={(e) =>
-                                        setData(
-                                            'weekly_rental_price',
-                                            parseInt(e.target.value),
-                                        )
-                                    }
-                                />
-                                {errors.weekly_rental_price && (
-                                    <div className="text-sm text-red-500">
-                                        {errors.weekly_rental_price}
-                                    </div>
-                                )}
-                            </div>
-                            {/*Monthly*/}
-                            <div className="mb-3">
-                                <Label>Monthly</Label>
-                                <Input
-                                    type="number"
-                                    value={data.monthly_rental_price}
-                                    className="mt-1"
-                                    onChange={(e) =>
-                                        setData(
-                                            'monthly_rental_price',
-                                            parseInt(e.target.value),
-                                        )
-                                    }
-                                />
-                                {errors.monthly_rental_price && (
-                                    <div className="text-sm text-red-500">
-                                        {errors.monthly_rental_price}
                                     </div>
                                 )}
                             </div>

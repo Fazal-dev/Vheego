@@ -25,8 +25,6 @@ class Vehicle extends Model
         'registration_date',
         'registration_expiry_date',
         'daily_rental_price',
-        'weekly_rental_price',
-        'monthly_rental_price',
         'engine_capacity',
         'engine_number',
         'image_urls',
