@@ -7,7 +7,7 @@ import {
     DialogTitle,
 } from '@/components/ui/dialog';
 import owner from '@/routes/owner';
-import { useForm } from '@inertiajs/react';
+import { useForm, usePage } from '@inertiajs/react';
 import { defineStepper } from '@stepperize/react';
 import {
     Calendar,
@@ -66,6 +66,8 @@ function HandoverContent({
             checklist: [],
         });
 
+    const { otp } = usePage<{ otp?: number }>().props;
+
     const handleNext = () => {
         clearErrors();
 
@@ -79,7 +81,6 @@ function HandoverContent({
                 step: stepper.state.current.data.id,
             }),
             {
-                preserveState: true,
                 preserveScroll: true,
                 onSuccess: () => stepper.navigation.next(),
             },
@@ -335,7 +336,7 @@ function HandoverContent({
                                 </div>
                                 <div className="rounded-xl border-2 border-dashed border-primary bg-primary/10 p-8">
                                     <span className="text-6xl font-black tracking-[0.2em] text-primary">
-                                        {booking.start_otp}
+                                        {otp || '0000'}
                                     </span>
                                 </div>
                                 <div className="text-xs text-slate-500">

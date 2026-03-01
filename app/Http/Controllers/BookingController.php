@@ -30,6 +30,7 @@ class BookingController extends Controller
             default => [],
         };
 
+        $request->validate($rules, $messages);
         if ($step == 'inspection') {
             $booking = Booking::findOrFail($request->booking_id);
 
@@ -40,9 +41,8 @@ class BookingController extends Controller
             ]);
 
             $booking->refresh();
+            return back()->with('otp', $newOtp);
         }
-
-        $request->validate($rules, $messages);
 
         return back();
     }

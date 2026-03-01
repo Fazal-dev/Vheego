@@ -44,6 +44,7 @@ class HandleInertiaRequests extends Middleware
                 'success' => fn() => $request->session()->get('success')
             ],
             'isAvailable' => $request->session()->pull('isAvailable'),
+            'otp' => $request->session()->pull('otp'),
             'name' => config('app.name'),
             'quote' => ['message' => trim($message), 'author' => trim($author)],
             'auth' => [
