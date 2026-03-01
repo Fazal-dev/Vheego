@@ -7,6 +7,7 @@ use App\Models\Vehicle;
 use App\Models\VehicleHistory;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
 use Inertia\Inertia;
 use Stripe\Stripe;
@@ -246,9 +247,13 @@ class CustomerController extends Controller
 
         $owner = $vehicle->owner;
 
-        // todo: actual trip counts
-        $ownerTrips = 135;
-        $vehicleTrips = 120;
+        $ownerTrips = DB::table('bookings as b')
+            ->join('vehicles as v', 'b.vehicle_id', '=', 'v.id')
+            ->where('v.owner_id', $owner->id)
+            ->where('b.booking_status', 'Completed')
+            ->count();
+
+        $vehicleTrips = $vehicle->completedBookings();
 
         return Inertia::render('User/vehicle-details', [
             'vehicle' => [

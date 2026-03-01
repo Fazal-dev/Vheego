@@ -46,4 +46,9 @@ class Vehicle extends Model
     {
         return $this->hasMany(Booking::class);
     }
+
+    public function completedBookings()
+    {
+        return $this->bookings()->where('booking_status', 'completed')->count();
+    }
 }

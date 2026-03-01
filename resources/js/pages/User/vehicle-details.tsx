@@ -77,11 +77,13 @@ export default function VehicleDetails({
 
                         {/* info */}
                         <div>
-                            <h1 className="text-2xl font-semibold">
-                                {vehicle.brand} {vehicle.model} ({vehicle.year})
+                            <h1 className="text-3xl font-bold tracking-tight text-slate-900">
+                                {vehicle.brand} {vehicle.model}{' '}
+                                <span className="font-normal text-slate-500">
+                                    ({vehicle.year})
+                                </span>
                             </h1>
-
-                            <div className="mt-2 flex flex-wrap items-center gap-4 text-sm text-muted-foreground">
+                            <div className="mt-3 flex flex-wrap items-center gap-4 text-sm text-muted-foreground">
                                 <span className="flex items-center gap-1">
                                     <MapPin className="h-4 w-4" />
                                     {vehicle.location ?? 'Colombo'}
@@ -89,7 +91,19 @@ export default function VehicleDetails({
 
                                 <span className="flex items-center gap-1">
                                     <Star className="h-4 w-4 text-yellow-500" />
-                                    4.8 ({vehicle.vehicleTrips} trips)
+                                    4.8
+                                    <span className="text-sm text-slate-500">
+                                        (48 reviews)
+                                    </span>
+                                </span>
+                            </div>
+                            <div className="mt-2">
+                                <span className="flex items-center gap-1">
+                                    <Car className="h-4 w-4 text-slate-600" />
+                                    {vehicle.vehicleTrips}{' '}
+                                    {vehicle.vehicleTrips == 1
+                                        ? 'trip'
+                                        : 'trips'}
                                 </span>
                             </div>
                         </div>

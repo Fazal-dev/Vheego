@@ -1,7 +1,6 @@
 import BackButton from '@/components/BackButton';
 import { Chip } from '@/components/chip';
 import Detail from '@/components/detail-lable';
-import PriceCard from '@/components/price-card';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
 import VehicleImagesSlider from '@/components/vehicle/vehicle-images-slider';
@@ -9,7 +8,7 @@ import AppLayout from '@/layouts/app-layout';
 import { index } from '@/routes/owner/vehicles';
 import { BreadcrumbItem } from '@/types';
 import { Head } from '@inertiajs/react';
-import { Calendar, Clock, DollarSign } from 'lucide-react';
+import { Car } from 'lucide-react';
 
 interface VehicleShowProps {
     vehicle: any;
@@ -32,28 +31,54 @@ export default function VehicleShow({ vehicle }: VehicleShowProps) {
             <div className="p-4 sm:p-8">
                 {/* Header Section */}
                 <Card className="shadow-sm">
-                    <CardContent className="p-6">
-                        <div className="flex-lg-col flex items-start justify-between gap-4 sm:flex-row sm:items-center">
+                    <CardContent className="p-6 pb-3">
+                        <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
                             <div>
-                                <h1 className="text-2xl font-semibold">
-                                    {vehicle.brand} {vehicle.model}
-                                </h1>
-                                <p className="text-sm text-gray-500">
-                                    {vehicle.license_plate} •{' '}
-                                    {vehicle.year_of_manufacture}
-                                </p>
+                                <div className="flex flex-wrap items-center gap-2">
+                                    <h1 className="text-3xl font-bold text-gray-900">
+                                        {vehicle.brand} {vehicle.model}
+                                    </h1>
+                                    <Chip
+                                        className="px-3 py-1 text-xs"
+                                        variant={
+                                            vehicle.status === 'Active'
+                                                ? 'success'
+                                                : 'destructive'
+                                        }
+                                    >
+                                        {vehicle.status}
+                                    </Chip>
+                                </div>
+
+                                <div className="mt-2 flex items-center gap-3 text-sm text-gray-500">
+                                    <span>
+                                        {vehicle.license_plate} •{' '}
+                                        {vehicle.year_of_manufacture}
+                                    </span>
+                                    <span className="text-gray-300">|</span>
+                                    {/* Social Proof: Trip Count */}
+                                    <div className="flex items-center gap-1 font-medium text-slate-700">
+                                        <Car className="h-4 w-4" />
+                                        {vehicle.total_trips > 0
+                                            ? `${vehicle.total_trips} trips`
+                                            : 'New Listing'}
+                                    </div>
+                                </div>
                             </div>
-                            <div className="">
-                                <Chip
-                                    className="px-4 py-2"
-                                    variant={
-                                        vehicle.status === 'Active'
-                                            ? 'success'
-                                            : 'destructive'
-                                    }
-                                >
-                                    {vehicle.status}
-                                </Chip>
+
+                            {/* Prominent Daily Price */}
+                            <div className="rounded-xl border border-slate-100 bg-slate-50 p-4 text-center sm:text-right">
+                                <p className="text-xs font-semibold tracking-wider text-slate-500 uppercase">
+                                    Daily Rate
+                                </p>
+                                <div className="flex items-baseline gap-1 sm:justify-end">
+                                    <span className="text-2xl font-bold text-blue-600">
+                                        {vehicle.daily_rental_price}
+                                    </span>
+                                    <span className="text-sm font-medium text-slate-500">
+                                        LKR /day
+                                    </span>
+                                </div>
                             </div>
                         </div>
 
@@ -119,36 +144,6 @@ export default function VehicleShow({ vehicle }: VehicleShowProps) {
                                     {vehicle.highlights}
                                 </CardContent>
                             </Card>
-                        </div>
-
-                        <Separator className="my-6" />
-
-                        {/* Rental Info */}
-                        <h2 className="mb-3 text-lg font-semibold text-gray-800">
-                            Rental Rates
-                        </h2>
-                        <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
-                            <PriceCard
-                                title="Daily Rate"
-                                value={vehicle.daily_rental_price}
-                                icon={<Calendar />}
-                                iconBg="bg-green-100"
-                                iconColor="text-green-600"
-                            />
-                            <PriceCard
-                                title="Weekly Rate"
-                                value={vehicle.weekly_rental_price}
-                                icon={<Clock />}
-                                iconBg="bg-yellow-100"
-                                iconColor="text-yellow-600"
-                            />
-                            <PriceCard
-                                title="Monthly Rate"
-                                value={vehicle.monthly_rental_price}
-                                icon={<DollarSign />}
-                                iconBg="bg-purple-100"
-                                iconColor="text-purple-600"
-                            />
                         </div>
                     </CardContent>
                 </Card>

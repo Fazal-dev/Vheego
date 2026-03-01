@@ -1,5 +1,6 @@
-import { Star } from 'lucide-react';
+import { ShieldCheck, Star } from 'lucide-react';
 import { Avatar, AvatarImage } from './ui/avatar';
+import { Badge } from './ui/badge';
 
 interface HostInfoProps {
     hostName: string;
@@ -49,6 +50,13 @@ export function HostInfoCard({
                     <div className="flex items-center gap-1 text-sm text-muted-foreground">
                         <Star className="h-4 w-4 text-yellow-500" />
                         <span>{trips} trips</span>
+                        <Badge
+                            variant="secondary"
+                            className="border-blue-100 bg-blue-50 text-blue-700 hover:bg-blue-50"
+                        >
+                            <ShieldCheck className="mr-1 h-3 w-3" />
+                            Top Rated Host
+                        </Badge>
                     </div>
                 </div>
             </div>
