@@ -1,4 +1,5 @@
 import { BookingDetailModal } from '@/components/booking/booking-detail-modal';
+import { EndTripWizard } from '@/components/booking/booking-end-trip-renter-wizard';
 import { StartTripWizard } from '@/components/booking/booking-start-trip-wizard';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -85,10 +86,15 @@ export default function BookingListPage({
     const [cancelBooking, setCancelBooking] = useState<any>(null);
     const [bookingToStart, setBookingToStart] = useState<any>(null);
     const [isWizardOpen, setIsWizardOpen] = useState(false);
+    const [isEndTripWizardOpen, setIsEndTripWizardOpen] = useState(false);
 
     const handleOpenWizard = (booking: any) => {
         setBookingToStart(booking);
         setIsWizardOpen(true);
+    };
+    const handleEntTripOpenWizard = (booking: any) => {
+        setBookingToStart(booking);
+        setIsEndTripWizardOpen(true);
     };
 
     return (
@@ -209,6 +215,10 @@ export default function BookingListPage({
                                                     className="bg-primary hover:bg-primary/90"
                                                     onClick={(e) => {
                                                         e.stopPropagation();
+
+                                                        handleEntTripOpenWizard(
+                                                            booking,
+                                                        );
                                                     }}
                                                 >
                                                     End Trip
@@ -266,9 +276,17 @@ export default function BookingListPage({
                     )}
                 </div>
 
+                {/* trip start */}
                 <StartTripWizard
                     open={isWizardOpen}
                     onOpenChange={setIsWizardOpen}
+                    booking={bookingToStart}
+                />
+
+                {/* trip end */}
+                <EndTripWizard
+                    open={isEndTripWizardOpen}
+                    onOpenChange={setIsEndTripWizardOpen}
                     booking={bookingToStart}
                 />
 
