@@ -1,4 +1,5 @@
 import { BookingDetailModal } from '@/components/booking/booking-detail-modal';
+import { OwnerEndTripWizard } from '@/components/booking/booking-end-trip-owner-wizard';
 import { StartTripOwnerWizard } from '@/components/booking/booking-start-owner-wizard';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -18,7 +19,7 @@ import { Booking, BookingListPageProps, BreadcrumbItem } from '@/types';
 import { router } from '@inertiajs/react';
 
 import { Car, MapPin } from 'lucide-react';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 const statusMap: Record<
     string,
@@ -87,12 +88,23 @@ export default function BookingListPage({
     const [cancelBooking, setCancelBooking] = useState<any>(null);
     const [bookingToStart, setBookingToStart] = useState<any>(null);
     const [isWizardOpen, setIsWizardOpen] = useState(false);
+    const [isEndTripWizardOpen, setIsEndTripWizardOpen] = useState(false);
+    const [isEndTrip, setIsEndTrip] = useState(false);
+
+    useEffect(() => {
+        if (isEndTrip == true) {
+            handleTabChange('Completed');
+        }
+    }, [isEndTrip]);
 
     const handleOpenWizard = (booking: any) => {
         setBookingToStart(booking);
         setIsWizardOpen(true);
     };
-
+    const handleEntTripOpenWizard = (booking: any) => {
+        setBookingToStart(booking);
+        setIsEndTripWizardOpen(true);
+    };
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <div className="max-w-8xl mx-auto px-2 py-10">
@@ -211,6 +223,9 @@ export default function BookingListPage({
                                                     className="bg-primary hover:bg-primary/90"
                                                     onClick={(e) => {
                                                         e.stopPropagation();
+                                                        handleEntTripOpenWizard(
+                                                            booking,
+                                                        );
                                                     }}
                                                 >
                                                     End Trip
@@ -271,6 +286,13 @@ export default function BookingListPage({
                 <StartTripOwnerWizard
                     open={isWizardOpen}
                     onOpenChange={setIsWizardOpen}
+                    booking={bookingToStart}
+                />
+
+                <OwnerEndTripWizard
+                    open={isEndTripWizardOpen}
+                    onOpenChange={setIsEndTripWizardOpen}
+                    setIsEndTrip={setIsEndTrip}
                     booking={bookingToStart}
                 />
 

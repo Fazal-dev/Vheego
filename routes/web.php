@@ -48,6 +48,7 @@ Route::middleware(['auth', 'role:owner', 'verified', 'web'])->prefix('owner')
             ->controller(BookingController::class)->group(function () {
                 Route::get('/', 'index')->name('index');
                 Route::post('/trips/start/validate/{step}', 'validateStep')->name('validate-step');
+                Route::post('/trips/end/validate/{step}', 'validateEndTrip')->name('end-trip-validate-step');
             });
     });
 

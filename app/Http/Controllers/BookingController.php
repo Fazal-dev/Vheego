@@ -8,6 +8,34 @@ use Inertia\Inertia;
 
 class BookingController extends Controller
 {
+    public function validateEndTrip(Request $request, $step)
+    {
+        $booking = Booking::findOrFail($request->booking_id);
+
+        if ($step === 'inspection') {
+            $request->validate(['damage_checked' => 'accepted']);
+            return back();
+        }
+
+        if ($step === 'mileage') {
+            $request->validate([
+                'end_odometer' => "required|numeric|gte:{$booking->start_odometer}"
+            ], [
+                'end_odometer.gte' => 'The end mileage must be ' . $booking->start_odometer . ' KM or higher.',
+            ]);
+
+            $otp = rand(1000, 9999);
+
+            $booking->update([
+                'end_otp' => $otp,
+                'end_odometer' => $request->end_odometer
+            ]);
+
+            return back()->with('otp', $otp);
+        }
+
+        return back();
+    }
     /**
      * validate trip start steps
      */
@@ -73,7 +101,7 @@ class BookingController extends Controller
                 'id' => $booking->id,
                 'renter_image' => $booking->user->profile_image ?? '/default-avatar.png',
                 'start_otp' => $booking->start_otp,
-                'vehicle_odometer' => $booking->vehicle->current_odometer ?? 0,
+                'start_odometer' => $booking->start_odometer ?? 0,
                 'vehicle' => "{$booking->vehicle->brand} {$booking->vehicle->model}",
                 'image' => $frontImage,
                 'renter_name' => $booking->user->name,
