@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Booking;
+use App\Models\Review;
 use App\Models\Vehicle;
 use App\Models\VehicleHistory;
 use Illuminate\Http\Request;
@@ -15,8 +16,133 @@ use Stripe\checkout\Session;
 
 class CustomerController extends Controller
 {
+
     /**
-     * validate trip start steps
+     * Validate trip end steps
+     */
+    public function validateEndStep(Request $request, $step)
+    {
+        $rules = match ($step) {
+            'odometer' => [
+                'booking_id' => 'required|exists:bookings,id',
+                'odometer' => 'required|numeric|min:1',
+            ],
+            'review' => [
+                'rating' => 'required|integer|min:1|max:5',
+                'comment'    => 'required|string|min:10|max:1000',
+            ],
+            'otp' => [
+                'otp' => 'required|digits:4',
+            ],
+            default => [],
+        };
+
+        $messages = match ($step) {
+            'odometer' => [
+                'odometer.required' => 'Please enter the final mileage.',
+                'odometer.numeric' => 'Odometer must be a valid number.',
+            ],
+            'review' => [
+                'rating.required' => 'Please select a star rating.',
+                'rating.min' => 'Minimum rating is 1 star.',
+                'comment.min' => 'A comment of at least 10 characters is required to end the trip.',
+            ],
+            'otp' => [
+                'otp.required' => 'Verification code is required.',
+                'otp.digits' => 'The code must be 4 digits.',
+            ],
+            default => [],
+        };
+
+        $booking = Booking::findOrFail($request->booking_id);
+
+        if ($step == 'odometer') {
+            if ($request->odometer < $booking->start_odometer) {
+                return back()->withErrors([
+                    'odometer' => 'The ending odometer reading cannot be lower than the starting reading (' . $booking->start_odometer . ' KM).',
+                ]);
+            }
+        }
+
+        $request->validate($rules, $messages);
+
+        if ($step == 'review') {
+            $endOtp = rand(1000, 9999);
+            $booking->update([
+                'end_otp' => $endOtp,
+            ]);
+        }
+
+        return back();
+    }
+
+    /**
+     * End the vehicle trip after verifying the return OTP, rating, and mileage.
+     * * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function endTrip(Request $request)
+    {
+        $messages = [
+            'otp.required' => 'Please enter the 4-digit verification code to finish your trip.',
+            'otp.digits'   => 'The verification code must be exactly 4 numeric digits.',
+            'rating.required' => 'Please select a star rating for your experience.',
+            'comment.required' => 'A comment of at least 10 characters is required to end the trip.',
+            'comment.min' => 'A comment of at least 10 characters is required to end the trip.',
+        ];
+
+        $request->validate([
+            'booking_id' => 'required|exists:bookings,id',
+            'odometer'   => 'required|numeric',
+            'rating'     => 'required|integer|min:1|max:5',
+            'comment'    => 'required|string|min:10|max:1000',
+            'otp'        => 'required|digits:4',
+        ], $messages);
+
+        $booking = Booking::where('id', $request->booking_id)
+            ->where('user_id', Auth::id())
+            ->firstOrFail();
+
+        if ($booking->booking_status !== 'OnTrip') {
+            return back()->withErrors([
+                'otp' => 'This trip is not currently active and cannot be ended.',
+            ]);
+        }
+
+        if ($request->odometer < $booking->start_odometer) {
+            return back()->withErrors([
+                'odometer' => 'The ending odometer reading cannot be lower than the starting reading (' . $booking->start_odometer . ' KM).',
+            ]);
+        }
+
+        if ($booking->end_otp !== $request->otp) {
+            return back()->withErrors([
+                'otp' => 'The verification code is incorrect. Please verify with the vehicle owner.',
+            ]);
+        }
+
+        $booking->update([
+            'booking_status' => 'Completed',
+            'end_odometer'   => $request->odometer,
+        ]);
+
+        Review::create([
+            'vehicle_id'  => $booking->vehicle_id,
+            'booking_id'  => $booking->id,
+            'reviewer_id' => Auth::id(),
+            'rating'      => $request->rating,
+            'comment'     => $request->comment,
+        ]);
+
+        VehicleHistory::create([
+            'vehicle_id' => $booking->vehicle_id,
+            'status' => 'Available',
+        ]);
+
+        return back()->with('success', 'Trip completed! Thank you for your feedback.');
+    }
+    /**
+     * validate trip start steps before start
      */
     public function validateStep(Request $request, $step)
     {

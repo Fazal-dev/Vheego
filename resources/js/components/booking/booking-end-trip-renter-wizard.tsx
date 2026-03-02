@@ -14,11 +14,11 @@ import {
 } from '@/components/ui/input-otp';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea'; // Added for review
-import { useForm } from '@inertiajs/react';
+import customer from '@/routes/customer';
+import { router, useForm } from '@inertiajs/react';
 import { defineStepper } from '@stepperize/react';
 import { Check, Gauge, KeyRound, Star } from 'lucide-react';
 
-// 1. Define the End Trip Steps
 const EndStepper = defineStepper(
     { id: 'odometer', title: 'Mileage', icon: Gauge },
     { id: 'review', title: 'Rating', icon: Star },
@@ -79,20 +79,30 @@ function EndTripContent({
     const handleNext = () => {
         clearErrors();
 
-        // If it's the last step (OTP), submit the whole form to finalize
         if (stepper.state.isLast) {
-            // post(route('trips.endTrip'), {
-            //     // Update to your end trip route
-            //     onSuccess: () => {
-            //         onOpenChange(false);
-            //         window.location.reload();
-            //     },
-            // });
+            post(customer.trips.endTrip.url(), {
+                preserveState: true,
+                preserveScroll: true,
+                onSuccess: () => {
+                    onOpenChange(false);
+                    router.reload();
+                    // window.location.reload();
+                },
+                onError: (errors) => {},
+            });
             return;
         }
 
-        // Logic for "Continue" button
-        stepper.navigation.next();
+        post(
+            customer.trips.endTripValidateStep.url({
+                step: stepper.state.current.data.id,
+            }),
+            {
+                preserveState: true,
+                preserveScroll: true,
+                onSuccess: () => stepper.navigation.next(),
+            },
+        );
     };
 
     return (
@@ -200,6 +210,11 @@ function EndTripContent({
                                         {errors.rating}
                                     </p>
                                 )}
+                                {errors.comment && (
+                                    <p className="mt-2 text-xs text-destructive">
+                                        {errors.comment}
+                                    </p>
+                                )}
                             </div>
                         ),
                         otp: () => (
@@ -231,6 +246,12 @@ function EndTripContent({
                                 {errors.otp && (
                                     <p className="text-sm font-medium text-destructive">
                                         {errors.otp}
+                                    </p>
+                                )}
+
+                                {errors.odometer && (
+                                    <p className="mt-3 text-xs text-destructive">
+                                        {errors.odometer}
                                     </p>
                                 )}
                             </div>

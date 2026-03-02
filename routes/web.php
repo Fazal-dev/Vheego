@@ -22,10 +22,17 @@ Route::middleware(['auth', 'role:customer', 'verified', 'web'])->prefix('custome
         Route::get('checkout-cancel', 'cancel')->name('checkout.cancel');
         Route::get('bookings', 'getAllBookings')->name('bookings');
         Route::post('check-availability', 'checkAvailability')->name('checkAvailability');
+
         Route::post('/trips/start/validate/{step}', 'validateStep')
             ->name('trips.validate-step');
+
         Route::post('/trips/start', 'startTrip')
             ->name('trips.start-trip');
+
+        Route::post('/trips/end/validate/{step}', 'validateEndStep')->name('trips.end-trip-validate-step');
+
+        Route::post('/trips/end', 'endTrip')
+            ->name('trips.end-trip');
     });
 
 Route::middleware(['auth', 'role:owner', 'verified', 'web'])->prefix('owner')
@@ -55,5 +62,6 @@ Route::middleware(['auth', 'role:admin', 'verified', 'web'])->prefix('admin')
 Route::get('/test', function () {
     return view('emails.booking.confirmation');
 });
+
 require __DIR__ . '/settings.php';
 require __DIR__ . '/auth.php';

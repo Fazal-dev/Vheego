@@ -23,6 +23,7 @@ class Booking extends Model
         'payment_reference',
         'pickup_location',
         'start_otp',
+        'end_otp',
         'start_odometer',
         'end_odometer',
         'license_number',

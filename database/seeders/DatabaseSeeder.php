@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use App\Models\Booking;
+use App\Models\Review;
 use App\Models\User;
 use App\Models\Vehicle;
 use App\Models\VehicleHistory;
@@ -31,7 +32,7 @@ class DatabaseSeeder extends Seeder
             ]
         );
 
-        $user = User::create([
+        User::create([
             'name' => 'owner',
             'email' => 'fazal@gmail.com',
             'password' => bcrypt('password'),
@@ -54,5 +55,7 @@ class DatabaseSeeder extends Seeder
         Booking::factory(50)->create();
 
         VehicleHistory::factory(100)->create();
+
+        Review::factory(100)->create();
     }
 }

@@ -49,4 +49,15 @@ class Vehicle extends Model
     {
         return $this->bookings()->where('booking_status', 'completed')->count();
     }
+
+    public function reviews()
+    {
+        return $this->hasMany(Review::class);
+    }
+
+    // Helper to get average rating
+    public function getAverageRating()
+    {
+        return round($this->reviews()->avg('rating'), 1) ?? 0;
+    }
 }

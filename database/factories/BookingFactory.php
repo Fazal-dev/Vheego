@@ -46,6 +46,7 @@ class BookingFactory extends Factory
             'payment_reference' => $this->faker->optional()->uuid(),
             'pickup_location' => $this->faker->text('100'),
             'start_otp' => $otp,
+            'end_otp' => $otp,
             'start_odometer' => rand(1000, 10000),
             'end_odometer' => rand(1000, 10000),
             'license_number' => rand(1000, 100000),

@@ -92,6 +92,7 @@ export default function BookingListPage({
         setBookingToStart(booking);
         setIsWizardOpen(true);
     };
+
     const handleEntTripOpenWizard = (booking: any) => {
         setBookingToStart(booking);
         setIsEndTripWizardOpen(true);
