@@ -28,6 +28,7 @@ interface Booking {
 interface BookingDetailModalProps {
     selectedBooking: Booking | null;
     onClose: () => void;
+    isNoCancle: boolean;
     onCancel: (booking: Booking) => void;
     statusMap: Record<string, { label: string; color: any; progress: number }>;
 }
@@ -37,6 +38,7 @@ export function BookingDetailModal({
     onClose,
     onCancel,
     statusMap,
+    isNoCancle,
 }: BookingDetailModalProps) {
     if (!selectedBooking) return null;
 
@@ -146,12 +148,14 @@ export function BookingDetailModal({
                             <Button variant="outline" onClick={onClose}>
                                 Close
                             </Button>
-                            <Button
-                                variant="destructive"
-                                onClick={() => onCancel(selectedBooking)}
-                            >
-                                Cancel Booking
-                            </Button>
+                            {!isNoCancle && (
+                                <Button
+                                    variant="destructive"
+                                    onClick={() => onCancel(selectedBooking)}
+                                >
+                                    Cancel Booking
+                                </Button>
+                            )}
                         </div>
                     )}
                 </div>

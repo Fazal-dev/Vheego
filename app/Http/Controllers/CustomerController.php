@@ -6,6 +6,7 @@ use App\Models\Booking;
 use App\Models\Review;
 use App\Models\Vehicle;
 use App\Models\VehicleHistory;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -358,9 +359,98 @@ class CustomerController extends Controller
      */
     public function getDashboard(Request $request)
     {
-        return Inertia::render('User/customerDashboard');
-    }
+        $user = Auth::user();
 
+        // 1. Summary Statistics
+        $stats = [
+            'active_count' => $user->bookings()->where('booking_status', 'OnTrip')->count(),
+            'total_spending' => $user->bookings()
+                ->where('booking_status', '!=', 'Completed')
+                ->where('payment_status', 'Paid')
+                ->sum('total_amount'),
+            'completed_count' => $user->bookings()->where('booking_status', 'Completed')->count(),
+        ];
+
+        // 2. Active Trip Logic
+        $activeBooking = $user->bookings()
+            ->with(['vehicle:id,brand,model,image_urls,pickup_location'])
+            ->where('booking_status', 'OnTrip')
+            ->first();
+
+        $activeTrip = null;
+        if ($activeBooking) {
+            $activeTrip = $this->formatActiveTrip($activeBooking);
+        }
+
+
+        // 4. Grouped Bookings for Tabs
+        $bookings = [
+            'upcoming' => $this->formatBookingList($user->bookings()->where('booking_status', 'Booked')->get()),
+            'history' => $this->formatBookingList($user->bookings()->where('booking_status', 'Completed')->get()),
+        ];
+
+        // return Inertia::render('User/customerDashboard', [
+        //     'stats' =>$stats,
+        //     'activeTrip' => $activeTrip,
+        //     'bookings' => $bookings
+        // ]);
+
+        return Inertia::render('User/dashboard', [
+            'stats' => $stats,
+            'bookings' => $bookings
+        ]);
+    }
+    /**
+     * Formats the active trip with progress bar logic
+     */
+    private function formatActiveTrip($booking)
+    {
+        $start = Carbon::parse($booking->start_date);
+        $end = Carbon::parse($booking->end_date);
+        $now = now();
+
+        $totalDuration = $start->diffInMinutes($end);
+        $elapsed = $start->diffInMinutes($now);
+
+        // Calculate percentage (clamped between 0-100)
+        $progress = $totalDuration > 0
+            ? min(100, max(0, round(($elapsed / $totalDuration) * 100)))
+            : 0;
+
+        return [
+            'booking_no' => $booking->booking_reference,
+            'vehicle_brand' => $booking->vehicle->brand,
+            'vehicle_model' => $booking->vehicle->model,
+            'vehicle_image' => collect(json_decode($booking->vehicle->image_urls))->first(),
+            'pickup_location' => $booking->vehicle->pickup_location ?? 'Colombo',
+            'hours_left' => round($now->diffInHours($end, false)),
+            'progress_percent' => $progress,
+        ];
+    }
+    /**
+     * Formats lists for the UI rows
+     */
+    private function formatBookingList($collection)
+    {
+        // return $collection->map(fn($b) => [
+        //     'id' => $b->id,
+        //     'vehicle_name' => $b->vehicle->brand . ' ' . $b->vehicle->model,
+        //     'date_range' => $b->start_date . ' - ' . $b->end_date,
+        //     'status' => $b->booking_status,
+        // ]);
+        return $collection->map(fn($b) => [
+            'id'             => $b->id,
+            'vehicle'        => $b->vehicle->brand . ' ' . $b->vehicle->model,
+            'image'          => collect(json_decode($b->vehicle->image_urls))->first() ?? '/placeholder-car.png',
+            'pickup'         => $b->vehicle->pickup_location ?? 'Colombo',
+            'dropoff'        => $b->vehicle->pickup_location,
+            'status'         => $b->booking_status,
+            'startDate'      => $b->start_date,
+            'endDate'        => $b->end_date,
+            'payment_status' => $b->payment_status,
+            'total_amount'   => (float) $b->total_amount,
+        ]);
+    }
     /**
      * Display vehicle  Details
      */
