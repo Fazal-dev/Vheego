@@ -3,6 +3,7 @@ import { HostInfoCard } from '@/components/host-info-card';
 import ImageSliderProvider from '@/components/image-slider-provider';
 import IncludeBenifits from '@/components/include-benifits';
 import Spec from '@/components/vehicle/spac';
+import { ReviewSection } from '@/components/vehicle/vehicle-review-section';
 import AppLayout from '@/layouts/app-layout';
 import customer from '@/routes/customer';
 import { BreadcrumbItem, VehicleDetailsProp } from '@/types';
@@ -21,8 +22,10 @@ import { PhotoView } from 'react-photo-view';
 
 export default function VehicleDetails({
     vehicle,
+    reviews_data,
 }: {
     vehicle: VehicleDetailsProp;
+    reviews_data: any;
 }) {
     const breadcrumbs: BreadcrumbItem[] = [
         {
@@ -172,6 +175,8 @@ export default function VehicleDetails({
                         />
                         <div className=" ">
                             <IncludeBenifits />
+                            <Separator className="my-8" />
+                            <ReviewSection data={reviews_data} />
                         </div>
                     </div>
                     {/* booking summary */}

@@ -373,6 +373,26 @@ class CustomerController extends Controller
 
         $owner = $vehicle->owner;
 
+        $reviews = $vehicle->reviews()
+            ->with('reviewer:id,name,profile_image')
+            ->latest()
+            ->get();
+
+        // 2. Calculate Review Stats
+        $totalReviews = $reviews->count();
+        $avgRating = $totalReviews > 0 ? round($reviews->avg('rating'), 1) : 0;
+
+
+        $distribution = collect([5, 4, 3, 2, 1])->mapWithKeys(function ($star) use ($reviews, $totalReviews) {
+            $count = $reviews->where('rating', $star)->count();
+            return [
+                $star . ' star' => [
+                    'count' => $count,
+                    'percentage' => $totalReviews > 0 ? round(($count / $totalReviews) * 100) : 0
+                ]
+            ];
+        });
+
         $ownerTrips = DB::table('bookings as b')
             ->join('vehicles as v', 'b.vehicle_id', '=', 'v.id')
             ->where('v.owner_id', $owner->id)
@@ -403,6 +423,19 @@ class CustomerController extends Controller
                 'ownerTrips' => $ownerTrips,
                 'ownerAvatar' => $owner->profile_image ?? 'https://i.pravatar.cc/150?img=',
             ],
+            'reviews_data' => [
+                'total_count' => $totalReviews,
+                'average_rating' => $avgRating,
+                'distribution' => $distribution,
+                'list' => $reviews->take(5)->map(fn($r) => [
+                    'id' => $r->id,
+                    'user_name' => $r->reviewer->name,
+                    'user_avatar' => $r->reviewer->profile_image,
+                    'rating' => $r->rating,
+                    'comment' => $r->comment,
+                    'date' => $r->created_at->format('M Y'),
+                ]),
+            ]
         ]);
     }
 
