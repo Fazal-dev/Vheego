@@ -15,7 +15,7 @@ import {
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea'; // Added for review
 import customer from '@/routes/customer';
-import { router, useForm } from '@inertiajs/react';
+import { useForm } from '@inertiajs/react';
 import { defineStepper } from '@stepperize/react';
 import { Check, Gauge, KeyRound, Star } from 'lucide-react';
 
@@ -28,6 +28,7 @@ const EndStepper = defineStepper(
 interface EndTripWizardProps {
     open: boolean;
     onOpenChange: (open: boolean) => void;
+    setIsEndTrip: (isEndTrip: boolean) => void;
     booking: any;
 }
 
@@ -42,6 +43,7 @@ interface EndTripForm {
 export function EndTripWizard({
     open,
     onOpenChange,
+    setIsEndTrip,
     booking,
 }: EndTripWizardProps) {
     return (
@@ -51,6 +53,7 @@ export function EndTripWizard({
                     <EndTripContent
                         booking={booking}
                         onOpenChange={onOpenChange}
+                        setIsEndTrip={setIsEndTrip}
                     />
                 </EndStepper.Scoped>
             )}
@@ -61,9 +64,11 @@ export function EndTripWizard({
 function EndTripContent({
     booking,
     onOpenChange,
+    setIsEndTrip,
 }: {
     booking: any;
     onOpenChange: any;
+    setIsEndTrip: any;
 }) {
     const stepper = EndStepper.useStepper();
 
@@ -85,8 +90,7 @@ function EndTripContent({
                 preserveScroll: true,
                 onSuccess: () => {
                     onOpenChange(false);
-                    router.reload();
-                    // window.location.reload();
+                    setIsEndTrip(true);
                 },
                 onError: (errors) => {},
             });
