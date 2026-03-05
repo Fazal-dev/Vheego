@@ -6,15 +6,14 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import AppLayout from '@/layouts/app-layout';
 import customer from '@/routes/customer';
 import { type BreadcrumbItem } from '@/types';
-import { Head } from '@inertiajs/react';
+import { Head, router } from '@inertiajs/react';
 import {
-    ArrowRight,
     Calendar,
     CalendarDays,
     Car,
-    Clock,
     CreditCard,
     MapPin,
+    Plus,
     Star,
 } from 'lucide-react';
 import { useState } from 'react';
@@ -58,13 +57,21 @@ const statusMap: Record<
     },
 };
 
-export default function customerDashboard({ auth, stats, bookings }: any) {
-    const activeBooking = {
-        vehicle: 'Toyota Prius 2022',
-        pickupDate: '28 Feb 2026 - 3:00 PM',
-        status: 'Ready for Pickup',
-        image: 'https://picsum.photos/800/600?random=166',
-    };
+export default function customerDashboard({
+    auth,
+    stats,
+    bookings,
+    activeTrip,
+}: any) {
+    // const activeBooking = {
+    //     vehicle: 'Toyota Prius 2022',
+    //     pickupDate: '29 Feb 2026 - 3:00 PM',
+    //     status: 'Ready for Pickup',
+    //     image: 'https://picsum.photos/800/600?random=166',
+    //     progress_percent: 94,
+    // };
+    const activeBooking = activeTrip;
+    // const activeBooking = null;
     const [selectedBooking, setSelectedBooking] = useState<any>(null);
     const [cancelBooking, setCancelBooking] = useState<any>(null);
 
@@ -120,39 +127,122 @@ export default function customerDashboard({ auth, stats, bookings }: any) {
                     ))}
                 </div>
 
-                <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-2">
-                    {/* Active Booking Section */}
-                    <Card className="rounded-2xl shadow-sm">
-                        <CardHeader>
-                            <CardTitle className="flex items-center gap-2">
-                                <Clock className="h-5 w-5" /> Current Booking
-                            </CardTitle>
-                        </CardHeader>
-                        <CardContent className="flex flex-col items-center justify-between gap-4 md:flex-row">
-                            <div className="flex items-center gap-4">
-                                <img
-                                    src={activeBooking.image}
-                                    alt="vehicle"
-                                    className="h-20 w-20 rounded-xl object-cover"
-                                />
-                                <div>
-                                    <h3 className="font-medium">
-                                        {activeBooking.vehicle}
-                                    </h3>
-                                    <p className="text-sm text-muted-foreground">
-                                        Pickup: {activeBooking.pickupDate}
-                                    </p>
-                                    <Badge className="mt-2" variant="secondary">
-                                        {activeBooking.status}
+                <div className="grid items-stretch gap-6 md:grid-cols-2">
+                    {/* 1. Left Side: Active Booking Command Center */}
+                    {activeBooking ? (
+                        <Card className="flex flex-col overflow-hidden rounded-3xl border-none bg-slate-50/50 shadow-sm">
+                            <CardHeader className="pb-2">
+                                <div className="flex items-center justify-between">
+                                    <Badge
+                                        variant="outline"
+                                        className="gap-1.5 border-emerald-200 bg-emerald-50 px-3 py-1 text-emerald-700"
+                                    >
+                                        <span className="relative flex h-2 w-2">
+                                            <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75"></span>
+                                            <span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-500"></span>
+                                        </span>
+                                        Live Trip
                                     </Badge>
+                                    <span className="font-mono text-[10px] font-medium tracking-widest text-muted-foreground uppercase">
+                                        Vehicle Number :{' '}
+                                        {activeBooking.vehicle_number}
+                                    </span>
+                                </div>
+                            </CardHeader>
+
+                            <CardContent className="flex flex-1 flex-col justify-between p-6 pt-2">
+                                <div className="space-y-6">
+                                    {/* Vehicle Hero Info */}
+                                    <div className="flex items-center gap-5">
+                                        <div className="group relative">
+                                            <div className="absolute -inset-1 rounded-2xl bg-gradient-to-r from-blue-600 to-cyan-400 opacity-20 blur transition group-hover:opacity-40"></div>
+                                            <img
+                                                src={activeBooking?.image || ''}
+                                                className="relative h-24 w-32 rounded-2xl border bg-white object-cover shadow-sm"
+                                                alt="Active Vehicle"
+                                            />
+                                        </div>
+                                        <div>
+                                            <h2 className="text-2xl leading-none font-black tracking-tight text-slate-900 italic">
+                                                {activeBooking.vehicle}
+                                            </h2>
+                                            <div className="mt-2 flex items-center gap-1.5 text-sm font-medium text-muted-foreground">
+                                                <MapPin className="h-3.5 w-3.5 text-blue-500" />
+                                                {activeBooking.pickupDate}
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    {/* Progress Visualizer */}
+                                    <div className="space-y-4 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+                                        <div className="flex items-end justify-between">
+                                            <div className="space-y-0.5">
+                                                <p className="text-[10px] font-bold text-muted-foreground uppercase">
+                                                    Time Remaining
+                                                </p>
+                                                <p className="font-mono text-xl font-bold text-slate-900">
+                                                    {
+                                                        activeBooking.remaining_time
+                                                    }
+                                                </p>
+                                            </div>
+                                            <div className="space-y-0.5 text-right">
+                                                <p className="text-[10px] font-bold text-muted-foreground uppercase">
+                                                    Return Date
+                                                </p>
+                                                <p className="text-sm font-bold text-slate-700">
+                                                    {activeBooking.return_date}
+                                                </p>
+                                            </div>
+                                        </div>
+
+                                        <div className="relative h-2.5 w-full overflow-hidden rounded-full bg-slate-100">
+                                            <div
+                                                className={`h-full rounded-full transition-all duration-1000 ${
+                                                    activeBooking.progress_percent >
+                                                    90
+                                                        ? 'bg-red-500'
+                                                        : 'bg-gradient-to-r from-blue-600 to-indigo-500'
+                                                }`}
+                                                style={{
+                                                    width: `${activeBooking.progress_percent}%`,
+                                                }}
+                                            ></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </CardContent>
+                        </Card>
+                    ) : (
+                        /* THE "NO ACTIVE TRIP" STATE */
+                        <Card className="flex h-full flex-col items-center justify-center rounded-3xl border-2 border-dashed border-slate-200 bg-white p-8 text-center">
+                            <div className="relative mb-6">
+                                <div className="absolute -inset-4 rounded-full bg-blue-100/50 blur-2xl"></div>
+                                <div className="relative rounded-2xl border border-slate-100 bg-white p-2 shadow-sm">
+                                    <Car className="h-10 w-10" />
                                 </div>
                             </div>
-                            <Button className="rounded-xl">
-                                View Details{' '}
-                                <ArrowRight className="ml-2 h-4 w-4" />
+
+                            <div className="max-w-[280px] space-y-1">
+                                <h3 className="text-xl font-bold text-slate-900">
+                                    No active trips
+                                </h3>
+                                <p className="text-sm text-muted-foreground">
+                                    Your current rentals will appear here. Ready
+                                    to hit the road again?
+                                </p>
+                            </div>
+
+                            <Button
+                                className="mt-3 w-full max-w-[200px] rounded-xl shadow-md"
+                                onClick={() =>
+                                    router.visit(customer.findVehicle())
+                                }
+                            >
+                                <Plus className="mr-2 h-4 w-4" /> Book a Vehicle
                             </Button>
-                        </CardContent>
-                    </Card>
+                        </Card>
+                    )}
 
                     {/* Booking History Tabs */}
                     <Tabs defaultValue="upcoming" className="w-full">

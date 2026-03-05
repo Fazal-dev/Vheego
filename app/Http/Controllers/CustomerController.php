@@ -373,8 +373,9 @@ class CustomerController extends Controller
 
         // 2. Active Trip Logic
         $activeBooking = $user->bookings()
-            ->with(['vehicle:id,brand,model,image_urls,pickup_location'])
+            ->with(['vehicle:id,brand,model,image_urls,pickup_location,year_of_manufacture,license_plate'])
             ->where('booking_status', 'OnTrip')
+            ->orderByDesc('id')
             ->first();
 
         $activeTrip = null;
@@ -382,22 +383,31 @@ class CustomerController extends Controller
             $activeTrip = $this->formatActiveTrip($activeBooking);
         }
 
-
         // 4. Grouped Bookings for Tabs
         $bookings = [
-            'upcoming' => $this->formatBookingList($user->bookings()->where('booking_status', 'Booked')->get()),
-            'history' => $this->formatBookingList($user->bookings()->where('booking_status', 'Completed')->get()),
+            'upcoming' => $this->formatBookingList($user
+                ->bookings()->where('booking_status', 'Booked')
+                ->orderBy('start_date', 'asc')
+                ->limit(3)->get()),
+            'history' => $this->formatBookingList(
+                $user->bookings()
+                    ->where('booking_status', 'Completed')
+                    ->orderBy('start_date', 'desc')
+                    ->limit(10)
+                    ->get()
+            ),
         ];
 
         // return Inertia::render('User/customerDashboard', [
-        //     'stats' =>$stats,
+        //     'stats' => $stats,
         //     'activeTrip' => $activeTrip,
         //     'bookings' => $bookings
         // ]);
 
         return Inertia::render('User/dashboard', [
             'stats' => $stats,
-            'bookings' => $bookings
+            'bookings' => $bookings,
+            'activeTrip' => $activeTrip,
         ]);
     }
     /**
@@ -405,26 +415,50 @@ class CustomerController extends Controller
      */
     private function formatActiveTrip($booking)
     {
-        $start = Carbon::parse($booking->start_date);
-        $end = Carbon::parse($booking->end_date);
+        // Combine date and time for pinpoint accuracy
+        $startStr = $booking->start_date . ' ' . ($booking->start_time ?? '00:00:00');
+        $endStr = $booking->end_date . ' ' . ($booking->end_time ?? '00:00:00');
+
+        $start = \Carbon\Carbon::parse($startStr);
+        $end = \Carbon\Carbon::parse($endStr);
         $now = now();
 
+        // Accuracy in minutes for a smooth progress bar
         $totalDuration = $start->diffInMinutes($end);
         $elapsed = $start->diffInMinutes($now);
 
-        // Calculate percentage (clamped between 0-100)
+        // Calculate Remaining Time string (e.g., 14h : 22m)
+        $remaining = '';
+        if ($now->lessThan($end)) {
+            $diff = $now->diff($end);
+            // This formats the string as 14h : 22m
+            $remaining = "{$diff->h}h : " . str_pad($diff->i, 2, '0', STR_PAD_LEFT) . "m";
+
+            // If there are days remaining, you might want to include them:
+            if ($diff->d > 0) {
+                $remaining = "{$diff->d}d : " . $remaining;
+            }
+        } else {
+            $remaining = "0h : 00m";
+        }
+
+        // Percentage (clamped between 0-100)
         $progress = $totalDuration > 0
             ? min(100, max(0, round(($elapsed / $totalDuration) * 100)))
             : 0;
 
         return [
-            'booking_no' => $booking->booking_reference,
-            'vehicle_brand' => $booking->vehicle->brand,
-            'vehicle_model' => $booking->vehicle->model,
-            'vehicle_image' => collect(json_decode($booking->vehicle->image_urls))->first(),
-            'pickup_location' => $booking->vehicle->pickup_location ?? 'Colombo',
-            'hours_left' => round($now->diffInHours($end, false)),
+            'booking_no'       => $booking->booking_reference,
+            'vehicle'          => $booking->vehicle->brand . ' ' . $booking->vehicle->model . ' (' . $booking->vehicle->year_of_manufacture . ')',
+            'vehicle_number'          => $booking->vehicle->license_plate,
+            'image'            => collect(json_decode($booking->vehicle->image_urls))->first(),
+            'pickupDate'       => $start->format('M d, h:i A'),
+            'pickup_location'  => $booking->vehicle->pickup_location ?? 'Colombo',
+            'hours_left'       => max(0, round($now->diffInHours($end, false))),
+            'return_date'      => $end->format('M d, h:i A'),
+            'remaining_time'   => $remaining,
             'progress_percent' => $progress,
+            'is_overdue'       => $now->greaterThan($end),
         ];
     }
     /**
