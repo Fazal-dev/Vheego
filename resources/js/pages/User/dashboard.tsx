@@ -1,14 +1,15 @@
 import { BookingDetailModal } from '@/components/booking/booking-detail-modal';
+import BookingRow from '@/components/dashbord/booking-row';
+import StatCard from '@/components/dashbord/stat-card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import AppLayout from '@/layouts/app-layout';
 import customer from '@/routes/customer';
 import { type BreadcrumbItem } from '@/types';
 import { Head, router } from '@inertiajs/react';
 import {
-    Calendar,
     CalendarDays,
     Car,
     CreditCard,
@@ -63,15 +64,7 @@ export default function customerDashboard({
     bookings,
     activeTrip,
 }: any) {
-    // const activeBooking = {
-    //     vehicle: 'Toyota Prius 2022',
-    //     pickupDate: '29 Feb 2026 - 3:00 PM',
-    //     status: 'Ready for Pickup',
-    //     image: 'https://picsum.photos/800/600?random=166',
-    //     progress_percent: 94,
-    // };
     const activeBooking = activeTrip;
-    // const activeBooking = null;
     const [selectedBooking, setSelectedBooking] = useState<any>(null);
     const [cancelBooking, setCancelBooking] = useState<any>(null);
 
@@ -281,72 +274,5 @@ export default function customerDashboard({
                 />
             </div>
         </AppLayout>
-    );
-}
-
-function StatCard({ title, value, icon, color = 'text-slate-600' }: any) {
-    return (
-        <Card className="rounded-2xl border-l-4 border-l-gray-500 shadow-sm">
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-1">
-                <CardTitle className="text-xs font-bold tracking-wider text-muted-foreground uppercase">
-                    {title}
-                </CardTitle>
-                <div className={color}>{icon}</div>
-            </CardHeader>
-            <CardContent>
-                <div className="text-2xl font-bold">{value}</div>
-            </CardContent>
-        </Card>
-    );
-}
-
-function BookingRow({ booking, setSelectedBooking }: any) {
-    return (
-        <div className="flex items-center justify-between rounded-xl border bg-white p-4 transition-shadow hover:shadow-md">
-            <div className="flex items-center gap-4">
-                {/* 1. Use booking.image */}
-                <div className="relative h-16 w-24 overflow-hidden rounded-lg border bg-slate-50">
-                    <img
-                        src={booking.image}
-                        alt={booking.vehicle}
-                        className="h-full w-full object-cover"
-                    />
-                </div>
-
-                <div>
-                    {/* 2. Use booking.vehicle */}
-                    <p className="text-sm font-bold text-slate-900">
-                        {booking.vehicle}
-                    </p>
-
-                    <div className="mt-1 flex flex-col gap-1">
-                        {/* 3. Use booking.startDate & booking.endDate */}
-                        <div className="flex items-center gap-1 text-[11px] text-muted-foreground">
-                            <Calendar className="h-3 w-3" />
-                            <span>
-                                {booking.startDate} to {booking.endDate}
-                            </span>
-                        </div>
-
-                        {/* 4. Use booking.pickup */}
-                        <div className="flex items-center gap-1 text-[11px] font-medium text-blue-600">
-                            <MapPin className="h-3 w-3" />
-                            <span>{booking.pickup}</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div className="flex flex-col items-end gap-2">
-                <Button
-                    variant="outline"
-                    size="sm"
-                    className="h-8 text-xs"
-                    onClick={() => setSelectedBooking(booking)}
-                >
-                    View Details
-                </Button>
-            </div>
-        </div>
     );
 }

@@ -1,4 +1,4 @@
-import BackButton from '@/components/BackButton';
+import BackButton from '@/components/custom-ui/BackButton';
 import VehicleForm from '@/components/vehicle/vehicle-form';
 import AppLayout from '@/layouts/app-layout';
 import vehicles from '@/routes/owner/vehicles';

@@ -1,7 +1,7 @@
-import ImagePreview from '@/components/imagePreview';
+import ImagePreview from '@/components/custom-ui/imagePreview';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { capitalizeWords } from '@/lib/utils';
-import ImageSliderProvider from '../image-slider-provider';
+import ImageSliderProvider from '../custom-ui/image-slider-provider';
 export default function VehicleImagesSlider({
     image_urls,
 }: {

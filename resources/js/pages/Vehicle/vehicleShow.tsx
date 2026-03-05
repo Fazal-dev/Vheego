@@ -1,5 +1,5 @@
-import BackButton from '@/components/BackButton';
 import { Chip } from '@/components/chip';
+import BackButton from '@/components/custom-ui/BackButton';
 import Detail from '@/components/detail-lable';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';

@@ -1,9 +1,9 @@
 import BookingSummaryCard from '@/components/booking/booking-summary-card';
-import { HostInfoCard } from '@/components/host-info-card';
-import ImageSliderProvider from '@/components/image-slider-provider';
+import { HostInfoCard } from '@/components/custom-ui/host-info-card';
+import ImageSliderProvider from '@/components/custom-ui/image-slider-provider';
 import IncludeBenifits from '@/components/include-benifits';
-import Spec from '@/components/vehicle/spac';
 import { ReviewSection } from '@/components/vehicle/vehicle-review-section';
+import Spec from '@/components/vehicle/vehicle-spac';
 import AppLayout from '@/layouts/app-layout';
 import customer from '@/routes/customer';
 import { BreadcrumbItem, VehicleDetailsProp } from '@/types';

@@ -1,6 +1,6 @@
 import { ShieldCheck, Star } from 'lucide-react';
-import { Avatar, AvatarImage } from './ui/avatar';
-import { Badge } from './ui/badge';
+import { Avatar, AvatarImage } from '../ui/avatar';
+import { Badge } from '../ui/badge';
 
 interface HostInfoProps {
     hostName: string;

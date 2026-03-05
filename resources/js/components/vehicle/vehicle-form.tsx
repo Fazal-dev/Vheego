@@ -9,7 +9,7 @@ import {
     SelectValue,
 } from '@/components/ui/select';
 
-import { ImageCropper } from '@/components/imageCropper';
+import { ImageCropper } from '@/components/custom-ui/imageCropper';
 import { Label } from '@/components/ui/label';
 import { Separator } from '@/components/ui/separator';
 import { Textarea } from '@/components/ui/textarea';

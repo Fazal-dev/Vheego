@@ -1,5 +1,5 @@
-import BackButton from '@/components/BackButton';
-import OwnerDetails from '@/components/ownerDetails';
+import BackButton from '@/components/custom-ui/BackButton';
+import OwnerDetails from '@/components/custom-ui/ownerDetails';
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
 import VehicleDetailsCard from '@/components/vehicle/vehicle-details-card';
