@@ -1,6 +1,10 @@
+import { Stepper } from '@/types';
 import { Check } from 'lucide-react';
 
-export default function ProgressStepper({ stepper }: any) {
+type ProgressStepperProps = {
+    stepper: Stepper;
+};
+export default function ProgressStepper({ stepper }: ProgressStepperProps) {
     if (!stepper || !stepper.state) return null;
 
     return (

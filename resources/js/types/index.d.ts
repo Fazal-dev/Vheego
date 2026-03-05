@@ -238,3 +238,19 @@ interface StartTripWizardProps {
     onOpenChange: (open: boolean) => void;
     booking: any;
 }
+
+export type Step = {
+    id: number | string;
+    title: string;
+    icon: LucideIcon;
+};
+export type StepperState = {
+    current: {
+        index: number;
+    };
+    all: Step[];
+};
+
+export type Stepper = {
+    state: StepperState;
+};
