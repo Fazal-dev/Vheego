@@ -17,6 +17,7 @@ import { useForm } from '@inertiajs/react';
 import { DialogTitle } from '@radix-ui/react-dialog';
 import { defineStepper } from '@stepperize/react';
 import { Check, FileText, Fingerprint, Gauge, KeyRound } from 'lucide-react';
+import ProgressStepper from '../custom-ui/stepper-nav';
 
 const MyStepper = defineStepper(
     { id: 'license', title: 'License', icon: Fingerprint },
@@ -103,63 +104,7 @@ function StartTripContent({
                 </DialogTitle>
             </DialogHeader>
             <div className="scrollbar-thin scrollbar-thumb-rounded overflow-y-auto p-6">
-                <nav aria-label="Progress" className="mt-2 mb-8">
-                    <ol className="flex w-full items-center justify-between">
-                        {stepper.state.all.map((step, index) => {
-                            const isCompleted =
-                                index < stepper.state.current.index;
-                            const isActive =
-                                index === stepper.state.current.index;
-                            const StepIcon = step.icon;
-
-                            return (
-                                <li
-                                    key={step.id}
-                                    className="relative flex flex-1 flex-col items-center"
-                                >
-                                    {/* Line Connector */}
-                                    {index !== 0 && (
-                                        <div
-                                            className={`absolute top-4 left-[-50%] h-0.5 w-full -translate-y-1/2 transition-colors duration-300 ${
-                                                isCompleted || isActive
-                                                    ? 'bg-primary'
-                                                    : 'bg-muted'
-                                            }`}
-                                        />
-                                    )}
-
-                                    {/* Step Circle */}
-                                    <div
-                                        className={`relative z-10 flex h-10 w-10 items-center justify-center rounded-full border-2 transition-all duration-300 ${
-                                            isActive
-                                                ? 'scale-110 border-primary bg-primary text-primary-foreground shadow-md'
-                                                : isCompleted
-                                                  ? 'border-primary bg-primary text-primary-foreground'
-                                                  : 'border-muted bg-background text-muted-foreground'
-                                        }`}
-                                    >
-                                        {isCompleted ? (
-                                            <Check className="h-5 w-5" />
-                                        ) : (
-                                            <StepIcon className="h-5 w-5" />
-                                        )}
-                                    </div>
-
-                                    {/* Step Title */}
-                                    <span
-                                        className={`mt-2 text-[10px] font-bold tracking-wider uppercase ${
-                                            isActive
-                                                ? 'text-primary'
-                                                : 'text-muted-foreground'
-                                        }`}
-                                    >
-                                        {step.title}
-                                    </span>
-                                </li>
-                            );
-                        })}
-                    </ol>
-                </nav>
+                <ProgressStepper stepper={stepper} />
 
                 <div className="duration-300 animate-in fade-in zoom-in-95">
                     {/* 4. Use the switch method */}

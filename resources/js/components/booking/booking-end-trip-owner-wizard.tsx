@@ -12,6 +12,7 @@ import owner from '@/routes/owner';
 import { useForm, usePage } from '@inertiajs/react';
 import { defineStepper } from '@stepperize/react';
 import { Gauge, KeyRound, ShieldCheck } from 'lucide-react';
+import ProgressStepper from '../custom-ui/stepper-nav';
 import { Checkbox } from '../ui/checkbox';
 
 const OwnerEndStepper = defineStepper(
@@ -103,6 +104,8 @@ function OwnerEndTripContent({
                     {stepper.state.current.data.title}
                 </DialogTitle>
             </DialogHeader>
+
+            <ProgressStepper stepper={stepper} />
 
             <div className="flex min-h-[200px] flex-col justify-center py-6">
                 {stepper.flow.switch({
