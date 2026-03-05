@@ -398,12 +398,6 @@ class CustomerController extends Controller
             ),
         ];
 
-        // return Inertia::render('User/customerDashboard', [
-        //     'stats' => $stats,
-        //     'activeTrip' => $activeTrip,
-        //     'bookings' => $bookings
-        // ]);
-
         return Inertia::render('User/dashboard', [
             'stats' => $stats,
             'bookings' => $bookings,
