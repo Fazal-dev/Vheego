@@ -7,10 +7,7 @@ import {
     ArrowUpRight,
     Calendar,
     Car,
-    CheckCircle,
-    ChevronRight,
     Clock,
-    DollarSign,
     Star,
     TrendingUp,
     Wallet,
@@ -27,9 +24,10 @@ import {
     XAxis,
     YAxis,
 } from 'recharts';
+
 const breadcrumbs: BreadcrumbItem[] = [
     {
-        title: 'Owner Dashboard',
+        title: 'Dashboard',
         href: ownerDashboard().url,
     },
 ];
@@ -62,183 +60,28 @@ const bookingStatusConfig: any = {
     pending: { bg: 'bg-amber-500/15', text: 'text-amber-400' },
 };
 
-export default function OwnerDashboard() {
-    const totalEarnings = 3750;
+export default function OwnerDashboard({
+    state,
+    earnings_chart,
+    upcomingBookings,
+    vehicles,
+}: any) {
+    const totalEarnings = state.total_earnings;
+    const activeBookings = state.active_count;
+    const earningsData = earnings_chart;
+
     const prevEarnings = 3100;
     const earningsDelta: any = (
         ((totalEarnings - prevEarnings) / prevEarnings) *
         100
     ).toFixed(1);
     const pendingPayout = 1240;
-    const activeBookings = 2;
-    const occupancyRate = 71;
-    // ─── Mock Data (replace with Laravel API calls) ─────────────────────────────
 
-    const earningsData = [
-        { month: 'Aug', earnings: 1840, bookings: 12 },
-        { month: 'Sep', earnings: 2200, bookings: 15 },
-        { month: 'Oct', earnings: 1950, bookings: 13 },
-        { month: 'Nov', earnings: 2800, bookings: 18 },
-        { month: 'Dec', earnings: 3400, bookings: 22 },
-        { month: 'Jan', earnings: 2600, bookings: 17 },
-        { month: 'Feb', earnings: 3100, bookings: 20 },
-        { month: 'Mar', earnings: 3750, bookings: 24 },
-    ];
-
-    const vehicles = [
-        {
-            id: 1,
-            name: 'Toyota Camry 2022',
-            plate: 'ABC-1234',
-            status: 'rented',
-            occupancy: 82,
-            earned: 1420,
-            rating: 4.8,
-            reviews: 34,
-            image: '🚗',
-            renter: 'John M.',
-            returnDate: 'Mar 8',
-        },
-        {
-            id: 2,
-            name: 'Honda CR-V 2021',
-            plate: 'XYZ-5678',
-            status: 'available',
-            occupancy: 65,
-            earned: 980,
-            rating: 4.6,
-            reviews: 21,
-            image: '🚙',
-            renter: null,
-            returnDate: null,
-        },
-        {
-            id: 3,
-            name: 'BMW 3 Series 2023',
-            plate: 'LMN-9012',
-            status: 'maintenance',
-            occupancy: 45,
-            earned: 640,
-            rating: 4.9,
-            reviews: 12,
-            image: '🏎️',
-            renter: null,
-            returnDate: null,
-        },
-        {
-            id: 4,
-            name: 'Ford Ranger 2022',
-            plate: 'PQR-3456',
-            status: 'rented',
-            occupancy: 71,
-            earned: 1150,
-            rating: 4.5,
-            reviews: 18,
-            image: '🛻',
-            renter: 'Sarah K.',
-            returnDate: 'Mar 9',
-        },
-    ];
-
-    const upcomingBookings = [
-        {
-            id: 1,
-            vehicle: 'Toyota Camry 2022',
-            renter: 'Ahmed Al-Farsi',
-            avatar: 'A',
-            start: 'Mar 10',
-            end: 'Mar 14',
-            amount: 320,
-            status: 'confirmed',
-        },
-        {
-            id: 2,
-            vehicle: 'Honda CR-V 2021',
-            renter: 'Priya Nair',
-            avatar: 'P',
-            start: 'Mar 11',
-            end: 'Mar 13',
-            amount: 180,
-            status: 'confirmed',
-        },
-        {
-            id: 3,
-            vehicle: 'Ford Ranger 2022',
-            renter: 'Marcus Wu',
-            avatar: 'M',
-            start: 'Mar 12',
-            end: 'Mar 15',
-            amount: 270,
-            status: 'pending',
-        },
-        {
-            id: 4,
-            vehicle: 'BMW 3 Series 2023',
-            renter: 'Layla Hassan',
-            avatar: 'L',
-            start: 'Mar 16',
-            end: 'Mar 19',
-            amount: 480,
-            status: 'confirmed',
-        },
-    ];
-
-    const recentReviews = [
-        {
-            id: 1,
-            vehicle: 'Toyota Camry 2022',
-            renter: 'James T.',
-            rating: 5,
-            comment:
-                'Immaculate car, smooth handover. Will definitely book again!',
-            date: '2 days ago',
-        },
-        {
-            id: 2,
-            vehicle: 'Honda CR-V 2021',
-            renter: 'Fatima O.',
-            rating: 4,
-            comment:
-                'Great vehicle, very clean. Pick-up location was a little tricky.',
-            date: '5 days ago',
-        },
-        {
-            id: 3,
-            vehicle: 'Ford Ranger 2022',
-            renter: 'David K.',
-            rating: 5,
-            comment: 'Perfect for the trip. Owner was very responsive.',
-            date: '1 week ago',
-        },
-    ];
-
-    const payoutHistory = [
-        {
-            id: 1,
-            date: 'Mar 1, 2026',
-            amount: 3200,
-            status: 'paid',
-            ref: 'PAY-20260301',
-        },
-        {
-            id: 2,
-            date: 'Feb 1, 2026',
-            amount: 2850,
-            status: 'paid',
-            ref: 'PAY-20260201',
-        },
-        {
-            id: 3,
-            date: 'Jan 1, 2026',
-            amount: 2100,
-            status: 'paid',
-            ref: 'PAY-20260101',
-        },
-    ];
+    const occupancyRate = state.occupancy_rate;
 
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
-            <Head title="Owner Dashboard" />
+            <Head title="Dashboard" />
             {/* ── Main Content ────────────────────────────────────────────── */}
             <div className="flex flex-1 flex-col overflow-hidden">
                 {/* Scrollable Body */}
@@ -250,10 +93,7 @@ export default function OwnerDashboard() {
                             <div className="pointer-events-none absolute inset-0 bg-gradient-to-br from-amber-500/5 to-transparent" />
                             <div className="mb-4 flex items-start justify-between">
                                 <div className="rounded-xl bg-amber-500/15 p-2">
-                                    <DollarSign
-                                        size={18}
-                                        className="text-amber-400"
-                                    />
+                                    LKR
                                 </div>
                                 <span
                                     className={`flex items-center gap-1 rounded-full px-2 py-1 text-xs font-semibold ${earningsDelta > 0 ? 'bg-emerald-500/15 text-emerald-400' : 'bg-red-500/15 text-red-400'}`}
@@ -267,7 +107,7 @@ export default function OwnerDashboard() {
                                 </span>
                             </div>
                             <p className="text-2xl font-bold">
-                                ${totalEarnings.toLocaleString()}
+                                {totalEarnings.toLocaleString()}
                             </p>
                             <p className="mt-1 text-xs">
                                 Total earnings this month
@@ -290,7 +130,7 @@ export default function OwnerDashboard() {
                                 </span>
                             </div>
                             <p className="text-2xl font-bold">
-                                ${pendingPayout.toLocaleString()}
+                                {pendingPayout.toLocaleString()}
                             </p>
                             <p className="mt-1 text-xs">Pending payout</p>
                         </div>
@@ -480,7 +320,7 @@ export default function OwnerDashboard() {
                             </div>
                             <ResponsiveContainer width="100%" height={220}>
                                 <BarChart
-                                    data={vehicles.map((v) => ({
+                                    data={vehicles.map((v: any) => ({
                                         name: v.name.split(' ')[0],
                                         earned: v.earned,
                                     }))}
@@ -538,18 +378,25 @@ export default function OwnerDashboard() {
                                         {vehicles.length} vehicles in fleet
                                     </p>
                                 </div>
-                                <button className="flex items-center gap-1 text-xs font-semibold text-amber-400 transition-colors hover:text-amber-300">
-                                    Manage <ChevronRight size={12} />
-                                </button>
                             </div>
                             <div className="space-y-3">
-                                {vehicles.map((v) => (
+                                {vehicles.map((v: any) => (
                                     <div
                                         key={v.id}
                                         className="group /40 flex items-center gap-4 rounded-xl border border-zinc-700/30 p-3.5 transition-colors hover:border-zinc-600/50"
                                     >
                                         <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl text-2xl">
-                                            {v.image}
+                                            {v.image ? (
+                                                <img
+                                                    src={v.image}
+                                                    className="h-9 w-9 rounded-lg object-cover"
+                                                />
+                                            ) : (
+                                                <Car
+                                                    size={18}
+                                                    className="text-muted-foreground"
+                                                />
+                                            )}
                                         </div>
                                         <div className="min-w-0 flex-1">
                                             <div className="flex items-center justify-between gap-2">
@@ -620,7 +467,7 @@ export default function OwnerDashboard() {
                                 </span>
                             </div>
                             <div className="space-y-2.5">
-                                {upcomingBookings.map((b) => (
+                                {upcomingBookings.map((b: any) => (
                                     <div
                                         key={b.id}
                                         className="/40 flex items-start gap-3 rounded-xl border border-zinc-700/30 p-3"
@@ -648,136 +495,9 @@ export default function OwnerDashboard() {
                                                     {b.start} – {b.end}
                                                 </span>
                                                 <span className="text-xs font-bold text-amber-400">
-                                                    ${b.amount}
+                                                    LKR {b.amount}
                                                 </span>
                                             </div>
-                                        </div>
-                                    </div>
-                                ))}
-                            </div>
-                        </div>
-                    </div>
-
-                    {/* ── Reviews + Payout Row ────────────────────────────────── */}
-                    <div className="grid grid-cols-1 gap-4 xl:grid-cols-2">
-                        {/* Recent Reviews */}
-                        <div className="rounded-2xl border p-5">
-                            <div className="mb-4 flex items-center justify-between">
-                                <div>
-                                    <h2 className="text-sm font-bold">
-                                        Recent Reviews
-                                    </h2>
-                                    <p className="mt-0.5 text-xs">
-                                        From your renters
-                                    </p>
-                                </div>
-                                <div className="flex items-center gap-1.5 rounded-full bg-amber-500/10 px-3 py-1.5">
-                                    <Star
-                                        size={12}
-                                        className="fill-amber-400 text-amber-400"
-                                    />
-                                    <span className="text-xs font-bold text-amber-400">
-                                        4.7 avg
-                                    </span>
-                                </div>
-                            </div>
-                            <div className="space-y-3">
-                                {recentReviews.map((r) => (
-                                    <div
-                                        key={r.id}
-                                        className="/40 rounded-xl border border-zinc-700/30 p-3.5"
-                                    >
-                                        <div className="mb-2 flex items-center justify-between">
-                                            <div className="flex items-center gap-2">
-                                                <p className="text-xs font-semibold">
-                                                    {r.renter}
-                                                </p>
-                                                <Stars rating={r.rating} />
-                                            </div>
-                                            <span className="text-xs">
-                                                {r.date}
-                                            </span>
-                                        </div>
-                                        <p className="text-xs leading-relaxed">
-                                            "{r.comment}"
-                                        </p>
-                                        <p className="mt-2 flex items-center gap-1 text-xs">
-                                            <Car size={10} /> {r.vehicle}
-                                        </p>
-                                    </div>
-                                ))}
-                            </div>
-                        </div>
-
-                        {/* Payout History */}
-                        <div className="rounded-2xl border p-5">
-                            <div className="mb-4 flex items-center justify-between">
-                                <div>
-                                    <h2 className="text-sm font-bold">
-                                        Payout History
-                                    </h2>
-                                    <p className="mt-0.5 text-xs">
-                                        Recent transfers
-                                    </p>
-                                </div>
-                                <button className="flex items-center gap-1 text-xs font-semibold text-amber-400 transition-colors hover:text-amber-300">
-                                    All payouts <ChevronRight size={12} />
-                                </button>
-                            </div>
-
-                            {/* Pending Banner */}
-                            <div className="mb-4 flex items-center justify-between rounded-xl border border-amber-500/20 bg-gradient-to-r from-amber-500/10 to-orange-500/5 p-4">
-                                <div className="flex items-center gap-3">
-                                    <div className="rounded-lg bg-amber-500/20 p-2">
-                                        <Clock
-                                            size={14}
-                                            className="text-amber-400"
-                                        />
-                                    </div>
-                                    <div>
-                                        <p className="text-xs font-semibold">
-                                            Pending Payout
-                                        </p>
-                                        <p className="text-xs">
-                                            Expected Apr 1, 2026
-                                        </p>
-                                    </div>
-                                </div>
-                                <p className="text-lg font-bold text-amber-400">
-                                    ${pendingPayout.toLocaleString()}
-                                </p>
-                            </div>
-
-                            {/* History Table */}
-                            <div className="space-y-2">
-                                {payoutHistory.map((p) => (
-                                    <div
-                                        key={p.id}
-                                        className="group /30 hover:/60 flex items-center justify-between rounded-xl px-3.5 py-3 transition-colors"
-                                    >
-                                        <div className="flex items-center gap-3">
-                                            <div className="rounded-lg bg-emerald-500/15 p-1.5">
-                                                <CheckCircle
-                                                    size={13}
-                                                    className="text-emerald-400"
-                                                />
-                                            </div>
-                                            <div>
-                                                <p className="text-xs font-semibold">
-                                                    {p.date}
-                                                </p>
-                                                <p className="text-xs">
-                                                    {p.ref}
-                                                </p>
-                                            </div>
-                                        </div>
-                                        <div className="text-right">
-                                            <p className="text-sm font-bold">
-                                                ${p.amount.toLocaleString()}
-                                            </p>
-                                            <p className="text-xs font-semibold text-emerald-400 capitalize">
-                                                {p.status}
-                                            </p>
                                         </div>
                                     </div>
                                 ))}
