@@ -134,7 +134,7 @@ export default function VehicleList({
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Vehicle List" />
-            <div className="dark:bg-dark-800 flex items-center justify-end rounded-lg bg-white p-4">
+            <div className="dark:bg-dark-800 flex items-center justify-end rounded-lg p-4">
                 <Button
                     variant={'default'}
                     size={'sm'}

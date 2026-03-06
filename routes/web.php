@@ -3,6 +3,7 @@
 use App\Http\Controllers\Admin\AdminController;
 use App\Http\Controllers\BookingController;
 use App\Http\Controllers\CustomerController;
+use App\Http\Controllers\Owner\OwnerController;
 use App\Http\Controllers\VehicleController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -40,9 +41,12 @@ Route::middleware(['auth', 'role:owner', 'verified', 'web'])->prefix('owner')
 
         Route::resource('vehicles', VehicleController::class);
 
-        Route::get('dashboard', function () {
-            return Inertia::render('Owner/ownerDashboard');
-        })->name('ownerDashboard');
+        Route::controller(OwnerController::class)->group(function () {
+            Route::get('dashboard', 'index')->name('ownerDashboard');
+            // Route::get('earnings', 'getEarnings')->name('earnings');
+            // Route::get('reviews', 'getReviews')->name('reviews');
+            // Route::get('payouts', 'getPayouts')->name('payouts');
+        });
 
         Route::prefix('bookings')->name('bookings.')
             ->controller(BookingController::class)->group(function () {
