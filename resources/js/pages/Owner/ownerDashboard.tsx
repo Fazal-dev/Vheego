@@ -8,6 +8,7 @@ import {
     Calendar,
     Car,
     Clock,
+    DollarSign,
     Star,
     TrendingUp,
     Wallet,
@@ -75,7 +76,7 @@ export default function OwnerDashboard({
         ((totalEarnings - prevEarnings) / prevEarnings) *
         100
     ).toFixed(1);
-    const pendingPayout = 1240;
+    const pendingPayout = state.pendingPayout;
 
     const occupancyRate = state.occupancy_rate;
 
@@ -93,7 +94,7 @@ export default function OwnerDashboard({
                             <div className="pointer-events-none absolute inset-0 bg-gradient-to-br from-amber-500/5 to-transparent" />
                             <div className="mb-4 flex items-start justify-between">
                                 <div className="rounded-xl bg-amber-500/15 p-2">
-                                    LKR
+                                    <DollarSign />
                                 </div>
                                 <span
                                     className={`flex items-center gap-1 rounded-full px-2 py-1 text-xs font-semibold ${earningsDelta > 0 ? 'bg-emerald-500/15 text-emerald-400' : 'bg-red-500/15 text-red-400'}`}

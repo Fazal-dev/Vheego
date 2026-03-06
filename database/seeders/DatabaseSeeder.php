@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use App\Models\Booking;
+use App\Models\Payout;
 use App\Models\Review;
 use App\Models\User;
 use App\Models\Vehicle;
@@ -32,7 +33,7 @@ class DatabaseSeeder extends Seeder
             ]
         );
 
-        User::create([
+        $owner = User::create([
             'name' => 'owner',
             'email' => 'fazal@gmail.com',
             'password' => bcrypt('password'),
@@ -50,12 +51,29 @@ class DatabaseSeeder extends Seeder
             'profile_image' => 'https://picsum.photos/800/600?random=166',
         ]);
 
-        Vehicle::factory(20)->create();
+        $vehicles = Vehicle::factory(20)->create(['owner_id' => $owner->id]);
+        // Booking::factory(50)->create();
+        $vehicles->each(function ($vehicle) {
+            Booking::factory(5)->create([
+                'vehicle_id' => $vehicle->id,
+                'user_id'    => 1,
+            ]);
+        });
 
-        Booking::factory(50)->create();
+        // paid payouts for payout history
+        Payout::factory(10)->paid()->create(['owner_id' => $owner->id]);
+
+        // one pending payout
+        Payout::factory()->pending()->create(['owner_id' => $owner->id]);
 
         VehicleHistory::factory(100)->create();
 
-        Review::factory(100)->create();
+        // Review::factory(100)->create();
+        $vehicleIds = $vehicles->pluck('id');
+        Review::factory(50)->create([
+            'vehicle_id'  => fn() => $vehicleIds->random(),
+            'reviewer_id' => 1,
+        ]);
+        // Payout::factory(100)->create();
     }
 }

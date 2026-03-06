@@ -27,6 +27,7 @@ class Booking extends Model
         'start_odometer',
         'end_odometer',
         'license_number',
+        'owner_paid',
     ];
 
     // A booking belongs to a renter

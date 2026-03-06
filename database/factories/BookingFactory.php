@@ -77,6 +77,7 @@ class BookingFactory extends Factory
             'start_odometer' => rand(15000, 20000),
             'end_odometer' => ($status === 'Completed') ? rand(20001, 21000) : null,
             'license_number' => $this->faker->bothify('WP-####'),
+            'owner_paid' => ($status === 'Completed') ? $this->faker->boolean(50) : false
         ];
     }
 }

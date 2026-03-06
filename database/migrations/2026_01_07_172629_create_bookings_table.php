@@ -53,6 +53,7 @@ return new class extends Migration
             $table->unsignedInteger('start_odometer')->nullable();
             $table->unsignedInteger('end_odometer')->nullable();
             $table->string('license_number', 50)->nullable();
+            $table->boolean('owner_paid')->nullable();
 
             // Timestamps
             $table->timestamps();

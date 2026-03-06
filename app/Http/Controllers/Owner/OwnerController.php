@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Owner;
 
 use App\Http\Controllers\Controller;
 use App\Models\Booking;
+use App\Models\Payout;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
@@ -67,8 +68,25 @@ class OwnerController extends Controller
             // 'total_vehicles'  => $user->vehicles()->count(),
 
             'occupancy_rate'  => $this->getOccupancyRate($vehicleIds),
+            'pendingPayout'  =>  Booking::whereIn('vehicle_id', $vehicleIds)
+                ->where('booking_status', 'Completed')
+                ->where('payment_status', 'paid')
+                ->where('owner_paid', false)
+                ->sum('total_amount'),
         ];
 
+        // payout history for this owner
+        $payoutHistory = Payout::where('owner_id', $user->id)
+            ->latest()
+            ->limit(6)
+            ->get()
+            ->map(fn($payout) => [
+                'id'        => $payout->id,
+                'date'      => $payout->created_at->format('M j, Y'),
+                'amount'    => (float) $payout->net_amount,
+                'status'    => $payout->status,
+                'ref'       => $payout->payment_reference ?? 'PAY-' . str_pad($payout->id, 8, '0', STR_PAD_LEFT),
+            ]);
         $vehicles = $user->vehicles()
             ->with([
                 'bookings' => fn($q) => $q->where('booking_status', 'OnTrip')
@@ -153,7 +171,8 @@ class OwnerController extends Controller
             'state' => $stats,
             'earnings_chart' => $this->getEarningsChartData($vehicleIds),
             'upcomingBookings' => $upcoming_booking,
-            'vehicles' => $vehicles
+            'vehicles' => $vehicles,
+
         ]);
     }
     private function getOccupancyRate($vehicleIds): float

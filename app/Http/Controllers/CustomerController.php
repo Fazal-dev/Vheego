@@ -667,6 +667,7 @@ class CustomerController extends Controller
             'total_amount' => $meta->total_amount,
             'booking_status' => 'Booked',
             'payment_status' => 'paid',
+            'owner_paid' => false,
             'payment_reference' => $session->id,
         ]);
 
