@@ -1,8 +1,10 @@
 <?php
 
 use App\Http\Controllers\Admin\AdminController;
+use App\Http\Controllers\Admin\AdminPayoutController;
 use App\Http\Controllers\BookingController;
 use App\Http\Controllers\CustomerController;
+use App\Http\Controllers\Owner\OwnerBankDetailsController;
 use App\Http\Controllers\Owner\OwnerController;
 use App\Http\Controllers\VehicleController;
 use Illuminate\Support\Facades\Route;
@@ -48,6 +50,11 @@ Route::middleware(['auth', 'role:owner', 'verified', 'web'])->prefix('owner')
             // Route::get('payouts', 'getPayouts')->name('payouts');
         });
 
+        Route::controller(OwnerBankDetailsController::class)->prefix('bank-details')->name('bank-details.')->group(function () {
+            Route::get('/',    'show')->name('show');
+            Route::post('/',   'update')->name('update');
+        });
+
         Route::prefix('bookings')->name('bookings.')
             ->controller(BookingController::class)->group(function () {
                 Route::get('/', 'index')->name('index');
@@ -62,6 +69,14 @@ Route::middleware(['auth', 'role:admin', 'verified', 'web'])->prefix('admin')
         Route::get('vehicle-approval', 'index')->name('vehicleApproval');
         Route::get('vehicle-review/{id}', 'reviewVehiclePage')->name('reviewVehicle');
         Route::post('vehicle-approval/{vehicle}', 'updateApprovalStatus')->name('vehicleApprovals');
+
+        Route::prefix('payouts')->name('payouts.')->controller(AdminPayoutController::class)->group(function () {
+            Route::get('/', 'index')->name('index');
+            Route::get('/{owner}',              'show')->name('show');
+            Route::post('/bulk-trigger',        'bulkTrigger')->name('bulk-trigger');
+            Route::post('/{owner}/trigger',     'trigger')->name('trigger');
+            Route::patch('/{owner}/commission', 'updateCommission')->name('update-commission');
+        });
     });
 
 Route::get('/test', function () {

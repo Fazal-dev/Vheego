@@ -44,6 +44,18 @@ export function AppSidebar() {
             roles: ['customer'],
         },
         {
+            title: 'Find a Vehicle',
+            href: customer.findVehicle(),
+            icon: Search,
+            roles: ['customer'],
+        },
+        {
+            title: 'My Bookings',
+            href: customer.bookings(),
+            icon: CalendarCheck,
+            roles: ['customer'],
+        },
+        {
             title: 'Dashboard',
             href: admin.adminDashboard(),
             icon: LayoutGrid,
@@ -56,6 +68,13 @@ export function AppSidebar() {
             roles: ['admin'],
         },
         {
+            title: 'Payouts',
+            href: admin.payouts.index.url(),
+            icon: CarFront,
+            roles: ['admin'],
+        },
+
+        {
             title: 'Dashboard',
             href: ownerDashboard(),
             icon: LayoutGrid,
@@ -66,18 +85,6 @@ export function AppSidebar() {
             href: vehicles.index().url,
             icon: Car,
             roles: ['owner'],
-        },
-        {
-            title: 'Find a Vehicle',
-            href: customer.findVehicle(),
-            icon: Search,
-            roles: ['customer'],
-        },
-        {
-            title: 'My Bookings',
-            href: customer.bookings(),
-            icon: CalendarCheck,
-            roles: ['customer'],
         },
         {
             title: 'Bookings',

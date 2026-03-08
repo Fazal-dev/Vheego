@@ -23,7 +23,9 @@ class User extends Authenticatable
         'email',
         'password',
         'role',
-        'phone_no'
+        'phone_no',
+        'commission_rate',
+        'bank_details',
     ];
 
     /**
@@ -58,5 +60,9 @@ class User extends Authenticatable
     public function bookings()
     {
         return $this->hasMany(Booking::class, 'user_id');
+    }
+    public function payouts()
+    {
+        return $this->hasMany(Payout::class, 'owner_id');
     }
 }

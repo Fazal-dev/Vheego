@@ -20,7 +20,9 @@ return new class extends Migration
 
             // Added based on your latest code
             $table->string('phone_no')->nullable();
+            $table->decimal('commission_rate', 5, 2)->default(10.00);
             $table->string('profile_image')->nullable();
+            $table->json('bank_details')->nullable();
 
             $table->rememberToken();
             $table->timestamps();

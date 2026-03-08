@@ -40,6 +40,14 @@ class DatabaseSeeder extends Seeder
             'phone_no' => '0778433880',
             'profile_image' => 'https://picsum.photos/800/600?random=166',
         ]);
+        $owner_2 = User::create([
+            'name' => 'random owner',
+            'email' => 'owner@gmail.com',
+            'password' => bcrypt('password'),
+            'role' => 'owner',
+            'phone_no' => '0778433880',
+            'profile_image' => 'https://picsum.photos/800/600?random=166',
+        ]);
 
         User::create([
             'name' => 'Platform Admin',
@@ -51,6 +59,14 @@ class DatabaseSeeder extends Seeder
         ]);
 
         $vehicles = Vehicle::factory(20)->create(['owner_id' => $owner->id]);
+        $vehicles_2 = Vehicle::factory(20)->create(['owner_id' => $owner_2->id]);
+
+        $vehicles_2->each(function ($vehicle) {
+            Booking::factory(5)->create([
+                'vehicle_id' => $vehicle->id,
+                'user_id'    => 1,
+            ]);
+        });
 
         $vehicles->each(function ($vehicle) {
             Booking::factory(5)->create([
@@ -61,15 +77,24 @@ class DatabaseSeeder extends Seeder
 
         // paid payouts for payout history
         Payout::factory(10)->paid()->create(['owner_id' => $owner->id]);
+        Payout::factory(10)->paid()->create(['owner_id' => $owner_2->id]);
 
         // one pending payout
         Payout::factory()->pending()->create(['owner_id' => $owner->id]);
+        Payout::factory()->pending()->create(['owner_id' => $owner_2->id]);
 
         VehicleHistory::factory(100)->create();
 
         $vehicleIds = $vehicles->pluck('id');
+        $vehicleIds_2 = $vehicles->pluck('id');
+
         Review::factory(50)->create([
             'vehicle_id'  => fn() => $vehicleIds->random(),
+            'reviewer_id' => 1,
+        ]);
+
+        Review::factory(50)->create([
+            'vehicle_id'  => fn() => $vehicleIds_2->random(),
             'reviewer_id' => 1,
         ]);
     }
