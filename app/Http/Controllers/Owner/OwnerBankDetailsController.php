@@ -14,7 +14,7 @@ class OwnerBankDetailsController extends Controller
         $user = Auth::user();
 
         return Inertia::render('Owner/BankDetails', [
-            'bankDetails' => $user->bank_details ?? [],
+            'bankDetails' => $user->bank_details,
         ]);
     }
 
@@ -23,7 +23,7 @@ class OwnerBankDetailsController extends Controller
         $validated = $request->validate([
             'bank_name'           => 'required|string|max:100',
             'account_holder_name' => 'required|string|max:100',
-            'account_number'      => 'required|string|max:50',
+            'account_number'      => 'required|string|min:6|max:50',
             'routing_number'      => 'nullable|string|max:50',
             'account_type'        => 'required|in:savings,current,checking',
         ]);

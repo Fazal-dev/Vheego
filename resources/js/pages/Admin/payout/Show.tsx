@@ -128,7 +128,6 @@ export default function PayoutsShow({
     pendingBookings,
     summary,
     payoutHistory,
-    flash,
 }: any) {
     const [triggering, setTriggering] = useState(false);
     const [confirm, setConfirm] = useState(false);

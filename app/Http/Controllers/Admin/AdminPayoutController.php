@@ -165,7 +165,7 @@ class AdminPayoutController extends Controller
                 'gross_amount'      => $gross,
                 'commission'        => $commission,
                 'net_amount'        => $net,
-                'status'            => 'paid',           // simulated
+                'status'            => 'paid',
                 'payment_method'    => 'bank_transfer',
                 'payment_reference' => $reference,
                 'paid_at'           => now(),

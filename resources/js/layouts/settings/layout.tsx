@@ -3,10 +3,11 @@ import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
 import { cn } from '@/lib/utils';
 import { edit as editAppearance } from '@/routes/appearance';
+import bankDetails from '@/routes/owner/bank-details';
 import { edit as editPassword } from '@/routes/password';
 import { edit } from '@/routes/profile';
-import { type NavItem } from '@/types';
-import { Link } from '@inertiajs/react';
+import { Auth, type NavItem } from '@/types';
+import { Link, usePage } from '@inertiajs/react';
 import { type PropsWithChildren } from 'react';
 
 const sidebarNavItems: NavItem[] = [
@@ -14,16 +15,25 @@ const sidebarNavItems: NavItem[] = [
         title: 'Profile',
         href: edit(),
         icon: null,
+        roles: ['owner', 'customer', 'admin'],
     },
     {
         title: 'Password',
         href: editPassword(),
         icon: null,
+        roles: ['owner', 'customer', 'admin'],
     },
     {
         title: 'Appearance',
         href: editAppearance(),
         icon: null,
+        roles: ['owner', 'customer', 'admin'],
+    },
+    {
+        title: 'Bank Details',
+        href: bankDetails.show(),
+        icon: null,
+        roles: ['owner'],
     },
 ];
 
@@ -34,6 +44,12 @@ export default function SettingsLayout({ children }: PropsWithChildren) {
     }
 
     const currentPath = window.location.pathname;
+    const { auth } = usePage<{ auth: Auth }>().props;
+    const role = auth?.user?.role;
+
+    const mainNavItems: NavItem[] = sidebarNavItems.filter((item) =>
+        item.roles.includes(role),
+    );
 
     return (
         <div className="px-4 py-6">
@@ -45,7 +61,7 @@ export default function SettingsLayout({ children }: PropsWithChildren) {
             <div className="flex flex-col lg:flex-row lg:space-x-12">
                 <aside className="w-full max-w-xl lg:w-48">
                     <nav className="flex flex-col space-y-1 space-x-0">
-                        {sidebarNavItems.map((item, index) => (
+                        {mainNavItems.map((item, index) => (
                             <Button
                                 key={`${typeof item.href === 'string' ? item.href : item.href.url}-${index}`}
                                 size="sm"

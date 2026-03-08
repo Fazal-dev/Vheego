@@ -18,7 +18,7 @@ export default function AuthSplitLayout({
 
     return (
         <div className="relative grid h-dvh flex-col items-center justify-center px-8 sm:px-0 lg:max-w-none lg:grid-cols-2 lg:px-0">
-            <div className="relative hidden h-full flex-col bg-muted p-10 text-white lg:flex dark:border-r">
+            <div className="relative hidden h-full flex-col bg-muted p-3 text-white lg:flex dark:border-r">
                 <div className="absolute inset-0 bg-zinc-900" />
                 <Link
                     href={home()}
@@ -28,26 +28,13 @@ export default function AuthSplitLayout({
                     {name}
                 </Link>
 
-                {/* <div className="z-25 p-5">
+                <div className="z-25 h-full w-full pt-2">
                     <img
-                        className="h-ful mt-1 rounded-2xl"
-                        src="/images/login_image.jpg"
+                        className="mt-1 h-full w-fit rounded-2xl"
+                        src="https://images.unsplash.com/photo-1492144534655-ae79c964c9d7?w=2000&q=90&auto=format&fit=crop"
                         alt=""
                     />
-                </div> */}
-
-                {quote && (
-                    <div className="relative z-20 mt-auto">
-                        <blockquote className="space-y-2">
-                            <p className="text-lg">
-                                &ldquo;{quote.message}&rdquo;
-                            </p>
-                            <footer className="text-sm text-neutral-300">
-                                {quote.author}
-                            </footer>
-                        </blockquote>
-                    </div>
-                )}
+                </div>
             </div>
             <div className="w-full lg:p-8">
                 <div className="mx-auto flex w-full flex-col justify-center space-y-6 sm:w-[350px]">
