@@ -52,21 +52,6 @@ class OwnerController extends Controller
             'total_earnings'  => Booking::whereIn('vehicle_id', $vehicleIds)
                 ->where('booking_status', 'Completed')
                 ->sum('total_amount'),
-
-
-
-            // 'upcoming' => Booking::whereIn('vehicle_id', $vehicleIds)
-            //     ->where('booking_status', 'Booked')
-            //     ->orderBy('start_date', 'asc')
-            //     ->limit(4)->get(),
-
-            // 'pending_payout'  => Booking::whereIn('vehicle_id', $vehicleIds)
-            //     ->where('booking_status', 'Completed')
-            //     ->where('owner_paid', false)
-            //     ->sum('total_price'),
-
-            // 'total_vehicles'  => $user->vehicles()->count(),
-
             'occupancy_rate'  => $this->getOccupancyRate($vehicleIds),
             'pendingPayout'  =>  Booking::whereIn('vehicle_id', $vehicleIds)
                 ->where('booking_status', 'Completed')
@@ -87,6 +72,8 @@ class OwnerController extends Controller
                 'status'    => $payout->status,
                 'ref'       => $payout->payment_reference ?? 'PAY-' . str_pad($payout->id, 8, '0', STR_PAD_LEFT),
             ]);
+
+
         $vehicles = $user->vehicles()
             ->with([
                 'bookings' => fn($q) => $q->where('booking_status', 'OnTrip')

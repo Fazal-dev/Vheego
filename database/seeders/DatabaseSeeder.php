@@ -19,7 +19,6 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // User::factory(10)->create();
 
         User::firstOrCreate(
             ['email' => 'test@example.com'],
@@ -52,7 +51,7 @@ class DatabaseSeeder extends Seeder
         ]);
 
         $vehicles = Vehicle::factory(20)->create(['owner_id' => $owner->id]);
-        // Booking::factory(50)->create();
+
         $vehicles->each(function ($vehicle) {
             Booking::factory(5)->create([
                 'vehicle_id' => $vehicle->id,
@@ -68,12 +67,10 @@ class DatabaseSeeder extends Seeder
 
         VehicleHistory::factory(100)->create();
 
-        // Review::factory(100)->create();
         $vehicleIds = $vehicles->pluck('id');
         Review::factory(50)->create([
             'vehicle_id'  => fn() => $vehicleIds->random(),
             'reviewer_id' => 1,
         ]);
-        // Payout::factory(100)->create();
     }
 }
