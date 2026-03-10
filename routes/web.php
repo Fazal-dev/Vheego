@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Admin\AdminController;
+use App\Http\Controllers\Admin\AdminDashboardController;
 use App\Http\Controllers\Admin\AdminPayoutController;
 use App\Http\Controllers\BookingController;
 use App\Http\Controllers\CustomerController;
@@ -65,16 +66,16 @@ Route::middleware(['auth', 'role:owner', 'verified', 'web'])->prefix('owner')
 
 Route::middleware(['auth', 'role:admin', 'verified', 'web'])->prefix('admin')
     ->name('admin.')->controller(AdminController::class)->group(function () {
-        Route::get('dashboard', 'getDashboard')->name('adminDashboard');
+        // Route::get('dashboard', 'getDashboard')->name('adminDashboard');
         Route::get('vehicle-approval', 'index')->name('vehicleApproval');
         Route::get('vehicle-review/{id}', 'reviewVehiclePage')->name('reviewVehicle');
         Route::post('vehicle-approval/{vehicle}', 'updateApprovalStatus')->name('vehicleApprovals');
-
+        Route::get('dashboard', [AdminDashboardController::class, 'index'])->name('adminDashboard');
         Route::prefix('payouts')->name('payouts.')->controller(AdminPayoutController::class)->group(function () {
             Route::get('/', 'index')->name('index');
-            Route::get('/{owner}',              'show')->name('show');
-            Route::post('/bulk-trigger',        'bulkTrigger')->name('bulk-trigger');
-            Route::post('/{owner}/trigger',     'trigger')->name('trigger');
+            Route::get('/{owner}', 'show')->name('show');
+            Route::post('/bulk-trigger', 'bulkTrigger')->name('bulk-trigger');
+            Route::post('/{owner}/trigger', 'trigger')->name('trigger');
             Route::patch('/{owner}/commission', 'updateCommission')->name('update-commission');
         });
     });

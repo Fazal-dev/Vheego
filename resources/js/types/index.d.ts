@@ -254,3 +254,48 @@ export type StepperState = {
 export type Stepper = {
     state: StepperState;
 };
+
+// ── Types ─────────────────────────────────────────────────────────────────────
+
+export interface Stats {
+    total_revenue: number;
+    total_bookings: number;
+    active_vehicles: number;
+    total_users: number;
+    total_owners: number;
+    pending_approvals: number;
+    revenue_this_month: number;
+    revenue_last_month: number;
+    bookings_this_month: number;
+    bookings_last_month: number;
+    new_users_this_month: number;
+    new_users_last_month: number;
+}
+
+export interface MonthlyRevenue {
+    month: string;
+    revenue: number;
+    bookings: number;
+}
+
+export interface BookingStatusCount {
+    status: string;
+    count: number;
+}
+
+export interface RecentBooking {
+    id: number;
+    customer_name: string;
+    vehicle: string;
+    total_amount: number;
+    booking_status: string;
+    payment_status: string;
+    booking_date: string;
+}
+
+export interface AdminDashbordProps {
+    stats: Stats;
+    monthly_revenue: MonthlyRevenue[];
+    booking_status_counts: BookingStatusCount[];
+    recent_bookings: RecentBooking[];
+}

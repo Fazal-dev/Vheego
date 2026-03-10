@@ -10,13 +10,6 @@ use Inertia\Inertia;
 
 class AdminController extends Controller
 {
-    /**
-     * Display Admin Dashbord
-     */
-    public function getDashboard(Request $request)
-    {
-        return Inertia::render('Admin/adminDashboard');
-    }
 
     /**
      * Display Approval vehicles list

@@ -16,7 +16,14 @@ import owner, { ownerDashboard } from '@/routes/owner';
 import vehicles from '@/routes/owner/vehicles';
 import { Auth, type NavItem } from '@/types';
 import { Link, usePage } from '@inertiajs/react';
-import { CalendarCheck, Car, CarFront, LayoutGrid, Search } from 'lucide-react';
+import {
+    CalendarCheck,
+    Car,
+    CarFront,
+    CreditCard,
+    LayoutGrid,
+    Search,
+} from 'lucide-react';
 import AppLogo from './app-logo';
 
 const footerNavItems: NavItem[] = [
@@ -70,7 +77,7 @@ export function AppSidebar() {
         {
             title: 'Payouts',
             href: admin.payouts.index.url(),
-            icon: CarFront,
+            icon: CreditCard,
             roles: ['admin'],
         },
 

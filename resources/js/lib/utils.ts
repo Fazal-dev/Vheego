@@ -6,6 +6,17 @@ export function cn(...inputs: ClassValue[]) {
     return twMerge(clsx(inputs));
 }
 
+export function pct (current: number, previous: number): string  {
+    if (previous === 0) return current > 0 ? '+100%' : '0%';
+    const diff = ((current - previous) / previous) * 100;
+    return `${diff >= 0 ? '+' : ''}${diff.toFixed(1)}%`;
+};
+
+export function isUp(current: number, previous: number) {
+    return current >= previous;
+} 
+
+
 export function capitalizeWords(text: string = "") {
     if (!text) return "";
     return text
