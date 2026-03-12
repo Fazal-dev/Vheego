@@ -17,10 +17,12 @@ import vehicles from '@/routes/owner/vehicles';
 import { Auth, type NavItem } from '@/types';
 import { Link, usePage } from '@inertiajs/react';
 import {
+    BarChart2,
     CalendarCheck,
     Car,
     CarFront,
     CreditCard,
+    Landmark,
     LayoutGrid,
     Search,
 } from 'lucide-react';
@@ -97,6 +99,18 @@ export function AppSidebar() {
             title: 'Bookings',
             href: owner.bookings.index(),
             icon: CalendarCheck,
+            roles: ['owner'],
+        },
+        {
+            title: 'Payouts',
+            href: owner.payouts.index(),
+            icon: Landmark,
+            roles: ['owner'],
+        },
+        {
+            title: 'Revenue',
+            href: owner.revenue(),
+            icon: BarChart2,
             roles: ['owner'],
         },
     ];

@@ -302,6 +302,7 @@ export default function BookingListPage({
                     onClose={() => setSelectedBooking(null)}
                     onCancel={(booking) => setCancelBooking(booking)}
                     statusMap={statusMap}
+                    isNoCancle={false}
                 />
 
                 <Dialog

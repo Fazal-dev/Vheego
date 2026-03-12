@@ -7,6 +7,8 @@ use App\Http\Controllers\BookingController;
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\Owner\OwnerBankDetailsController;
 use App\Http\Controllers\Owner\OwnerController;
+use App\Http\Controllers\Owner\OwnerPayoutsController;
+use App\Http\Controllers\Owner\OwnerRevenueController;
 use App\Http\Controllers\VehicleController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -46,9 +48,12 @@ Route::middleware(['auth', 'role:owner', 'verified', 'web'])->prefix('owner')
 
         Route::controller(OwnerController::class)->group(function () {
             Route::get('dashboard', 'index')->name('ownerDashboard');
-            // Route::get('earnings', 'getEarnings')->name('earnings');
-            // Route::get('reviews', 'getReviews')->name('reviews');
-            // Route::get('payouts', 'getPayouts')->name('payouts');
+        });
+
+        Route::get('/revenue', [OwnerRevenueController::class, 'index'])->name('revenue');
+
+        Route::prefix('payouts')->name('payouts.')->controller(OwnerPayoutsController::class)->group(function () {
+            Route::get('/', 'index')->name('index');
         });
 
         Route::controller(OwnerBankDetailsController::class)->prefix('bank-details')->name('bank-details.')->group(function () {
@@ -66,7 +71,6 @@ Route::middleware(['auth', 'role:owner', 'verified', 'web'])->prefix('owner')
 
 Route::middleware(['auth', 'role:admin', 'verified', 'web'])->prefix('admin')
     ->name('admin.')->controller(AdminController::class)->group(function () {
-        // Route::get('dashboard', 'getDashboard')->name('adminDashboard');
         Route::get('vehicle-approval', 'index')->name('vehicleApproval');
         Route::get('vehicle-review/{id}', 'reviewVehiclePage')->name('reviewVehicle');
         Route::post('vehicle-approval/{vehicle}', 'updateApprovalStatus')->name('vehicleApprovals');
