@@ -1,3 +1,4 @@
+import { useOwnerNotifications } from '@/hooks/use-owner-notification';
 import AppLayout from '@/layouts/app-layout';
 import { ownerDashboard } from '@/routes/owner';
 import { type BreadcrumbItem } from '@/types';
@@ -67,6 +68,7 @@ export default function OwnerDashboard({
     upcomingBookings,
     vehicles,
 }: any) {
+    useOwnerNotifications();
     const totalEarnings = state.total_earnings;
     const activeBookings = state.active_count;
     const earningsData = earnings_chart;

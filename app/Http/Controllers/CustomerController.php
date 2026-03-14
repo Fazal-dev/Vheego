@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\NewBookingReceived;
 use App\Models\Booking;
 use App\Models\Review;
 use App\Models\Vehicle;
@@ -677,6 +678,8 @@ class CustomerController extends Controller
         ]);
 
         $booking->refresh()->load(['user', 'vehicle']);
+
+        broadcast(new NewBookingReceived($booking));
 
         Mail::to($booking->user->email)->send(new \App\Mail\BookingConfirmation($booking));
 
