@@ -26,6 +26,7 @@ class User extends Authenticatable
         'phone_no',
         'commission_rate',
         'bank_details',
+        'wallet_balance',
     ];
 
     /**

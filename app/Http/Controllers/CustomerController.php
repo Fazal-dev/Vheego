@@ -287,6 +287,51 @@ class CustomerController extends Controller
         ]);
     }
     /**
+     * Handle Customer Booking Cancellation
+     */
+    public function cancelBooking(Request $request, Booking $booking)
+    {
+        if ($booking->user_id !== Auth::id()) {
+            abort(403, 'Unauthorized action.');
+        }
+
+        if (!in_array($booking->booking_status, ['Pending', 'Booked'])) {
+            return back()->withErrors(['error' => 'This booking cannot be cancelled.']);
+        }
+
+        $tripStart = \Carbon\Carbon::parse($booking->start_date . ' ' . ($booking->start_time ?? '00:00:00'));
+        $now = now();
+        $hoursBeforeTrip = $now->diffInHours($tripStart, false);
+
+        $refundAmount = 0;
+        
+        if ($hoursBeforeTrip > 24) {
+            $refundAmount = $booking->total_amount;
+        } elseif ($hoursBeforeTrip <= 24 && $hoursBeforeTrip > 12) {
+            $refundAmount = $booking->total_amount / 2;
+        } else {
+            $refundAmount = 0;
+        }
+
+        if ($refundAmount > 0) {
+            $user = Auth::user();
+            $user->increment('wallet_balance', $refundAmount);
+        }
+
+        $booking->update([
+            'booking_status' => 'Cancelled',
+            'payment_status' => $refundAmount == $booking->total_amount ? 'refunded' : ($refundAmount > 0 ? 'paid' : $booking->payment_status), // Simplified, usually 'refunded' or 'partially_refunded'
+        ]);
+
+        VehicleHistory::create([
+            'vehicle_id' => $booking->vehicle_id,
+            'status' => 'Available',
+        ]);
+
+        return back()->with('success', 'Booking cancelled. Refund applied: ' . number_format($refundAmount, 2));
+    }
+
+    /**
      * Display All Vehicles For Explore
      */
     public function findVehicle(Request $request)

@@ -27,6 +27,7 @@ Route::middleware(['auth', 'role:customer', 'verified', 'web'])->prefix('custome
         Route::get('checkout-success', 'success')->name('checkout.success');
         Route::get('checkout-cancel', 'cancel')->name('checkout.cancel');
         Route::get('bookings', 'getAllBookings')->name('bookings');
+        Route::post('bookings/{booking}/cancel', 'cancelBooking')->name('cancelBooking');
         Route::post('check-availability', 'checkAvailability')->name('checkAvailability');
 
         Route::post('/trips/start/validate/{step}', 'validateStep')

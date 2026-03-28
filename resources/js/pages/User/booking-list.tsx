@@ -318,6 +318,9 @@ export default function BookingListPage({
                             <DialogTitle>Cancel Booking</DialogTitle>
                         </DialogHeader>
                         <p>Are you sure you want to cancel this booking ?</p>
+                        <p className="text-sm text-muted-foreground mt-2">
+                           You will receive a 100% refund if it is more than 24 hours before your trip. You will receive a 50% refund if it is between 12 and 24 hours. No refunds if cancelled within 12 hours.
+                        </p>
                         <div className="mt-4 flex justify-end gap-2">
                             <Button
                                 type="button"
@@ -326,7 +329,21 @@ export default function BookingListPage({
                             >
                                 No, Go Back
                             </Button>
-                            <Button variant="destructive">Yes, Cancel</Button>
+                            <Button 
+                                variant="destructive" 
+                                onClick={() => {
+                                    if(cancelBooking) {
+                                        router.post(`/customer/bookings/${cancelBooking.id}/cancel`, {}, {
+                                            preserveScroll: true,
+                                            onSuccess: () => {
+                                                setCancelBooking(null);
+                                            }
+                                        });
+                                    }
+                                }}
+                            >
+                                Yes, Cancel
+                            </Button>
                         </div>
                     </DialogContent>
                 </Dialog>

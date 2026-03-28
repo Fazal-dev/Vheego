@@ -80,4 +80,48 @@ class BookingFactory extends Factory
             'owner_paid' => ($status === 'Completed') ? $this->faker->boolean(50) : false
         ];
     }
+
+    /**
+     * Test Case 1: More than 24 hours away (100% Refund)
+     */
+    public function fullRefundable()
+    {
+        return $this->state(fn (array $attributes) => [
+            'booking_status' => 'Booked',
+            'payment_status' => 'paid',
+            'total_amount'   => 10000,
+            'start_date'     => now()->addDays(2)->format('Y-m-d'),
+            'start_time'     => now()->format('H:i:s'),
+        ]);
+    }
+
+    /**
+     * Test Case 2: Between 12 and 24 hours away (50% Refund)
+     */
+    public function halfRefundable()
+    {
+        $targetTime = now()->addHours(18); // 18 hours from now
+        return $this->state(fn (array $attributes) => [
+            'booking_status' => 'Booked',
+            'payment_status' => 'paid',
+            'total_amount'   => 10000,
+            'start_date'     => $targetTime->format('Y-m-d'),
+            'start_time'     => $targetTime->format('H:i:s'),
+        ]);
+    }
+
+    /**
+     * Test Case 3: Less than 12 hours away (0% Refund, No Money Back)
+     */
+    public function nonRefundable()
+    {
+        $targetTime = now()->addHours(5); // Only 5 hours away
+        return $this->state(fn (array $attributes) => [
+            'booking_status' => 'Booked',
+            'payment_status' => 'paid',
+            'total_amount'   => 10000,
+            'start_date'     => $targetTime->format('Y-m-d'),
+            'start_time'     => $targetTime->format('H:i:s'),
+        ]);
+    }
 }

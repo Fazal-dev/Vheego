@@ -75,6 +75,24 @@ class DatabaseSeeder extends Seeder
             ]);
         });
 
+        // Seed specific bookings to test cancellation feature for the customer (User 1)
+        $testVehicles = $vehicles->random(3)->values(); // Get 3 random vehicles
+        
+        Booking::factory()->fullRefundable()->create([
+            'vehicle_id' => $testVehicles[0]->id,
+            'user_id'    => 1,
+        ]);
+        
+        Booking::factory()->halfRefundable()->create([
+            'vehicle_id' => $testVehicles[1]->id,
+            'user_id'    => 1,
+        ]);
+        
+        Booking::factory()->nonRefundable()->create([
+            'vehicle_id' => $testVehicles[2]->id,
+            'user_id'    => 1,
+        ]);
+
         // paid payouts for payout history
         Payout::factory(10)->paid()->create(['owner_id' => $owner->id]);
         Payout::factory(10)->paid()->create(['owner_id' => $owner_2->id]);
