@@ -256,7 +256,7 @@ class CustomerController extends Controller
         $status = $request->query('status', 'OnTrip');
 
         $query = $user->bookings()
-            ->with('vehicle')
+            ->with(['vehicle', 'review'])
             ->orderBy('start_date', 'desc');
 
         if ($status !== 'all') {
@@ -278,6 +278,11 @@ class CustomerController extends Controller
                 'endDate' => $booking->end_date,
                 'payment_status' => $booking->payment_status,
                 'total_amount' => $booking->total_amount,
+                'review' => $booking->review ? [
+                    'rating' => $booking->review->rating,
+                    'comment' => $booking->review->comment,
+                    'created_at' => $booking->review->created_at,
+                ] : null,
             ];
         });
 

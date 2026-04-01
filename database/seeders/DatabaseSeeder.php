@@ -93,6 +93,12 @@ class DatabaseSeeder extends Seeder
             'user_id'    => 1,
         ]);
 
+        // Seed a completed booking with a review for testing
+        Booking::factory()->completedWithReview()->create([
+            'vehicle_id' => $vehicles->random()->id,
+            'user_id'    => 1,
+        ]);
+
         // paid payouts for payout history
         Payout::factory(10)->paid()->create(['owner_id' => $owner->id]);
         Payout::factory(10)->paid()->create(['owner_id' => $owner_2->id]);

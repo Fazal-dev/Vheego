@@ -302,7 +302,7 @@ export default function Welcome({ auth }: any) {
                         <div className="hidden items-center gap-3 md:flex">
                             {auth?.user ? (
                                 <Link
-                                    href="/dashboard"
+                                    href={`/${auth.user.role}/dashboard`}
                                     className="text-sm font-medium text-white transition-colors hover:text-foreground"
                                 >
                                     Dashboard

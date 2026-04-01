@@ -124,4 +124,25 @@ class BookingFactory extends Factory
             'start_time'     => $targetTime->format('H:i:s'),
         ]);
     }
+
+    /**
+     * Test Case 4: Completed Booking With Review
+     */
+    public function completedWithReview()
+    {
+        return $this->state(fn (array $attributes) => [
+            'booking_status' => 'Completed',
+            'payment_status' => 'paid',
+            'start_date' => now()->subDays(5)->format('Y-m-d'),
+            'end_date'   => now()->subDays(1)->format('Y-m-d'),
+        ])->afterCreating(function (Booking $booking) {
+            \App\Models\Review::factory()->create([
+                'booking_id' => $booking->id,
+                'vehicle_id' => $booking->vehicle_id,
+                'reviewer_id' => $booking->user_id,
+                'rating' => rand(4, 5),
+                'comment' => 'Great experience, the car was clean and the host was very communicative!',
+            ]);
+        });
+    }
 }

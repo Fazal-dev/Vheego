@@ -8,7 +8,7 @@ import {
 } from '@/components/ui/dialog';
 import { Progress } from '@/components/ui/progress';
 import { Separator } from '@/components/ui/separator';
-import { Clock, Hash, MapPin } from 'lucide-react';
+import { Clock, Hash, MapPin, Star } from 'lucide-react';
 
 // Use the Booking interface you defined earlier
 interface Booking {
@@ -23,6 +23,11 @@ interface Booking {
     endDate: string;
     payment_status: string;
     total_amount: string | number;
+    review?: {
+        rating: number;
+        comment: string;
+        created_at: string;
+    } | null;
 }
 
 interface BookingDetailModalProps {
@@ -141,6 +146,44 @@ export function BookingDetailModal({
                             value={statusMap[selectedBooking.status].progress}
                         />
                     </div>
+
+                    {/* Review Section */}
+                    {selectedBooking.status === 'Completed' && (
+                        <>
+                            <Separator />
+                            <div>
+                                <p className="mb-3 text-sm font-medium">Trip Review</p>
+                                {selectedBooking.review ? (
+                                    <div className="rounded-xl border p-4 bg-muted/30">
+                                        <div className="flex items-center gap-1 mb-2">
+                                            <div className="flex items-center">
+                                                {Array.from({ length: 5 }).map((_, i) => (
+                                                    <Star
+                                                        key={i}
+                                                        className={`h-4 w-4 ${
+                                                            i < selectedBooking.review!.rating
+                                                                ? 'fill-yellow-400 text-yellow-500'
+                                                                : 'text-muted-foreground/30'
+                                                        }`}
+                                                    />
+                                                ))}
+                                            </div>
+                                            <span className="text-xs text-muted-foreground ml-2 font-medium">
+                                                {new Date(selectedBooking.review.created_at).toLocaleDateString()}
+                                            </span>
+                                        </div>
+                                        <p className="text-sm italic text-muted-foreground">
+                                            "{selectedBooking.review.comment}"
+                                        </p>
+                                    </div>
+                                ) : (
+                                    <div className="rounded-xl border border-dashed p-4 bg-muted/10 text-center">
+                                        <p className="text-sm text-muted-foreground">No review was submitted for this booking.</p>
+                                    </div>
+                                )}
+                            </div>
+                        </>
+                    )}
 
                     {/* Actions */}
                     {['Pending', 'Booked'].includes(selectedBooking.status) && (

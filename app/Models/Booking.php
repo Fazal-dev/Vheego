@@ -41,4 +41,10 @@ class Booking extends Model
     {
         return $this->belongsTo(Vehicle::class);
     }
+
+    // A booking can have one review
+    public function review()
+    {
+        return $this->hasOne(Review::class);
+    }
 }
