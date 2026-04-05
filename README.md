@@ -574,9 +574,11 @@ This project is licensed under the **MIT License**. See [LICENSE](LICENSE) for d
 
 ---
 
-## 👨‍💻 Developer
+## 👨‍💻 Developer & Owner
 
-Designed and built by **Fazal**
+Vheego is solely designed, developed, and owned by **Fazal**.
+
+> This is an original project. All code, architecture, and design decisions were made by Fazal.
 
 [![GitHub](https://img.shields.io/badge/GitHub-Fazal--dev-181717?style=flat&logo=github&logoColor=white)](https://github.com/Fazal-dev)
 
