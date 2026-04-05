@@ -574,6 +574,14 @@ This project is licensed under the **MIT License**. See [LICENSE](LICENSE) for d
 
 ---
 
+## 👨‍💻 Developer
+
+Designed and built by **Fazal**
+
+[![GitHub](https://img.shields.io/badge/GitHub-Fazal--dev-181717?style=flat&logo=github&logoColor=white)](https://github.com/Fazal-dev)
+
+---
+
 <div align="center">
 
 Built with ❤️ using [Laravel](https://laravel.com) + [React](https://react.dev) + [Inertia.js](https://inertiajs.com)
