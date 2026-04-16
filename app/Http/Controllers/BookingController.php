@@ -8,6 +8,9 @@ use Inertia\Inertia;
 
 class BookingController extends Controller
 {
+    /**
+     * validate trip end steps
+     */
     public function validateEndTrip(Request $request, $step)
     {
         $booking = Booking::findOrFail($request->booking_id);

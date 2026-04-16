@@ -24,7 +24,7 @@ class DatabaseSeeder extends Seeder
             ['email' => 'test@example.com'],
             [
                 'name' => 'Customer',
-                'password' => Hash::make('password'),
+                'password' => Hash::make('fazal123'),
                 'email_verified_at' => now(),
                 'role' => 'customer',
                 'phone_no' => '07786868686',
@@ -35,7 +35,7 @@ class DatabaseSeeder extends Seeder
         $owner = User::create([
             'name' => 'owner',
             'email' => 'fazal@gmail.com',
-            'password' => bcrypt('password'),
+            'password' => bcrypt('fazal123'),
             'role' => 'owner',
             'phone_no' => '0778433880',
             'profile_image' => 'https://picsum.photos/800/600?random=166',
@@ -43,7 +43,7 @@ class DatabaseSeeder extends Seeder
         $owner_2 = User::create([
             'name' => 'random owner',
             'email' => 'owner@gmail.com',
-            'password' => bcrypt('password'),
+            'password' => bcrypt('fazal123'),
             'role' => 'owner',
             'phone_no' => '0778433880',
             'profile_image' => 'https://picsum.photos/800/600?random=166',
@@ -52,7 +52,7 @@ class DatabaseSeeder extends Seeder
         User::create([
             'name' => 'Platform Admin',
             'email' => 'admin@gmail.com',
-            'password' => bcrypt('password'),
+            'password' => bcrypt('fazal123'),
             'role' => 'admin',
             'phone_no' => '077868656',
             'profile_image' => 'https://picsum.photos/800/600?random=166',
@@ -77,17 +77,17 @@ class DatabaseSeeder extends Seeder
 
         // Seed specific bookings to test cancellation feature for the customer (User 1)
         $testVehicles = $vehicles->random(3)->values(); // Get 3 random vehicles
-        
+
         Booking::factory()->fullRefundable()->create([
             'vehicle_id' => $testVehicles[0]->id,
             'user_id'    => 1,
         ]);
-        
+
         Booking::factory()->halfRefundable()->create([
             'vehicle_id' => $testVehicles[1]->id,
             'user_id'    => 1,
         ]);
-        
+
         Booking::factory()->nonRefundable()->create([
             'vehicle_id' => $testVehicles[2]->id,
             'user_id'    => 1,
