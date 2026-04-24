@@ -124,7 +124,7 @@ export default function Register() {
                                     <div className="flex h-full w-full flex-col items-center justify-center rounded-xl border border-gray-300 p-2 transition-all duration-300 peer-checked:border-blue-500 peer-checked:bg-blue-100 peer-checked:shadow-lg">
                                         <Car className="h-10 w-10 text-blue-500 peer-checked:text-blue-700" />
                                         <span className="mt-2 text-sm font-semibold">
-                                            Customer
+                                            Renter
                                         </span>
                                         <p className="mt-1 text-center text-xs text-muted-foreground">
                                             Rent vehicles from trusted owners
@@ -143,7 +143,7 @@ export default function Register() {
                                     <div className="flex h-full w-full flex-col items-center justify-center rounded-xl border border-gray-300 p-2 transition-all duration-300 peer-checked:border-green-500 peer-checked:bg-green-100 peer-checked:shadow-lg">
                                         <Truck className="h-10 w-10 text-green-500 peer-checked:text-green-700" />
                                         <span className="mt-2 text-sm font-semibold">
-                                            Vehicle Owner
+                                            Host
                                         </span>
                                         <p className="mt-1 text-center text-xs text-muted-foreground">
                                             List your vehicles for rent

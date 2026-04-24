@@ -327,7 +327,7 @@ export default function Welcome({ auth }: any) {
 
                         {/* Mobile toggle */}
                         <button
-                            className="p-2 text-foreground md:hidden"
+                            className="p-2 text-white md:hidden"
                             onClick={() => setMenuOpen(!menuOpen)}
                         >
                             {menuOpen ? <X size={22} /> : <Menu size={22} />}
@@ -336,14 +336,21 @@ export default function Welcome({ auth }: any) {
 
                     {/* Mobile menu */}
                     {menuOpen && (
-                        <div className="space-y-3 border-t border-border bg-background px-6 py-4 md:hidden">
+                        <div
+                            className="space-y-1 px-6 py-5 md:hidden"
+                            style={{
+                                background: 'rgba(10, 10, 10, 0.97)',
+                                backdropFilter: 'blur(16px)',
+                                borderTop: '1px solid rgba(255,255,255,0.12)',
+                            }}
+                        >
                             {['#how-it-works', '#listings', '#owners'].map(
                                 (href, i) => (
                                     <a
                                         key={href}
                                         href={href}
                                         onClick={() => setMenuOpen(false)}
-                                        className="block py-1 text-sm text-muted-foreground hover:text-foreground"
+                                        className="block rounded-xl px-3 py-2.5 text-sm font-medium text-white transition-colors hover:bg-white/10"
                                     >
                                         {
                                             [
@@ -355,16 +362,16 @@ export default function Welcome({ auth }: any) {
                                     </a>
                                 ),
                             )}
-                            <div className="flex gap-3 pt-2">
+                            <div className="flex gap-3 pt-3">
                                 <Link
                                     href="/login"
-                                    className="flex-1 rounded-full border border-border py-2 text-center text-sm text-white"
+                                    className="flex-1 rounded-full border border-white/30 py-2 text-center text-sm font-medium text-white transition-colors hover:bg-white/10"
                                 >
                                     Sign In
                                 </Link>
                                 <Link
                                     href="/register"
-                                    className="flex-1 rounded-full bg-primary py-2 text-center text-sm font-semibold text-primary-foreground"
+                                    className="flex-1 rounded-full bg-white py-2 text-center text-sm font-semibold text-black transition-opacity hover:opacity-90"
                                 >
                                     Sign Up
                                 </Link>
@@ -395,7 +402,7 @@ export default function Welcome({ auth }: any) {
 
                     <div className="relative mx-auto w-full max-w-7xl px-6">
                         <div className="max-w-2xl">
-                            <div className="hero-line-1 mb-6 inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/10 px-4 py-1.5 text-xs font-semibold tracking-widest text-primary uppercase">
+                            <div className="hero-line-1 mb-6 inline-flex text-white items-center gap-2 rounded-full border border-primary/20 bg-primary/10 px-4 py-1.5 text-xs font-semibold tracking-widest text-primary uppercase">
                                 <Zap size={11} /> Thousands of vehicles. One
                                 platform.
                             </div>

@@ -122,17 +122,16 @@ export default function BookingListPage({
                         value={currentFilter}
                         onValueChange={handleTabChange}
                     >
-                        <TabsList className="grid w-full grid-cols-2 md:grid-cols-3 lg:grid-cols-5">
-                            <TabsTrigger value="all">All</TabsTrigger>
-                            <TabsTrigger value="Booked">Booked</TabsTrigger>
-                            <TabsTrigger value="OnTrip">On Trip</TabsTrigger>
-                            <TabsTrigger value="Cancelled">
-                                Cancelled
-                            </TabsTrigger>
-                            <TabsTrigger value="Completed">
-                                Completed
-                            </TabsTrigger>
-                        </TabsList>
+                        {/* Scrollable wrapper so tabs don't overflow on mobile */}
+                        <div className="w-full overflow-x-auto pb-1">
+                            <TabsList className="w-max md:grid md:w-full md:grid-cols-5">
+                                <TabsTrigger value="all" className="min-w-[64px]">All</TabsTrigger>
+                                <TabsTrigger value="Booked" className="min-w-[76px]">Booked</TabsTrigger>
+                                <TabsTrigger value="OnTrip" className="min-w-[76px]">On Trip</TabsTrigger>
+                                <TabsTrigger value="Cancelled" className="min-w-[88px]">Cancelled</TabsTrigger>
+                                <TabsTrigger value="Completed" className="min-w-[92px]">Completed</TabsTrigger>
+                            </TabsList>
+                        </div>
                     </Tabs>
                 </div>
 
@@ -146,110 +145,124 @@ export default function BookingListPage({
                                 className="cursor-pointer rounded-2xl transition hover:shadow-md"
                                 onClick={() => setSelectedBooking(booking)}
                             >
-                                <CardContent className="grid gap-4 p-3 md:grid-cols-[140px_2fr_220px]">
-                                    {/* Vehicle Image */}
-                                    <img
-                                        src={booking.image}
-                                        alt={booking.vehicle}
-                                        className="h-28 w-full rounded-xl object-cover"
-                                    />
+                                <CardContent className="p-3">
+                                    {/* Mobile: 2-col (image | info), Desktop: 3-col */}
+                                    <div className="grid grid-cols-[100px_1fr] gap-3 md:grid-cols-[140px_2fr_220px]">
+                                        {/* Vehicle Image */}
+                                        <img
+                                            src={booking.image}
+                                            alt={booking.vehicle}
+                                            className="h-24 w-full rounded-xl object-cover md:h-28"
+                                        />
 
-                                    {/* Vehicle & Location */}
-                                    <div className="space-y-2">
-                                        <div className="flex items-center gap-2">
-                                            <Car className="h-4 w-4 text-muted-foreground" />
-                                            <span className="font-medium">
-                                                {booking.vehicle}
-                                            </span>
-                                        </div>
-
-                                        <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                                            <MapPin className="h-4 w-4" />{' '}
-                                            Pickup: {booking.pickup}
-                                        </div>
-
-                                        <div className="text-xs text-muted-foreground">
-                                            {booking.startDate} –{' '}
-                                            {booking.endDate}
-                                        </div>
-
-                                        {/* Tracking Progress (Main Page) */}
-                                        <div className="space-y-1">
-                                            <div className="flex justify-between text-xs">
-                                                <span>Status</span>
-                                                <span>
-                                                    {
-                                                        statusMap[
-                                                            booking.status
-                                                        ].label
-                                                    }
+                                        {/* Vehicle & Location */}
+                                        <div className="space-y-1.5">
+                                            <div className="flex items-center gap-2">
+                                                <Car className="h-4 w-4 shrink-0 text-muted-foreground" />
+                                                <span className="font-medium leading-tight">
+                                                    {booking.vehicle}
                                                 </span>
                                             </div>
-                                            <Progress
-                                                value={
-                                                    statusMap[booking.status]
-                                                        .progress
-                                                }
-                                            />
+
+                                            <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                                                <MapPin className="h-4 w-4 shrink-0" />{' '}
+                                                Pickup: {booking.pickup}
+                                            </div>
+
+                                            <div className="text-xs text-muted-foreground">
+                                                {booking.startDate} –{' '}
+                                                {booking.endDate}
+                                            </div>
+
+                                            {/* Progress — hidden on mobile, shown on md+ inside info col */}
+                                            <div className="hidden space-y-1 md:block">
+                                                <div className="flex justify-between text-xs">
+                                                    <span>Status</span>
+                                                    <span>{statusMap[booking.status].label}</span>
+                                                </div>
+                                                <Progress value={statusMap[booking.status].progress} />
+                                            </div>
+                                        </div>
+
+                                        {/* Actions — hidden on mobile, shown on md+ */}
+                                        <div className="hidden flex-col items-end justify-between gap-3 md:flex">
+                                            <Badge variant={statusMap[booking.status].color}>
+                                                {statusMap[booking.status].label}
+                                            </Badge>
+                                            <div className="flex w-full flex-row items-center justify-end gap-2">
+                                                {booking.status === 'Booked' && (
+                                                    <Button
+                                                        size="sm"
+                                                        className="bg-primary hover:bg-primary/90"
+                                                        onClick={(e) => { e.stopPropagation(); handleOpenWizard(booking); }}
+                                                    >
+                                                        Start Trip
+                                                    </Button>
+                                                )}
+                                                {booking.status === 'OnTrip' && (
+                                                    <Button
+                                                        size="sm"
+                                                        className="bg-primary hover:bg-primary/90"
+                                                        onClick={(e) => { e.stopPropagation(); handleEntTripOpenWizard(booking); }}
+                                                    >
+                                                        End Trip
+                                                    </Button>
+                                                )}
+                                                {['Pending', 'Booked'].includes(booking.status) && (
+                                                    <Button
+                                                        size="sm"
+                                                        variant="destructive"
+                                                        onClick={(e) => { e.stopPropagation(); setCancelBooking(booking); }}
+                                                    >
+                                                        Cancel Booking
+                                                    </Button>
+                                                )}
+                                            </div>
                                         </div>
                                     </div>
 
-                                    {/* Actions */}
-                                    <div className="flex flex-col items-end justify-between gap-3">
-                                        <Badge
-                                            variant={
-                                                statusMap[booking.status].color
-                                            }
-                                        >
-                                            {statusMap[booking.status].label}
-                                        </Badge>
-                                        <div className="flex w-full flex-row items-center justify-end gap-2">
-                                            {booking.status === 'Booked' && (
-                                                <Button
-                                                    size="sm"
-                                                    className="bg-primary hover:bg-primary/90"
-                                                    onClick={(e) => {
-                                                        e.stopPropagation();
-                                                        handleOpenWizard(
-                                                            booking,
-                                                        );
-                                                    }}
-                                                >
-                                                    Start Trip
-                                                </Button>
-                                            )}
-                                            {booking.status === 'OnTrip' && (
-                                                <Button
-                                                    size="sm"
-                                                    className="bg-primary hover:bg-primary/90"
-                                                    onClick={(e) => {
-                                                        e.stopPropagation();
-
-                                                        handleEntTripOpenWizard(
-                                                            booking,
-                                                        );
-                                                    }}
-                                                >
-                                                    End Trip
-                                                </Button>
-                                            )}
-
-                                            {['Pending', 'Booked'].includes(
-                                                booking.status,
-                                            ) && (
-                                                <Button
-                                                    size="sm"
-                                                    variant="destructive"
-                                                    onClick={(e) => {
-                                                        e.stopPropagation();
-                                                        setCancelBooking(
-                                                            booking,
-                                                        );
-                                                    }}
-                                                >
-                                                    Cancel Booking
-                                                </Button>
-                                            )}
+                                    {/* Mobile-only: progress + actions row below */}
+                                    <div className="mt-3 md:hidden">
+                                        <div className="mb-2 space-y-1">
+                                            <div className="flex justify-between text-xs">
+                                                <span>Status</span>
+                                                <span>{statusMap[booking.status].label}</span>
+                                            </div>
+                                            <Progress value={statusMap[booking.status].progress} />
+                                        </div>
+                                        <div className="flex items-center justify-between">
+                                            <Badge variant={statusMap[booking.status].color}>
+                                                {statusMap[booking.status].label}
+                                            </Badge>
+                                            <div className="flex gap-2">
+                                                {booking.status === 'Booked' && (
+                                                    <Button
+                                                        size="sm"
+                                                        className="bg-primary hover:bg-primary/90"
+                                                        onClick={(e) => { e.stopPropagation(); handleOpenWizard(booking); }}
+                                                    >
+                                                        Start Trip
+                                                    </Button>
+                                                )}
+                                                {booking.status === 'OnTrip' && (
+                                                    <Button
+                                                        size="sm"
+                                                        className="bg-primary hover:bg-primary/90"
+                                                        onClick={(e) => { e.stopPropagation(); handleEntTripOpenWizard(booking); }}
+                                                    >
+                                                        End Trip
+                                                    </Button>
+                                                )}
+                                                {['Pending', 'Booked'].includes(booking.status) && (
+                                                    <Button
+                                                        size="sm"
+                                                        variant="destructive"
+                                                        onClick={(e) => { e.stopPropagation(); setCancelBooking(booking); }}
+                                                    >
+                                                        Cancel
+                                                    </Button>
+                                                )}
+                                            </div>
                                         </div>
                                     </div>
                                 </CardContent>
