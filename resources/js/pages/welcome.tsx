@@ -402,7 +402,7 @@ export default function Welcome({ auth }: any) {
 
                     <div className="relative mx-auto w-full max-w-7xl px-6">
                         <div className="max-w-2xl">
-                            <div className="hero-line-1 mb-6 inline-flex text-white items-center gap-2 rounded-full border border-primary/20 bg-primary/10 px-4 py-1.5 text-xs font-semibold tracking-widest text-primary uppercase">
+                            <div className="hero-line-1 mb-6 inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/10 px-4 py-1.5 text-xs font-semibold tracking-widest text-primary text-white uppercase">
                                 <Zap size={11} /> Thousands of vehicles. One
                                 platform.
                             </div>
@@ -421,26 +421,6 @@ export default function Welcome({ auth }: any) {
                                 owners. Transparent pricing, full insurance, and
                                 a fleet that fits any occasion.
                             </p>
-
-                            {/* Search bar */}
-                            {/* <div className="hero-line-4 flex flex-col sm:flex-row gap-3 max-w-xl">
-                                <div className="flex-1 flex items-center gap-3 bg-background border border-border rounded-2xl px-4 py-3 shadow-lg">
-                                    <MapPin size={16} className="text-muted-foreground shrink-0" />
-                                    <input
-                                        type="text"
-                                        placeholder="City, airport, or address…"
-                                        value={searchLocation}
-                                        onChange={(e) => setSearchLocation(e.target.value)}
-                                        className="flex-1 bg-transparent text-sm text-foreground placeholder:text-muted-foreground outline-none"
-                                    />
-                                </div>
-                                <Link
-                                    href={`/vehicles?location=${encodeURIComponent(searchLocation)}`}
-                                    className="inline-flex items-center justify-center gap-2 bg-primary text-primary-foreground font-semibold px-7 py-3 rounded-2xl hover:opacity-90 transition-opacity whitespace-nowrap shine shadow-lg"
-                                >
-                                    Find Cars <ArrowRight size={16} />
-                                </Link>
-                            </div> */}
 
                             {/* Trust markers */}
                             <div className="hero-line-4 mt-7 flex items-center gap-6">
