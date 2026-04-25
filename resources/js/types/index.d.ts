@@ -96,7 +96,9 @@ interface VehicleAll {
      rc_back_image?: File;
      rc_front_image?: File;
         old_images?: Record<string, string>;
-    _method?:string
+    _method?:string;
+    latitude?: number;
+    longitude?: number;
 };
 
 interface VehicleFormProps {
@@ -177,7 +179,9 @@ export interface VehicleDetailsProp {
     ownerJoinDate : string,
     ownerTrips :number,
     vehicleTrips :number,
-    ownerAvatar : string
+    ownerAvatar : string,
+    latitude?: number,
+    longitude?: number
 }
 
 
@@ -218,6 +222,8 @@ export interface Booking {
     endDate: string;   
     payment_status: string;   
     total_amount: number;   
+    latitude?: number;
+    longitude?: number;
 }
 
 interface BookingListPageProps {

@@ -9,6 +9,11 @@ class Vehicle extends Model
 {
     /** @use HasFactory<\Database\Factories\VehicleFactory> */
     use HasFactory;
+    
+    protected $casts = [
+        'latitude' => 'float',
+        'longitude' => 'float',
+    ];
 
     protected $fillable = [
         'owner_id',
@@ -33,6 +38,8 @@ class Vehicle extends Model
         'pickup_location',
         'description',
         'highlights',
+        'latitude',
+        'longitude',
     ];
 
     public function owner()

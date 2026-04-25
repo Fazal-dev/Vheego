@@ -8,7 +8,9 @@ import {
 } from '@/components/ui/dialog';
 import { Progress } from '@/components/ui/progress';
 import { Separator } from '@/components/ui/separator';
-import { Clock, Hash, MapPin, Star } from 'lucide-react';
+import { Clock, Hash, MapPin, Star, Car } from 'lucide-react';
+import { Map, MapMarker, MarkerContent, MapControls, MarkerTooltip } from '@/components/ui/map';
+import { Card } from '@/components/ui/card';
 
 // Use the Booking interface you defined earlier
 interface Booking {
@@ -28,6 +30,8 @@ interface Booking {
         comment: string;
         created_at: string;
     } | null;
+    latitude?: number;
+    longitude?: number;
 }
 
 interface BookingDetailModalProps {
@@ -146,6 +150,33 @@ export function BookingDetailModal({
                             value={statusMap[selectedBooking.status].progress}
                         />
                     </div>
+
+                    {/* 📍 Map Section in Modal */}
+                    {selectedBooking.latitude && selectedBooking.longitude && (
+                        <div>
+                            <p className="mb-2 text-sm font-medium flex items-center gap-2">
+                                <MapPin className="h-4 w-4 text-primary" />
+                                Location on Map
+                            </p>
+                            <Card className="h-[200px] w-full overflow-hidden rounded-xl border-none shadow-inner bg-slate-100">
+                                <Map 
+                                    center={[selectedBooking.longitude, selectedBooking.latitude]} 
+                                    zoom={14}
+                                    className="h-full w-full"
+                                >
+                                    <MapControls />
+                                    <MapMarker longitude={selectedBooking.longitude} latitude={selectedBooking.latitude}>
+                                        <MarkerContent>
+                                            <div className="flex h-8 w-8 items-center justify-center rounded-full bg-primary text-white shadow-lg ring-2 ring-white">
+                                                <Car className="h-4 w-4" />
+                                            </div>
+                                        </MarkerContent>
+                                        <MarkerTooltip>Pickup Location</MarkerTooltip>
+                                    </MapMarker>
+                                </Map>
+                            </Card>
+                        </div>
+                    )}
 
                     {/* Review Section */}
                     {selectedBooking.status === 'Completed' && (

@@ -17,7 +17,8 @@ import VehicleImageGuide from '@/components/vehicle/vehicle-image-guide';
 import { store, update } from '@/routes/owner/vehicles';
 import { VehicleFormProps } from '@/types';
 import { useForm } from '@inertiajs/react';
-import { LoaderCircle } from 'lucide-react';
+import { LoaderCircle, MapPin, Car } from 'lucide-react';
+import { Map, MapMarker, MarkerContent, MapControls } from '@/components/ui/map';
 import 'react-advanced-cropper/dist/style.css';
 
 export default function VehicleForm({ vehicle }: VehicleFormProps) {
@@ -56,6 +57,8 @@ export default function VehicleForm({ vehicle }: VehicleFormProps) {
         seat_image: null,
         rc_back_image: null,
         rc_front_image: null,
+        latitude: vehicle?.latitude || 6.9271,
+        longitude: vehicle?.longitude || 79.8612,
         _method: isEdit ? 'PUT' : 'POST',
     });
 
@@ -516,6 +519,49 @@ export default function VehicleForm({ vehicle }: VehicleFormProps) {
                                     {errors.pickup_location}
                                 </div>
                             )}
+                        </div>
+
+                        <Separator className="my-4" />
+
+                        <div className="mb-3">
+                            <Label className="flex items-center gap-2 mb-3">
+                                <MapPin className="h-4 w-4 text-primary" />
+                                Pin Exact Location
+                            </Label>
+                            <p className="text-xs text-muted-foreground mb-3">
+                                Drag the marker to the exact pickup location.
+                            </p>
+                            <Card className="h-[300px] w-full overflow-hidden rounded-xl border border-slate-200">
+                                <Map 
+                                    center={[data.longitude, data.latitude]} 
+                                    zoom={14}
+                                    className="h-full w-full"
+                                >
+                                    <MapControls />
+                                    <MapMarker 
+                                        draggable 
+                                        longitude={data.longitude} 
+                                        latitude={data.latitude}
+                                        onDrag={(lngLat) => {
+                                            setData((prev: any) => ({
+                                                ...prev,
+                                                latitude: lngLat.lat,
+                                                longitude: lngLat.lng
+                                            }));
+                                        }}
+                                    >
+                                        <MarkerContent>
+                                            <div className="flex h-10 w-10 cursor-move items-center justify-center rounded-full bg-primary text-white shadow-xl ring-4 ring-white transition-transform hover:scale-110 active:scale-95">
+                                                <Car className="h-5 w-5" />
+                                            </div>
+                                        </MarkerContent>
+                                    </MapMarker>
+                                </Map>
+                            </Card>
+                            <div className="mt-2 flex gap-4 text-[10px] text-muted-foreground uppercase tracking-widest tabular-nums">
+                                <span>Lat: {data.latitude.toFixed(6)}</span>
+                                <span>Lng: {data.longitude.toFixed(6)}</span>
+                            </div>
                         </div>
                     </CardContent>
                 </Card>

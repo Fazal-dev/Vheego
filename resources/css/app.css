@@ -131,8 +131,6 @@
     --sidebar-ring: oklch(0.556 0 0);
 }
 
-
-
 @layer base {
     * {
         @apply border-border;
@@ -140,6 +138,12 @@
 
     body {
         @apply bg-background text-foreground;
+    }
+  .maplibregl-popup-content {
+    @apply bg-transparent! shadow-none! p-0! rounded-none!;
+    }
+  .maplibregl-popup-tip {
+    @apply hidden!;
     }
 }
 

@@ -19,6 +19,8 @@ import {
 } from 'lucide-react';
 
 import { PhotoView } from 'react-photo-view';
+import { Map, MapMarker, MarkerContent, MapControls, MarkerTooltip } from '@/components/ui/map';
+import { Card } from '@/components/ui/card';
 
 export default function VehicleDetails({
     vehicle,
@@ -175,6 +177,42 @@ export default function VehicleDetails({
                         />
                         <div className=" ">
                             <IncludeBenifits />
+                            <Separator className="my-8" />
+                            
+                            {/* 📍 Map Section */}
+                            <div className="mb-10 space-y-4">
+                                <h2 className="text-xl font-bold tracking-tight text-slate-900 flex items-center gap-2">
+                                    <MapPin className="h-5 w-5 text-primary" />
+                                    Pickup Location
+                                </h2>
+                                <p className="text-sm text-muted-foreground">
+                                    Exact location will be provided after booking. This map shows the general area for pickup.
+                                </p>
+                                <Card className="h-[400px] w-full overflow-hidden rounded-xl border-none shadow-lg">
+                                    <Map 
+                                        center={[vehicle.longitude ?? 79.8612, vehicle.latitude ?? 6.9271]} 
+                                        zoom={13}
+                                        className="h-full w-full"
+                                    >
+                                        <MapControls />
+                                        {vehicle.latitude && vehicle.longitude && (
+                                            <MapMarker longitude={vehicle.longitude} latitude={vehicle.latitude}>
+                                                <MarkerContent>
+                                                    <div className="flex h-10 w-10 items-center justify-center rounded-full bg-primary text-white shadow-xl ring-4 ring-white transition-transform hover:scale-110">
+                                                        <Car className="h-5 w-5" />
+                                                    </div>
+                                                </MarkerContent>
+                                                <MarkerTooltip>Vehicle Location</MarkerTooltip>
+                                            </MapMarker>
+                                        )}
+                                    </Map>
+                                </Card>
+                                <div className="flex items-center gap-2 text-sm text-slate-600 bg-slate-50 p-3 rounded-lg border border-slate-100">
+                                    <MapPin className="h-4 w-4 text-slate-400" />
+                                    <span>{vehicle.location || 'Colombo, Sri Lanka'}</span>
+                                </div>
+                            </div>
+
                             <Separator className="my-8" />
                             <ReviewSection data={reviews_data} />
                         </div>

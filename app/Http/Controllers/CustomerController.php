@@ -278,6 +278,8 @@ class CustomerController extends Controller
                 'endDate' => $booking->end_date,
                 'payment_status' => $booking->payment_status,
                 'total_amount' => $booking->total_amount,
+                'latitude' => (float) $booking->vehicle->latitude,
+                'longitude' => (float) $booking->vehicle->longitude,
                 'review' => $booking->review ? [
                     'rating' => $booking->review->rating,
                     'comment' => $booking->review->comment,
@@ -528,6 +530,8 @@ class CustomerController extends Controller
             'endDate'        => $b->end_date,
             'payment_status' => $b->payment_status,
             'total_amount'   => (float) $b->total_amount,
+            'latitude'       => (float) $b->vehicle->latitude,
+            'longitude'      => (float) $b->vehicle->longitude,
         ]);
     }
     /**
@@ -578,7 +582,7 @@ class CustomerController extends Controller
                 'year' => $vehicle->year_of_manufacture,
                 'type' => $vehicle->vehicle_type,
                 'daily_rental_price' => $vehicle->daily_rental_price,
-                'pickup_location' => $vehicle->pickup_location ?? "Colombo",
+                'location' => $vehicle->pickup_location ?? "Colombo",
                 'seats' => $vehicle->seats,
                 'doors' => $vehicle->doors,
                 'transmission' => $vehicle->transmission,
@@ -591,6 +595,8 @@ class CustomerController extends Controller
                 'ownerJoinDate' => $owner->created_at,
                 'ownerTrips' => $ownerTrips,
                 'ownerAvatar' => $owner->profile_image ?? 'https://i.pravatar.cc/150?img=',
+                'latitude' => (float) $vehicle->latitude,
+                'longitude' => (float) $vehicle->longitude,
             ],
             'reviews_data' => [
                 'total_count' => $totalReviews,
