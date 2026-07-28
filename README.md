@@ -51,6 +51,12 @@ Key highlights:
 - **Admin-controlled payout system** with configurable commission rates per owner
 - **Star ratings and reviews** submitted by customers at trip completion
 
+## 📸 Project Preview
+
+![Vheego homepage preview](public/images/home-preview.png)
+
+![Vheego login preview](public/images/login_image.jpg)
+
 ---
 
 ## ✨ Features
