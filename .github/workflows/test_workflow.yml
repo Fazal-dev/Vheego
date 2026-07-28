@@ -1,0 +1,10 @@
+name: workflow_test
+on: push
+
+jobs:
+  workflow_testing:
+    runs-on: ubuntu-latest
+    steps:
+      - name: hello test
+        run: echo "fazal"
+        
