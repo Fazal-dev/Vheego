@@ -3,10 +3,10 @@
 namespace App\Events;
 
 use App\Models\Booking;
-use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Broadcasting\PrivateChannel;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcastNow;
+use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
 class NewBookingReceived implements ShouldBroadcastNow
@@ -27,7 +27,7 @@ class NewBookingReceived implements ShouldBroadcastNow
     {
         return [
             // Only the vehicle owner gets this
-            new PrivateChannel('owner.' . $this->booking->vehicle->owner_id),
+            new PrivateChannel('owner.'.$this->booking->vehicle->owner_id),
         ];
     }
 
@@ -35,7 +35,7 @@ class NewBookingReceived implements ShouldBroadcastNow
     {
         return [
             'booking_id' => $this->booking->id,
-            'vehicle' => $this->booking->vehicle->brand . ' ' . $this->booking->vehicle->model,
+            'vehicle' => $this->booking->vehicle->brand.' '.$this->booking->vehicle->model,
             'customer' => $this->booking->user->name,
             'start_date' => $this->booking->start_date,
             'end_date' => $this->booking->end_date,
