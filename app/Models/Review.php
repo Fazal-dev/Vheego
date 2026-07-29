@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 class Review extends Model
 {
     use HasFactory;
+
     protected $fillable = [
         'vehicle_id',
         'booking_id',
@@ -16,6 +17,7 @@ class Review extends Model
         'rating',
         'comment',
     ];
+
     /**
      * Get the user who wrote the review.
      */

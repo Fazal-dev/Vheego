@@ -51,7 +51,7 @@ class User extends Authenticatable
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
-            'bank_details'      => 'array',
+            'bank_details' => 'array',
         ];
     }
 
@@ -59,10 +59,12 @@ class User extends Authenticatable
     {
         return $this->hasMany(Vehicle::class, 'owner_id');
     }
+
     public function bookings()
     {
         return $this->hasMany(Booking::class, 'user_id');
     }
+
     public function payouts()
     {
         return $this->hasMany(Payout::class, 'owner_id');

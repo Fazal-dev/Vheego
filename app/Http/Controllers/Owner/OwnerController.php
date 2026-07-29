@@ -7,13 +7,11 @@ use App\Models\Booking;
 use App\Models\Payout;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Inertia\Inertia;
 use Illuminate\Support\Facades\DB;
-use Carbon\Carbon;
+use Inertia\Inertia;
 
 class OwnerController extends Controller
 {
-
     private function getEarningsChartData($vehicleIds): array
     {
         return Booking::whereIn('vehicle_id', $vehicleIds)
@@ -29,31 +27,32 @@ class OwnerController extends Controller
             ->groupBy('month_sort', 'month')
             ->orderBy('month_sort')
             ->get()
-            ->map(fn($row) => [
-                'month'    => $row->month,
+            ->map(fn ($row) => [
+                'month' => $row->month,
                 'earnings' => (float) $row->earnings,
-                'bookings' => (int)   $row->bookings,
+                'bookings' => (int) $row->bookings,
             ])
             ->toArray();
     }
+
     /**
      * Display Owner Dashbord
      */
     public function index(Request $request)
     {
-        $user       = Auth::user();
+        $user = Auth::user();
         $vehicleIds = $user->vehicles()->pluck('id');
 
         $stats = [
-            'active_count'    => Booking::whereIn('vehicle_id', $vehicleIds)
+            'active_count' => Booking::whereIn('vehicle_id', $vehicleIds)
                 ->where('booking_status', 'OnTrip')
                 ->count(),
 
-            'total_earnings'  => Booking::whereIn('vehicle_id', $vehicleIds)
+            'total_earnings' => Booking::whereIn('vehicle_id', $vehicleIds)
                 ->where('booking_status', 'Completed')
                 ->sum('total_amount'),
-            'occupancy_rate'  => $this->getOccupancyRate($vehicleIds),
-            'pendingPayout'  =>  Booking::whereIn('vehicle_id', $vehicleIds)
+            'occupancy_rate' => $this->getOccupancyRate($vehicleIds),
+            'pendingPayout' => Booking::whereIn('vehicle_id', $vehicleIds)
                 ->where('booking_status', 'Completed')
                 ->where('payment_status', 'paid')
                 ->where('owner_paid', false)
@@ -65,26 +64,25 @@ class OwnerController extends Controller
             ->latest()
             ->limit(6)
             ->get()
-            ->map(fn($payout) => [
-                'id'        => $payout->id,
-                'date'      => $payout->created_at->format('M j, Y'),
-                'amount'    => (float) $payout->net_amount,
-                'status'    => $payout->status,
-                'ref'       => $payout->payment_reference ?? 'PAY-' . str_pad($payout->id, 8, '0', STR_PAD_LEFT),
+            ->map(fn ($payout) => [
+                'id' => $payout->id,
+                'date' => $payout->created_at->format('M j, Y'),
+                'amount' => (float) $payout->net_amount,
+                'status' => $payout->status,
+                'ref' => $payout->payment_reference ?? 'PAY-'.str_pad($payout->id, 8, '0', STR_PAD_LEFT),
             ]);
-
 
         $vehicles = $user->vehicles()
             ->with([
-                'bookings' => fn($q) => $q->where('booking_status', 'OnTrip')
+                'bookings' => fn ($q) => $q->where('booking_status', 'OnTrip')
                     ->with('user')
                     ->latest()
                     ->limit(1),
             ])
             ->get()
             ->map(function ($vehicle) {
-                $activeBooking  = $vehicle->bookings->first();
-                $totalDays      = now()->daysInMonth;
+                $activeBooking = $vehicle->bookings->first();
+                $totalDays = now()->daysInMonth;
 
                 // days rented this month
                 $rentedDays = $vehicle->bookings()
@@ -102,27 +100,27 @@ class OwnerController extends Controller
 
                 // image — take first from image_urls
                 $images = json_decode($vehicle->image_urls, true);
-                $image  = $images[0] ?? null;
+                $image = $images[0] ?? null;
 
                 return [
-                    'id'         => $vehicle->id,
-                    'name'       => "{$vehicle->brand} {$vehicle->model} {$vehicle->year_of_manufacture}",
-                    'plate'      => $vehicle->license_plate,
-                    'status'     => match ($vehicle->current_status) {
-                        'rented'      => 'rented',
+                    'id' => $vehicle->id,
+                    'name' => "{$vehicle->brand} {$vehicle->model} {$vehicle->year_of_manufacture}",
+                    'plate' => $vehicle->license_plate,
+                    'status' => match ($vehicle->current_status) {
+                        'rented' => 'rented',
                         'maintenance' => 'maintenance',
-                        default       => 'available',
+                        default => 'available',
                     },
-                    'occupancy'  => $totalDays > 0
+                    'occupancy' => $totalDays > 0
                         ? round(($rentedDays / $totalDays) * 100)
                         : 0,
-                    'earned'     => (float) $earned,
-                    'rating'  => round($vehicle->reviews->avg('rating'), 1) ?? 0,
+                    'earned' => (float) $earned,
+                    'rating' => round($vehicle->reviews->avg('rating'), 1) ?? 0,
                     'reviews' => $vehicle->reviews->count(),
-                    'image'      => $image,
-                    'renter'     => $activeBooking?->user?->name
-                        ? explode(' ', $activeBooking->user->name)[0] . ' ' .
-                        strtoupper(substr(explode(' ', $activeBooking->user->name)[1] ?? '', 0, 1)) . '.'
+                    'image' => $image,
+                    'renter' => $activeBooking?->user?->name
+                        ? explode(' ', $activeBooking->user->name)[0].' '.
+                        strtoupper(substr(explode(' ', $activeBooking->user->name)[1] ?? '', 0, 1)).'.'
                         : null,
                     'returnDate' => $activeBooking
                         ? \Carbon\Carbon::parse($activeBooking->end_date)->format('M d')
@@ -139,18 +137,18 @@ class OwnerController extends Controller
             ->orderBy('start_date', 'asc')
             ->limit(4)
             ->get()
-            ->map(fn($booking) => [
-                'id'      => $booking->id,
+            ->map(fn ($booking) => [
+                'id' => $booking->id,
                 'vehicle' => $booking->vehicle->name,
-                'renter'  => $booking->user->name,
-                'avatar'  => strtoupper(substr($booking->user->name, 0, 1)),
-                'start'   => \Carbon\Carbon::parse($booking->start_date)->format('M d'),
-                'end'     => \Carbon\Carbon::parse($booking->end_date)->format('M d'),
-                'amount'  => (float) $booking->total_amount,
-                'status'  => match ($booking->booking_status) {
-                    'Booked'  => 'confirmed',
+                'renter' => $booking->user->name,
+                'avatar' => strtoupper(substr($booking->user->name, 0, 1)),
+                'start' => \Carbon\Carbon::parse($booking->start_date)->format('M d'),
+                'end' => \Carbon\Carbon::parse($booking->end_date)->format('M d'),
+                'amount' => (float) $booking->total_amount,
+                'status' => match ($booking->booking_status) {
+                    'Booked' => 'confirmed',
                     'Pending' => 'pending',
-                    default   => 'pending',
+                    default => 'pending',
                 },
             ]);
 
@@ -162,13 +160,16 @@ class OwnerController extends Controller
 
         ]);
     }
+
     private function getOccupancyRate($vehicleIds): float
     {
-        $totalDays          = now()->daysInMonth;
-        $totalVehicles      = $vehicleIds->count();
+        $totalDays = now()->daysInMonth;
+        $totalVehicles = $vehicleIds->count();
         $totalAvailableDays = $totalDays * $totalVehicles;
 
-        if ($totalAvailableDays === 0) return 0;
+        if ($totalAvailableDays === 0) {
+            return 0;
+        }
 
         $rentedDays = Booking::whereIn('vehicle_id', $vehicleIds)
             ->whereIn('booking_status', ['Completed', 'OnTrip'])

@@ -17,9 +17,9 @@ class OwnerPayoutsController extends Controller
         $ownerId = Auth::id();
 
         // ── Filters ──────────────────────────────────────────────────────────
-        $status    = $request->input('status');          // paid|pending|processing|failed|null
-        $dateFrom  = $request->input('date_from');
-        $dateTo    = $request->input('date_to');
+        $status = $request->input('status');          // paid|pending|processing|failed|null
+        $dateFrom = $request->input('date_from');
+        $dateTo = $request->input('date_to');
 
         // ── Summary stats (always unfiltered) ───────────────────────────────
         $totalPaid = Payout::where('owner_id', $ownerId)
@@ -59,50 +59,50 @@ class OwnerPayoutsController extends Controller
                 ? $p->booking_ids
                 : json_decode($p->booking_ids ?? '[]', true) ?? [];
             // $bookingIds = $p->booking_ids ?? [];
-            $bookings   = [];
+            $bookings = [];
 
-            if (!empty($bookingIds)) {
+            if (! empty($bookingIds)) {
                 $bookings = Booking::with('vehicle:id,brand,model')
                     ->whereIn('id', $bookingIds)
                     ->get()
-                    ->map(fn($b) => [
-                        'id'             => $b->id,
-                        'vehicle'        => trim(($b->vehicle?->brand ?? '') . ' ' . ($b->vehicle?->model ?? '')),
-                        'start_date'     => $b->start_date,
-                        'end_date'       => $b->end_date,
-                        'total_amount'   => (float) $b->total_amount,
+                    ->map(fn ($b) => [
+                        'id' => $b->id,
+                        'vehicle' => trim(($b->vehicle?->brand ?? '').' '.($b->vehicle?->model ?? '')),
+                        'start_date' => $b->start_date,
+                        'end_date' => $b->end_date,
+                        'total_amount' => (float) $b->total_amount,
                         'booking_status' => $b->booking_status,
                     ])
                     ->toArray();
             }
 
             return [
-                'id'                => $p->id,
-                'gross_amount'      => (float) $p->gross_amount,
-                'commission'        => (float) $p->commission,
-                'net_amount'        => (float) $p->net_amount,
-                'status'            => $p->status,
-                'payment_method'    => $p->payment_method,
+                'id' => $p->id,
+                'gross_amount' => (float) $p->gross_amount,
+                'commission' => (float) $p->commission,
+                'net_amount' => (float) $p->net_amount,
+                'status' => $p->status,
+                'payment_method' => $p->payment_method,
                 'payment_reference' => $p->payment_reference,
-                'paid_at'           => $p->paid_at?->format('Y-m-d'),
-                'created_at'        => $p->created_at->format('Y-m-d'),
-                'booking_count'     => count($bookingIds),
-                'bookings'          => $bookings,
+                'paid_at' => $p->paid_at?->format('Y-m-d'),
+                'created_at' => $p->created_at->format('Y-m-d'),
+                'booking_count' => count($bookingIds),
+                'bookings' => $bookings,
             ];
         });
 
         return Inertia::render('Owner/Payouts', [
             'summary' => [
-                'total_paid'    => (float) $totalPaid,
+                'total_paid' => (float) $totalPaid,
                 'total_pending' => (float) $totalPending,
-                'total_failed'  => (float) $totalFailed,
-                'payout_count'  => $payoutCount,
+                'total_failed' => (float) $totalFailed,
+                'payout_count' => $payoutCount,
             ],
             'payouts' => $payouts,
             'filters' => [
-                'status'    => $status,
+                'status' => $status,
                 'date_from' => $dateFrom,
-                'date_to'   => $dateTo,
+                'date_to' => $dateTo,
             ],
         ]);
     }

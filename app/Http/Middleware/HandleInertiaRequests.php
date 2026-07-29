@@ -41,7 +41,7 @@ class HandleInertiaRequests extends Middleware
         return [
             ...parent::share($request),
             'flash' => [
-                'success' => fn() => $request->session()->get('success')
+                'success' => fn () => $request->session()->get('success'),
             ],
             'isAvailable' => $request->session()->pull('isAvailable'),
             'otp' => $request->session()->pull('otp'),

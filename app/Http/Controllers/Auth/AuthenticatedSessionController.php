@@ -55,7 +55,7 @@ class AuthenticatedSessionController extends Controller
 
         $roles = ['admin', 'customer', 'owner'];
 
-        if (!in_array(auth()->user()->role, $roles)) {
+        if (! in_array(auth()->user()->role, $roles)) {
             redirect()->route('login');
         }
 

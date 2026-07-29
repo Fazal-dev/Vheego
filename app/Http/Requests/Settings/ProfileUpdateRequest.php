@@ -30,7 +30,7 @@ class ProfileUpdateRequest extends FormRequest
             'phone_no' => [
                 'required',
                 'string',
-                'max:255'
+                'max:255',
             ],
             'profile_image' => ['nullable', 'image', 'max:2048'],
 

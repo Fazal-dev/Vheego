@@ -14,6 +14,7 @@ use Illuminate\Database\Eloquent\Factories\Factory;
 class ReviewFactory extends Factory
 {
     protected $model = Review::class;
+
     /**
      * Define the model's default state.
      *
@@ -22,11 +23,11 @@ class ReviewFactory extends Factory
     public function definition(): array
     {
         return [
-            'vehicle_id'  => Vehicle::inRandomOrder()->first()->id ?? Vehicle::factory(),
-            'booking_id'  => Booking::inRandomOrder()->first()->id ?? Booking::factory(),
+            'vehicle_id' => Vehicle::inRandomOrder()->first()->id ?? Vehicle::factory(),
+            'booking_id' => Booking::inRandomOrder()->first()->id ?? Booking::factory(),
             'reviewer_id' => User::inRandomOrder()->first()->id ?? User::factory(),
             'rating' => $this->faker->randomElement([1, 2, 3, 4, 4, 5, 5, 5, 5, 5]),
-            'comment'     => $this->faker->paragraph(2),
+            'comment' => $this->faker->paragraph(2),
         ];
     }
 }

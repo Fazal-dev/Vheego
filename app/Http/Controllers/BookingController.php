@@ -17,21 +17,22 @@ class BookingController extends Controller
 
         if ($step === 'inspection') {
             $request->validate(['damage_checked' => 'accepted']);
+
             return back();
         }
 
         if ($step === 'mileage') {
             $request->validate([
-                'end_odometer' => "required|numeric|gte:{$booking->start_odometer}"
+                'end_odometer' => "required|numeric|gte:{$booking->start_odometer}",
             ], [
-                'end_odometer.gte' => 'The end mileage must be ' . $booking->start_odometer . ' KM or higher.',
+                'end_odometer.gte' => 'The end mileage must be '.$booking->start_odometer.' KM or higher.',
             ]);
 
             $otp = rand(1000, 9999);
 
             $booking->update([
                 'end_otp' => $otp,
-                'end_odometer' => $request->end_odometer
+                'end_odometer' => $request->end_odometer,
             ]);
 
             return back()->with('otp', $otp);
@@ -39,6 +40,7 @@ class BookingController extends Controller
 
         return back();
     }
+
     /**
      * validate trip start steps
      */
@@ -72,6 +74,7 @@ class BookingController extends Controller
             ]);
 
             $booking->refresh();
+
             return back()->with('otp', $newOtp);
         }
 
@@ -111,18 +114,16 @@ class BookingController extends Controller
                 'status' => $booking->booking_status,
                 'startDate' => $booking->start_date,
                 'endDate' => $booking->end_date,
-                'pickup' => $booking->pickup_location ?? "Test",
-                'dropoff' => $booking->pickup_location ?? "Test",
+                'pickup' => $booking->pickup_location ?? 'Test',
+                'dropoff' => $booking->pickup_location ?? 'Test',
                 'payment_status' => $booking->payment_status,
                 'total_amount' => $booking->total_amount,
             ];
         });
 
-
-
         return Inertia::render('Owner/booking-owner-list', [
             'bookings' => $bookings,
-            'currentFilter' => $status
+            'currentFilter' => $status,
         ]);
     }
 

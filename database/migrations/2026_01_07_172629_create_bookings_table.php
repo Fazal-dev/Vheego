@@ -35,14 +35,14 @@ return new class extends Migration
                 'Booked',
                 'OnTrip',
                 'Cancelled',
-                'Completed'
+                'Completed',
             ])->default('Pending');
 
             $table->enum('payment_status', [
                 'pending',
                 'paid',
                 'failed',
-                'refunded'
+                'refunded',
             ])->default('pending');
 
             // Optional payment reference

@@ -7,18 +7,16 @@ use App\Models\Booking;
 use App\Models\Review;
 use App\Models\Vehicle;
 use App\Models\VehicleHistory;
-use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
 use Inertia\Inertia;
-use Stripe\Stripe;
 use Stripe\checkout\Session;
+use Stripe\Stripe;
 
 class CustomerController extends Controller
 {
-
     /**
      * Validate trip end steps
      */
@@ -31,7 +29,7 @@ class CustomerController extends Controller
             ],
             'review' => [
                 'rating' => 'required|integer|min:1|max:5',
-                'comment'    => 'required|string|min:10|max:1000',
+                'comment' => 'required|string|min:10|max:1000',
             ],
             'otp' => [
                 'otp' => 'required|digits:4',
@@ -61,7 +59,7 @@ class CustomerController extends Controller
         if ($step == 'odometer') {
             if ($request->odometer < $booking->start_odometer) {
                 return back()->withErrors([
-                    'odometer' => 'The ending odometer reading cannot be lower than the starting reading (' . $booking->start_odometer . ' KM).',
+                    'odometer' => 'The ending odometer reading cannot be lower than the starting reading ('.$booking->start_odometer.' KM).',
                 ]);
             }
         }
@@ -80,14 +78,14 @@ class CustomerController extends Controller
 
     /**
      * End the vehicle trip after verifying the return OTP, rating, and mileage.
-     * * @param  \Illuminate\Http\Request  $request
+     *
      * @return \Illuminate\Http\RedirectResponse
      */
     public function endTrip(Request $request)
     {
         $messages = [
             'otp.required' => 'Please enter the 4-digit verification code to finish your trip.',
-            'otp.digits'   => 'The verification code must be exactly 4 numeric digits.',
+            'otp.digits' => 'The verification code must be exactly 4 numeric digits.',
             'rating.required' => 'Please select a star rating for your experience.',
             'comment.required' => 'A comment of at least 10 characters is required to end the trip.',
             'comment.min' => 'A comment of at least 10 characters is required to end the trip.',
@@ -95,10 +93,10 @@ class CustomerController extends Controller
 
         $request->validate([
             'booking_id' => 'required|exists:bookings,id',
-            'odometer'   => 'required|numeric',
-            'rating'     => 'required|integer|min:1|max:5',
-            'comment'    => 'required|string|min:10|max:1000',
-            'otp'        => 'required|digits:4',
+            'odometer' => 'required|numeric',
+            'rating' => 'required|integer|min:1|max:5',
+            'comment' => 'required|string|min:10|max:1000',
+            'otp' => 'required|digits:4',
         ], $messages);
 
         $booking = Booking::where('id', $request->booking_id)
@@ -113,7 +111,7 @@ class CustomerController extends Controller
 
         if ($request->odometer < $booking->start_odometer) {
             return back()->withErrors([
-                'odometer' => 'The ending odometer reading cannot be lower than the starting reading (' . $booking->start_odometer . ' KM).',
+                'odometer' => 'The ending odometer reading cannot be lower than the starting reading ('.$booking->start_odometer.' KM).',
             ]);
         }
 
@@ -125,15 +123,15 @@ class CustomerController extends Controller
 
         $booking->update([
             'booking_status' => 'Completed',
-            'end_odometer'   => $request->odometer,
+            'end_odometer' => $request->odometer,
         ]);
 
         Review::create([
-            'vehicle_id'  => $booking->vehicle_id,
-            'booking_id'  => $booking->id,
+            'vehicle_id' => $booking->vehicle_id,
+            'booking_id' => $booking->id,
             'reviewer_id' => Auth::id(),
-            'rating'      => $request->rating,
-            'comment'     => $request->comment,
+            'rating' => $request->rating,
+            'comment' => $request->comment,
         ]);
 
         VehicleHistory::create([
@@ -143,6 +141,7 @@ class CustomerController extends Controller
 
         return back()->with('success', 'Trip completed! Thank you for your feedback.');
     }
+
     /**
      * validate trip start steps before start
      */
@@ -165,7 +164,7 @@ class CustomerController extends Controller
         $messages = match ($step) {
             'vehicle_docs' => [
                 'checklist.required' => 'You must verify all documents before proceeding.',
-                'checklist.min'      => 'Please ensure you have checked all required documents with the owner.',
+                'checklist.min' => 'Please ensure you have checked all required documents with the owner.',
             ],
             'license' => [
                 'license_number.required' => 'Please enter the Driver\'s License number as shown on the card.',
@@ -180,21 +179,21 @@ class CustomerController extends Controller
 
     /**
      * Start the vehicle trip after verifying the handover OTP.
-     * * @param  \Illuminate\Http\Request  $request
+     *
      * @return \Illuminate\Http\RedirectResponse
      */
     public function startTrip(Request $request)
     {
         $messages = [
             'otp.required' => 'Please enter the 4-digit verification code to start your trip.',
-            'otp.digits'   => 'The verification code must be exactly 4 numeric digits.',
+            'otp.digits' => 'The verification code must be exactly 4 numeric digits.',
         ];
 
         $request->validate([
             'license_number' => 'required',
-            'odometer'       => 'required|numeric',
-            'otp'            => 'required|digits:4',
-            'booking_id'     => 'required|exists:bookings,id',
+            'odometer' => 'required|numeric',
+            'otp' => 'required|digits:4',
+            'booking_id' => 'required|exists:bookings,id',
         ], $messages);
 
         $booking = Booking::where('id', $request->booking_id)
@@ -216,7 +215,7 @@ class CustomerController extends Controller
         $booking->update([
             'booking_status' => 'OnTrip',
             'start_odometer' => $request->odometer,
-            'license_number' => $request->license_number
+            'license_number' => $request->license_number,
         ]);
 
         VehicleHistory::create([
@@ -226,6 +225,7 @@ class CustomerController extends Controller
 
         return back()->with('success', 'Your Trip started!');
     }
+
     /**
      * Check the the availablitiy of vehicle
      */
@@ -244,8 +244,9 @@ class CustomerController extends Controller
             })
             ->exists();
 
-        return back()->with('isAvailable', !$isBooked);
+        return back()->with('isAvailable', ! $isBooked);
     }
+
     /**
      * Display All Bookings belong to customer
      */
@@ -269,10 +270,10 @@ class CustomerController extends Controller
 
             return [
                 'id' => $booking->id,
-                'vehicle' => $booking->vehicle->brand . ' ' . $booking->vehicle->model,
+                'vehicle' => $booking->vehicle->brand.' '.$booking->vehicle->model,
                 'image' => $frontImage,
-                'pickup' => $booking->pickup_location ?? "Test",
-                'dropoff' => $booking->pickup_location ?? "Test",
+                'pickup' => $booking->pickup_location ?? 'Test',
+                'dropoff' => $booking->pickup_location ?? 'Test',
                 'status' => $booking->booking_status,
                 'startDate' => $booking->start_date,
                 'endDate' => $booking->end_date,
@@ -290,9 +291,10 @@ class CustomerController extends Controller
 
         return Inertia::render('User/booking-list', [
             'bookings' => $bookings,
-            'currentFilter' => $status
+            'currentFilter' => $status,
         ]);
     }
+
     /**
      * Handle Customer Booking Cancellation
      */
@@ -302,16 +304,16 @@ class CustomerController extends Controller
             abort(403, 'Unauthorized action.');
         }
 
-        if (!in_array($booking->booking_status, ['Pending', 'Booked'])) {
+        if (! in_array($booking->booking_status, ['Pending', 'Booked'])) {
             return back()->withErrors(['error' => 'This booking cannot be cancelled.']);
         }
 
-        $tripStart = \Carbon\Carbon::parse($booking->start_date . ' ' . ($booking->start_time ?? '00:00:00'));
+        $tripStart = \Carbon\Carbon::parse($booking->start_date.' '.($booking->start_time ?? '00:00:00'));
         $now = now();
         $hoursBeforeTrip = $now->diffInHours($tripStart, false);
 
         $refundAmount = 0;
-        
+
         if ($hoursBeforeTrip > 24) {
             $refundAmount = $booking->total_amount;
         } elseif ($hoursBeforeTrip <= 24 && $hoursBeforeTrip > 12) {
@@ -335,7 +337,7 @@ class CustomerController extends Controller
             'status' => 'Available',
         ]);
 
-        return back()->with('success', 'Booking cancelled. Refund applied: ' . number_format($refundAmount, 2));
+        return back()->with('success', 'Booking cancelled. Refund applied: '.number_format($refundAmount, 2));
     }
 
     /**
@@ -349,8 +351,8 @@ class CustomerController extends Controller
         $vehicles = Vehicle::where('current_status', 'available')
             ->when($search, function ($query, $search) {
                 $query->where(function ($q) use ($search) {
-                    $q->where('brand', 'like', '%' . $search . '%')
-                        ->orWhere('model', 'like', '%' . $search . '%');
+                    $q->where('brand', 'like', '%'.$search.'%')
+                        ->orWhere('model', 'like', '%'.$search.'%');
                 });
             })
             ->when($filters['type'] ?? null, function ($query, $type) {
@@ -392,7 +394,7 @@ class CustomerController extends Controller
                 'transmission' => $vehicle->transmission,
                 'fuel_type' => $vehicle->fuel_type,
                 'front_image_url' => $frontImage,
-                'seats' => $vehicle->seats
+                'seats' => $vehicle->seats,
             ];
         });
 
@@ -407,6 +409,7 @@ class CustomerController extends Controller
             'search' => $search,
         ]);
     }
+
     /**
      * Display Custoemr Dashbord
      */
@@ -457,14 +460,15 @@ class CustomerController extends Controller
             'activeTrip' => $activeTrip,
         ]);
     }
+
     /**
      * Formats the active trip with progress bar logic
      */
     private function formatActiveTrip($booking)
     {
         // Combine date and time for pinpoint accuracy
-        $startStr = $booking->start_date . ' ' . ($booking->start_time ?? '00:00:00');
-        $endStr = $booking->end_date . ' ' . ($booking->end_time ?? '00:00:00');
+        $startStr = $booking->start_date.' '.($booking->start_time ?? '00:00:00');
+        $endStr = $booking->end_date.' '.($booking->end_time ?? '00:00:00');
 
         $start = \Carbon\Carbon::parse($startStr);
         $end = \Carbon\Carbon::parse($endStr);
@@ -479,14 +483,14 @@ class CustomerController extends Controller
         if ($now->lessThan($end)) {
             $diff = $now->diff($end);
             // This formats the string as 14h : 22m
-            $remaining = "{$diff->h}h : " . str_pad($diff->i, 2, '0', STR_PAD_LEFT) . "m";
+            $remaining = "{$diff->h}h : ".str_pad($diff->i, 2, '0', STR_PAD_LEFT).'m';
 
             // If there are days remaining, you might want to include them:
             if ($diff->d > 0) {
-                $remaining = "{$diff->d}d : " . $remaining;
+                $remaining = "{$diff->d}d : ".$remaining;
             }
         } else {
-            $remaining = "0h : 00m";
+            $remaining = '0h : 00m';
         }
 
         // Percentage (clamped between 0-100)
@@ -495,19 +499,20 @@ class CustomerController extends Controller
             : 0;
 
         return [
-            'booking_no'       => $booking->booking_reference,
-            'vehicle'          => $booking->vehicle->brand . ' ' . $booking->vehicle->model . ' (' . $booking->vehicle->year_of_manufacture . ')',
-            'vehicle_number'          => $booking->vehicle->license_plate,
-            'image'            => collect(json_decode($booking->vehicle->image_urls))->first(),
-            'pickupDate'       => $start->format('M d, h:i A'),
-            'pickup_location'  => $booking->vehicle->pickup_location ?? 'Colombo',
-            'hours_left'       => max(0, round($now->diffInHours($end, false))),
-            'return_date'      => $end->format('M d, h:i A'),
-            'remaining_time'   => $remaining,
+            'booking_no' => $booking->booking_reference,
+            'vehicle' => $booking->vehicle->brand.' '.$booking->vehicle->model.' ('.$booking->vehicle->year_of_manufacture.')',
+            'vehicle_number' => $booking->vehicle->license_plate,
+            'image' => collect(json_decode($booking->vehicle->image_urls))->first(),
+            'pickupDate' => $start->format('M d, h:i A'),
+            'pickup_location' => $booking->vehicle->pickup_location ?? 'Colombo',
+            'hours_left' => max(0, round($now->diffInHours($end, false))),
+            'return_date' => $end->format('M d, h:i A'),
+            'remaining_time' => $remaining,
             'progress_percent' => $progress,
-            'is_overdue'       => $now->greaterThan($end),
+            'is_overdue' => $now->greaterThan($end),
         ];
     }
+
     /**
      * Formats lists for the UI rows
      */
@@ -519,25 +524,26 @@ class CustomerController extends Controller
         //     'date_range' => $b->start_date . ' - ' . $b->end_date,
         //     'status' => $b->booking_status,
         // ]);
-        return $collection->map(fn($b) => [
-            'id'             => $b->id,
-            'vehicle'        => $b->vehicle->brand . ' ' . $b->vehicle->model,
-            'image'          => collect(json_decode($b->vehicle->image_urls))->first() ?? '/placeholder-car.png',
-            'pickup'         => $b->vehicle->pickup_location ?? 'Colombo',
-            'dropoff'        => $b->vehicle->pickup_location,
-            'status'         => $b->booking_status,
-            'startDate'      => $b->start_date,
-            'endDate'        => $b->end_date,
+        return $collection->map(fn ($b) => [
+            'id' => $b->id,
+            'vehicle' => $b->vehicle->brand.' '.$b->vehicle->model,
+            'image' => collect(json_decode($b->vehicle->image_urls))->first() ?? '/placeholder-car.png',
+            'pickup' => $b->vehicle->pickup_location ?? 'Colombo',
+            'dropoff' => $b->vehicle->pickup_location,
+            'status' => $b->booking_status,
+            'startDate' => $b->start_date,
+            'endDate' => $b->end_date,
             'payment_status' => $b->payment_status,
-            'total_amount'   => (float) $b->total_amount,
-            'latitude'       => (float) $b->vehicle->latitude,
-            'longitude'      => (float) $b->vehicle->longitude,
+            'total_amount' => (float) $b->total_amount,
+            'latitude' => (float) $b->vehicle->latitude,
+            'longitude' => (float) $b->vehicle->longitude,
         ]);
     }
+
     /**
      * Display vehicle  Details
      */
-    public function vehicleDetails(Request $request, Vehicle  $vehicle)
+    public function vehicleDetails(Request $request, Vehicle $vehicle)
     {
 
         $images = collect(json_decode($vehicle->image_urls, true))
@@ -555,14 +561,14 @@ class CustomerController extends Controller
         $totalReviews = $reviews->count();
         $avgRating = $totalReviews > 0 ? round($reviews->avg('rating'), 1) : 0;
 
-
         $distribution = collect([5, 4, 3, 2, 1])->mapWithKeys(function ($star) use ($reviews, $totalReviews) {
             $count = $reviews->where('rating', $star)->count();
+
             return [
-                $star . ' star' => [
+                $star.' star' => [
                     'count' => $count,
-                    'percentage' => $totalReviews > 0 ? round(($count / $totalReviews) * 100) : 0
-                ]
+                    'percentage' => $totalReviews > 0 ? round(($count / $totalReviews) * 100) : 0,
+                ],
             ];
         });
 
@@ -582,7 +588,7 @@ class CustomerController extends Controller
                 'year' => $vehicle->year_of_manufacture,
                 'type' => $vehicle->vehicle_type,
                 'daily_rental_price' => $vehicle->daily_rental_price,
-                'location' => $vehicle->pickup_location ?? "Colombo",
+                'location' => $vehicle->pickup_location ?? 'Colombo',
                 'seats' => $vehicle->seats,
                 'doors' => $vehicle->doors,
                 'transmission' => $vehicle->transmission,
@@ -602,7 +608,7 @@ class CustomerController extends Controller
                 'total_count' => $totalReviews,
                 'average_rating' => $avgRating,
                 'distribution' => $distribution,
-                'list' => $reviews->take(5)->map(fn($r) => [
+                'list' => $reviews->take(5)->map(fn ($r) => [
                     'id' => $r->id,
                     'user_name' => $r->reviewer->name,
                     'user_avatar' => $r->reviewer->profile_image,
@@ -610,14 +616,14 @@ class CustomerController extends Controller
                     'comment' => $r->comment,
                     'date' => $r->created_at->format('M Y'),
                 ]),
-            ]
+            ],
         ]);
     }
 
     /**
      * payment page show for customer
      */
-    public function checkout(Request $request, Vehicle  $vehicle)
+    public function checkout(Request $request, Vehicle $vehicle)
     {
         Stripe::setApiKey(config('services.stripe.sk'));
 
@@ -628,17 +634,17 @@ class CustomerController extends Controller
         $end_time = $request->query('end_time');
         $pickupLocation = $request->query('pickupLocation');
 
-        $baseRental   = $vehicle->daily_rental_price * $days; // e.g., 5000 * 3 = 15000
+        $baseRental = $vehicle->daily_rental_price * $days; // e.g., 5000 * 3 = 15000
         $insuranceFee = $vehicle->bond_amount;               // e.g., 5000
-        $vat          = ($baseRental + $insuranceFee) * 0.08; // 8% VAT
-        $totalAmount  = $baseRental + $insuranceFee + $vat;  // Total in LKR
+        $vat = ($baseRental + $insuranceFee) * 0.08; // 8% VAT
+        $totalAmount = $baseRental + $insuranceFee + $vat;  // Total in LKR
 
         $lineItems = [
             [
                 'price_data' => [
                     'currency' => 'lkr',
                     'product_data' => [
-                        'name' => $vehicle->brand . ' ' . $vehicle->model,
+                        'name' => $vehicle->brand.' '.$vehicle->model,
                         'description' => "Vehicle rental for {$days} day(s)",
                     ],
                     'unit_amount' => max(200, (int) ($baseRental * 100)),
@@ -673,12 +679,12 @@ class CustomerController extends Controller
             'mode' => 'payment',
             'payment_method_types' => ['card'],
             'line_items' => $lineItems,
-            'success_url' => route('customer.checkout.success', []) . '?session_id={CHECKOUT_SESSION_ID}',
+            'success_url' => route('customer.checkout.success', []).'?session_id={CHECKOUT_SESSION_ID}',
             'cancel_url' => route('customer.checkout.cancel', [
-                'vehicle_id' => $vehicle->id
+                'vehicle_id' => $vehicle->id,
             ]),
             'metadata' => [
-                'user_id' =>  $request->user()->id,
+                'user_id' => $request->user()->id,
                 'vehicle_id' => $vehicle->id,
                 'days' => $days,
                 'total_amount' => $totalAmount,
@@ -694,7 +700,7 @@ class CustomerController extends Controller
     }
 
     /**
-     * After payment show success message 
+     * After payment show success message
      */
     public function success(Request $request)
     {
@@ -745,7 +751,7 @@ class CustomerController extends Controller
     }
 
     /**
-     * After payment show Erro message 
+     * After payment show Erro message
      */
     public function cancel(Request $request)
     {

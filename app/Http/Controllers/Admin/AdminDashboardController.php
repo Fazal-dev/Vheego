@@ -13,15 +13,15 @@ class AdminDashboardController extends Controller
 {
     public function index()
     {
-        $now   = Carbon::now();
-        $som   = $now->copy()->startOfMonth(); // start of month
+        $now = Carbon::now();
+        $som = $now->copy()->startOfMonth(); // start of month
         $lastM = $now->copy()->subMonth()->startOfMonth();
 
         // ── Core stats ──────────────────────────────────────────────────────
         $totalRevenue = Booking::where('payment_status', 'paid')
             ->sum('total_amount');
 
-        $totalBookings  = Booking::count();
+        $totalBookings = Booking::count();
         $activeVehicles = Vehicle::where('status', 'Active')->count();
 
         // Customers only (renters)
@@ -32,11 +32,11 @@ class AdminDashboardController extends Controller
         $pendingApprovals = Vehicle::where('status', 'Inactive')->count();
 
         // ── Month-over-month deltas ──────────────────────────────────────────
-        $revenueThisMonth  = Booking::where('payment_status', 'paid')
+        $revenueThisMonth = Booking::where('payment_status', 'paid')
             ->where('created_at', '>=', $som)
             ->sum('total_amount');
 
-        $revenueLastMonth  = Booking::where('payment_status', 'paid')
+        $revenueLastMonth = Booking::where('payment_status', 'paid')
             ->whereBetween('created_at', [$lastM, $som])->sum('total_amount');
 
         $bookingsThisMonth = Booking::where('created_at', '>=', $som)->count();
@@ -51,9 +51,10 @@ class AdminDashboardController extends Controller
         // ── Monthly revenue + bookings (last 6 months) ──────────────────────
         $monthlyRevenue = collect(range(5, 0))->map(function ($i) use ($now) {
             $m = $now->copy()->subMonths($i);
+
             return [
-                'month'    => $m->format('M'),
-                'revenue'  => (float) Booking::where('payment_status', 'paid')
+                'month' => $m->format('M'),
+                'revenue' => (float) Booking::where('payment_status', 'paid')
                     ->whereYear('created_at', $m->year)
                     ->whereMonth('created_at', $m->month)
                     ->sum('total_amount'),
@@ -73,34 +74,34 @@ class AdminDashboardController extends Controller
             ->latest()
             ->take(8)
             ->get()
-            ->map(fn($b) => [
-                'id'             => $b->id,
-                'customer_name'  => $b->user?->name ?? '—',
-                'vehicle'        => trim(($b->vehicle?->brand ?? '') . ' ' . ($b->vehicle?->model ?? '')),
-                'total_amount'   => (float) $b->total_amount,
+            ->map(fn ($b) => [
+                'id' => $b->id,
+                'customer_name' => $b->user?->name ?? '—',
+                'vehicle' => trim(($b->vehicle?->brand ?? '').' '.($b->vehicle?->model ?? '')),
+                'total_amount' => (float) $b->total_amount,
                 'booking_status' => $b->booking_status,
                 'payment_status' => $b->payment_status,
-                'booking_date'   => $b->booking_date,
+                'booking_date' => $b->booking_date,
             ]);
 
         return Inertia::render('Admin/Dashboard', [
             'stats' => [
-                'total_revenue'        => (float) $totalRevenue,
-                'total_bookings'       => $totalBookings,
-                'active_vehicles'      => $activeVehicles,
-                'total_users'          => $totalUsers,
-                'total_owners'         => $totalOwners,
-                'pending_approvals'    => $pendingApprovals,
-                'revenue_this_month'   => (float) $revenueThisMonth,
-                'revenue_last_month'   => (float) $revenueLastMonth,
-                'bookings_this_month'  => $bookingsThisMonth,
-                'bookings_last_month'  => $bookingsLastMonth,
+                'total_revenue' => (float) $totalRevenue,
+                'total_bookings' => $totalBookings,
+                'active_vehicles' => $activeVehicles,
+                'total_users' => $totalUsers,
+                'total_owners' => $totalOwners,
+                'pending_approvals' => $pendingApprovals,
+                'revenue_this_month' => (float) $revenueThisMonth,
+                'revenue_last_month' => (float) $revenueLastMonth,
+                'bookings_this_month' => $bookingsThisMonth,
+                'bookings_last_month' => $bookingsLastMonth,
                 'new_users_this_month' => $newUsersThisMonth,
                 'new_users_last_month' => $newUsersLastMonth,
             ],
-            'monthly_revenue'       => $monthlyRevenue,
+            'monthly_revenue' => $monthlyRevenue,
             'booking_status_counts' => $bookingStatusCounts,
-            'recent_bookings'       => $recentBookings,
+            'recent_bookings' => $recentBookings,
         ]);
     }
 }

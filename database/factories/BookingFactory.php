@@ -3,7 +3,6 @@
 namespace Database\Factories;
 
 use App\Models\Booking;
-use App\Models\User;
 use App\Models\Vehicle;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
@@ -42,7 +41,7 @@ class BookingFactory extends Factory
             case 'Pending':
                 // Everything happens in the future
                 $startDate = $this->faker->dateTimeBetween('+1 day', '+1 month');
-                $endDate = (clone $startDate)->modify('+' . rand(1, 5) . ' days');
+                $endDate = (clone $startDate)->modify('+'.rand(1, 5).' days');
                 break;
 
             case 'Cancelled':
@@ -77,7 +76,7 @@ class BookingFactory extends Factory
             'start_odometer' => rand(15000, 20000),
             'end_odometer' => ($status === 'Completed') ? rand(20001, 21000) : null,
             'license_number' => $this->faker->bothify('WP-####'),
-            'owner_paid' => ($status === 'Completed') ? $this->faker->boolean(50) : false
+            'owner_paid' => ($status === 'Completed') ? $this->faker->boolean(50) : false,
         ];
     }
 
@@ -89,9 +88,9 @@ class BookingFactory extends Factory
         return $this->state(fn (array $attributes) => [
             'booking_status' => 'Booked',
             'payment_status' => 'paid',
-            'total_amount'   => 10000,
-            'start_date'     => now()->addDays(2)->format('Y-m-d'),
-            'start_time'     => now()->format('H:i:s'),
+            'total_amount' => 10000,
+            'start_date' => now()->addDays(2)->format('Y-m-d'),
+            'start_time' => now()->format('H:i:s'),
         ]);
     }
 
@@ -101,12 +100,13 @@ class BookingFactory extends Factory
     public function halfRefundable()
     {
         $targetTime = now()->addHours(18); // 18 hours from now
+
         return $this->state(fn (array $attributes) => [
             'booking_status' => 'Booked',
             'payment_status' => 'paid',
-            'total_amount'   => 10000,
-            'start_date'     => $targetTime->format('Y-m-d'),
-            'start_time'     => $targetTime->format('H:i:s'),
+            'total_amount' => 10000,
+            'start_date' => $targetTime->format('Y-m-d'),
+            'start_time' => $targetTime->format('H:i:s'),
         ]);
     }
 
@@ -116,12 +116,13 @@ class BookingFactory extends Factory
     public function nonRefundable()
     {
         $targetTime = now()->addHours(5); // Only 5 hours away
+
         return $this->state(fn (array $attributes) => [
             'booking_status' => 'Booked',
             'payment_status' => 'paid',
-            'total_amount'   => 10000,
-            'start_date'     => $targetTime->format('Y-m-d'),
-            'start_time'     => $targetTime->format('H:i:s'),
+            'total_amount' => 10000,
+            'start_date' => $targetTime->format('Y-m-d'),
+            'start_time' => $targetTime->format('H:i:s'),
         ]);
     }
 
@@ -134,7 +135,7 @@ class BookingFactory extends Factory
             'booking_status' => 'Completed',
             'payment_status' => 'paid',
             'start_date' => now()->subDays(5)->format('Y-m-d'),
-            'end_date'   => now()->subDays(1)->format('Y-m-d'),
+            'end_date' => now()->subDays(1)->format('Y-m-d'),
         ])->afterCreating(function (Booking $booking) {
             \App\Models\Review::factory()->create([
                 'booking_id' => $booking->id,

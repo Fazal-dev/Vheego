@@ -58,8 +58,8 @@ Route::middleware(['auth', 'role:owner', 'verified', 'web'])->prefix('owner')
         });
 
         Route::controller(OwnerBankDetailsController::class)->prefix('bank-details')->name('bank-details.')->group(function () {
-            Route::get('/',    'show')->name('show');
-            Route::post('/',   'update')->name('update');
+            Route::get('/', 'show')->name('show');
+            Route::post('/', 'update')->name('update');
         });
 
         Route::prefix('bookings')->name('bookings.')
@@ -89,5 +89,5 @@ Route::get('/test', function () {
     return view('emails.booking.confirmation');
 });
 
-require __DIR__ . '/settings.php';
-require __DIR__ . '/auth.php';
+require __DIR__.'/settings.php';
+require __DIR__.'/auth.php';

@@ -38,7 +38,7 @@ class ProfileController extends Controller
 
             if ($user->profile_image) {
                 // Convert URL to storage path
-                $storagePath = str_replace(asset('storage') . '/', '', $user->profile_image);
+                $storagePath = str_replace(asset('storage').'/', '', $user->profile_image);
                 if (\Storage::disk('public')->exists($storagePath)) {
                     \Storage::disk('public')->delete($storagePath);
                 }
@@ -47,7 +47,7 @@ class ProfileController extends Controller
 
             $extension = $file->getClientOriginalExtension();
             $originalName = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
-            $fileName = $originalName . '_' . time() . '.' . $extension;
+            $fileName = $originalName.'_'.time().'.'.$extension;
 
             $file->storeAs("users/{$user->id}", $fileName, 'public');
 

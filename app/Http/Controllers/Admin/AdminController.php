@@ -10,7 +10,6 @@ use Inertia\Inertia;
 
 class AdminController extends Controller
 {
-
     /**
      * Display Approval vehicles list
      */
@@ -34,15 +33,17 @@ class AdminController extends Controller
 
         $vehicle->image_urls = json_decode($vehicle->image_urls);
         $owner = $vehicle->owner;
+
         return Inertia::render('Admin/VehicleApproval/reviewVehicle', [
             'vehicle' => $vehicle,
             'owner' => $owner,
         ]);
     }
+
     /**
      * Admin review vehicles Details and approve/reject
      */
-    public function updateApprovalStatus(Request $request, Vehicle  $vehicle)
+    public function updateApprovalStatus(Request $request, Vehicle $vehicle)
     {
 
         $request->validate([
@@ -51,15 +52,15 @@ class AdminController extends Controller
 
         $status = $request->approval_status;
         $owner = $vehicle->owner;
-        if ($status === "Approved") {
-            $vehicle->approval_status = "Approved";
-            $vehicle->status = "Active";
+        if ($status === 'Approved') {
+            $vehicle->approval_status = 'Approved';
+            $vehicle->status = 'Active';
             Mail::to($owner->email)->send(new \App\Mail\VehicleApproved($vehicle));
         }
 
-        if ($status === "Rejected") {
-            $vehicle->approval_status = "Rejected";
-            $vehicle->status = "Inactive";
+        if ($status === 'Rejected') {
+            $vehicle->approval_status = 'Rejected';
+            $vehicle->status = 'Inactive';
             Mail::to($owner->email)->send(new \App\Mail\VehicleRejected($vehicle));
         }
 

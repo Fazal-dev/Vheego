@@ -58,7 +58,7 @@ class VehicleController extends Controller
             'doors' => 'required|integer|min:1|max:10',
             'seats' => 'required|integer|min:1|max:20',
             'vehicle_type' => 'required|string|max:50',
-            'year_of_manufacture' => 'required|integer|min:1900|max:' . date('Y'),
+            'year_of_manufacture' => 'required|integer|min:1900|max:'.date('Y'),
             'registration_date' => 'required|date',
             'registration_expiry_date' => 'required|date|after:registration_date',
             'daily_rental_price' => 'required|numeric|min:0',
@@ -66,10 +66,10 @@ class VehicleController extends Controller
             'engine_capacity' => 'required|string',
             'engine_number' => 'required|string|max:100',
             'pickup_location' => 'required|string|max:100',
-            'highlights'      => 'required|string',
-            'description'     => 'required|string',
-            'latitude'        => 'nullable|numeric',
-            'longitude'       => 'nullable|numeric',
+            'highlights' => 'required|string',
+            'description' => 'required|string',
+            'latitude' => 'nullable|numeric',
+            'longitude' => 'nullable|numeric',
             'front_image' => 'required|file|mimes:jpg,jpeg,png,webp',
             'back_image' => 'required|file|mimes:jpg,jpeg,png,webp',
             'left_image' => 'required|file|mimes:jpg,jpeg,png,webp',
@@ -102,7 +102,7 @@ class VehicleController extends Controller
                 $file = $request->file($field);
                 $extension = $file->getClientOriginalExtension();
                 $originalName = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
-                $fileName = $originalName . '_' . time() . '.' . $extension;
+                $fileName = $originalName.'_'.time().'.'.$extension;
 
                 $file->storeAs("vehicles/{$uniqueFolder}", $fileName, 'public');
 
@@ -160,12 +160,12 @@ class VehicleController extends Controller
             'brand' => 'required|string|max:255',
             'transmission' => 'required|string|max:50',
             'fuel_type' => 'required|string|max:50',
-            'license_plate' => 'required|string|max:50|unique:vehicles,license_plate,' . $id,
+            'license_plate' => 'required|string|max:50|unique:vehicles,license_plate,'.$id,
             'color' => 'required|string|max:50',
             'doors' => 'required|integer|min:1|max:10',
             'seats' => 'required|integer|min:1|max:20',
             'vehicle_type' => 'required|string|max:50',
-            'year_of_manufacture' => 'required|integer|min:1900|max:' . date('Y'),
+            'year_of_manufacture' => 'required|integer|min:1900|max:'.date('Y'),
             'registration_date' => 'required|date',
             'registration_expiry_date' => 'required|date|after:registration_date',
             'daily_rental_price' => 'required|numeric|min:0',
@@ -173,10 +173,10 @@ class VehicleController extends Controller
             'engine_capacity' => 'required|string',
             'engine_number' => 'required|string|max:100',
             'pickup_location' => 'required|string|max:100',
-            'highlights'      => 'required|string',
-            'description'     => 'required|string',
-            'latitude'        => 'nullable|numeric',
-            'longitude'       => 'nullable|numeric',
+            'highlights' => 'required|string',
+            'description' => 'required|string',
+            'latitude' => 'nullable|numeric',
+            'longitude' => 'nullable|numeric',
             'front_image' => 'nullable',
             'back_image' => 'nullable',
             'left_image' => 'nullable',
@@ -217,7 +217,7 @@ class VehicleController extends Controller
             if ($request->hasFile($field)) {
 
                 // delete old file if it exists
-                if (!empty($existingImages[$field])) {
+                if (! empty($existingImages[$field])) {
                     $oldPath = str_replace('/storage/', '', $existingImages[$field]);
                     Storage::disk('public')->delete($oldPath);
                 }
@@ -226,7 +226,7 @@ class VehicleController extends Controller
                 $file = $request->file($field);
                 $extension = $file->getClientOriginalExtension();
                 $originalName = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
-                $fileName = $originalName . '_' . time() . '.' . $extension;
+                $fileName = $originalName.'_'.time().'.'.$extension;
                 $file->storeAs("vehicles/{$folder}", $fileName, 'public');
                 $newImages[$field] = asset("storage/vehicles/{$folder}/{$fileName}");
             }

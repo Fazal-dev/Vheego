@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class Payout extends Model
 {
     use HasFactory;
+
     protected $fillable = [
         'owner_id',
         'booking_ids',
@@ -22,7 +23,7 @@ class Payout extends Model
 
     protected $casts = [
         'booking_ids' => 'array',
-        'paid_at'     => 'datetime',
+        'paid_at' => 'datetime',
     ];
 
     public function owner()

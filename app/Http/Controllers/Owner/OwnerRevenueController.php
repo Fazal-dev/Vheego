@@ -5,7 +5,6 @@ namespace App\Http\Controllers\Owner;
 use App\Http\Controllers\Controller;
 use App\Models\Booking;
 use App\Models\Payout;
-use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
 
@@ -13,15 +12,15 @@ class OwnerRevenueController extends Controller
 {
     public function index()
     {
-        $owner    = Auth::user();
-        $ownerId  = $owner->id;
+        $owner = Auth::user();
+        $ownerId = $owner->id;
 
         $vehicleIds = $owner->vehicles()->pluck('id');
 
         // ── Commission summary ───────────────────────────────────────────────
-        $totalGross      = Payout::where('owner_id', $ownerId)->sum('gross_amount');
+        $totalGross = Payout::where('owner_id', $ownerId)->sum('gross_amount');
         $totalCommission = Payout::where('owner_id', $ownerId)->sum('commission');
-        $totalNet        = Payout::where('owner_id', $ownerId)->sum('net_amount');
+        $totalNet = Payout::where('owner_id', $ownerId)->sum('net_amount');
 
         // Gross from bookings (paid only) — source of truth for revenue
         $totalBookingRevenue = Booking::whereIn('vehicle_id', $vehicleIds)
@@ -50,11 +49,11 @@ class OwnerRevenueController extends Controller
                 ->count();
 
             return [
-                'month'      => $m->format('M y'),
-                'gross'      => $gross,
+                'month' => $m->format('M y'),
+                'gross' => $gross,
                 'commission' => $commission,
-                'net'        => round($gross - $commission, 2),
-                'bookings'   => $bookings,
+                'net' => round($gross - $commission, 2),
+                'bookings' => $bookings,
             ];
         })->values();
 
@@ -66,22 +65,22 @@ class OwnerRevenueController extends Controller
                     ->where('payment_status', 'paid')
                     ->sum('total_amount');
 
-                $totalBookings     = $v->bookings()->count();
+                $totalBookings = $v->bookings()->count();
                 $completedBookings = $v->bookings()
                     ->where('booking_status', 'Completed')
                     ->count();
 
                 return [
-                    'id'             => $v->id,
-                    'name'           => $v->brand . ' ' . $v->model,
-                    'vehicle_type'   => $v->vehicle_type,
-                    'license_plate'  => $v->license_plate,
-                    'status'         => $v->status,
-                    'gross_revenue'  => $gross,
-                    'net_revenue'    => round($gross * (1 - ($v->owner->commission_rate ?? 10) / 100), 2),
+                    'id' => $v->id,
+                    'name' => $v->brand.' '.$v->model,
+                    'vehicle_type' => $v->vehicle_type,
+                    'license_plate' => $v->license_plate,
+                    'status' => $v->status,
+                    'gross_revenue' => $gross,
+                    'net_revenue' => round($gross * (1 - ($v->owner->commission_rate ?? 10) / 100), 2),
                     'total_bookings' => $totalBookings,
-                    'completed'      => $completedBookings,
-                    'daily_rate'     => (float) $v->daily_rental_price,
+                    'completed' => $completedBookings,
+                    'daily_rate' => (float) $v->daily_rental_price,
                 ];
             })
             ->sortByDesc('gross_revenue')
@@ -89,14 +88,14 @@ class OwnerRevenueController extends Controller
 
         return Inertia::render('Owner/Revenue', [
             'commission_summary' => [
-                'total_gross'           => (float) $totalGross,
-                'total_commission'      => (float) $totalCommission,
-                'total_net'             => (float) $totalNet,
+                'total_gross' => (float) $totalGross,
+                'total_commission' => (float) $totalCommission,
+                'total_net' => (float) $totalNet,
                 'total_booking_revenue' => (float) $totalBookingRevenue,
-                'commission_rate'       => (float) $owner->commission_rate,
+                'commission_rate' => (float) $owner->commission_rate,
             ],
-            'monthly_stats'  => $monthlyStats,
-            'vehicle_stats'  => $vehicleStats,
+            'monthly_stats' => $monthlyStats,
+            'vehicle_stats' => $vehicleStats,
         ]);
     }
 }

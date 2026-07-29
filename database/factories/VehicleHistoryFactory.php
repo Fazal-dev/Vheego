@@ -28,7 +28,7 @@ class VehicleHistoryFactory extends Factory
                 'Booked',
                 'Created',
                 'Under Repair',
-                'Retired'
+                'Retired',
             ]),
 
             // Using a past date for history

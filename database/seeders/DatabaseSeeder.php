@@ -64,14 +64,14 @@ class DatabaseSeeder extends Seeder
         $vehicles_2->each(function ($vehicle) {
             Booking::factory(5)->create([
                 'vehicle_id' => $vehicle->id,
-                'user_id'    => 1,
+                'user_id' => 1,
             ]);
         });
 
         $vehicles->each(function ($vehicle) {
             Booking::factory(5)->create([
                 'vehicle_id' => $vehicle->id,
-                'user_id'    => 1,
+                'user_id' => 1,
             ]);
         });
 
@@ -80,23 +80,23 @@ class DatabaseSeeder extends Seeder
 
         Booking::factory()->fullRefundable()->create([
             'vehicle_id' => $testVehicles[0]->id,
-            'user_id'    => 1,
+            'user_id' => 1,
         ]);
 
         Booking::factory()->halfRefundable()->create([
             'vehicle_id' => $testVehicles[1]->id,
-            'user_id'    => 1,
+            'user_id' => 1,
         ]);
 
         Booking::factory()->nonRefundable()->create([
             'vehicle_id' => $testVehicles[2]->id,
-            'user_id'    => 1,
+            'user_id' => 1,
         ]);
 
         // Seed a completed booking with a review for testing
         Booking::factory()->completedWithReview()->create([
             'vehicle_id' => $vehicles->random()->id,
-            'user_id'    => 1,
+            'user_id' => 1,
         ]);
 
         // paid payouts for payout history
@@ -113,12 +113,12 @@ class DatabaseSeeder extends Seeder
         $vehicleIds_2 = $vehicles->pluck('id');
 
         Review::factory(50)->create([
-            'vehicle_id'  => fn() => $vehicleIds->random(),
+            'vehicle_id' => fn () => $vehicleIds->random(),
             'reviewer_id' => 1,
         ]);
 
         Review::factory(50)->create([
-            'vehicle_id'  => fn() => $vehicleIds_2->random(),
+            'vehicle_id' => fn () => $vehicleIds_2->random(),
             'reviewer_id' => 1,
         ]);
     }
