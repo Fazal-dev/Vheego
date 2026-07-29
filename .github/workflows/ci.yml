@@ -27,9 +27,6 @@ jobs:
           php-version: 8.2
           extensions: mbstring, sqlite, pdo_sqlite
           coverage: none
-          
-      - name: Run Pint
-        run: vendor/bin/pint --test
 
       - name: Setup Node
         uses: actions/setup-node@v4
@@ -41,6 +38,9 @@ jobs:
 
       - name: Install Composer Packages
         run: composer install --no-interaction --prefer-dist
+
+      - name: Run Pint
+        run: vendor/bin/pint --test
 
       - name: Generate App Key
         run: php artisan key:generate
