@@ -27,6 +27,9 @@ jobs:
           php-version: 8.2
           extensions: mbstring, sqlite, pdo_sqlite
           coverage: none
+          
+      - name: Run Pint
+        run: vendor/bin/pint --test
 
       - name: Setup Node
         uses: actions/setup-node@v4
