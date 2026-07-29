@@ -2,7 +2,7 @@ name: pint
 on: push
 
 jobs:
-  pint_run:
+  pint_run_test:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
